@@ -34,12 +34,12 @@
                     </button>
                 </form>
                 <div class="flex flex-row-reverse">
-                    <div>
-                        <button wire:click=""
+                    <router-link to="/contacts/create-contact">
+                        <button
                         class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
                         Create New Contact
                         </button>
-                    </div>
+                    </router-link>
                 </div>
             </div>
             <!-- Sesuaikan jumlah kolom beserta gap jika ingin merubah jumlah data yang ditampilkan-->

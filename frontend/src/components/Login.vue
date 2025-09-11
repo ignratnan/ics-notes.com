@@ -2,7 +2,7 @@
     <div class="bg-gray-100 flex items-center justify-center min-h-screen">
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm space-y-6">
             <div class="p-0 grid grid-cols-1 place-items-center">
-                <img :src="logoWhite" class="h-20" alt="ICS" />
+                <img :src="logoBlack" class="h-20" alt="ICS" />
             </div>
             <hr>
             <h1 class="text-3xl font-bold text-center text-gray-800">Login to ICS-Notes</h1>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-    import logoWhite from '@/assets/ics_logo_black.png'
+    import logoBlack from '@/assets/ics_logo_black.png'
     import { useRouter } from 'vue-router';
 
     // Get the router instance

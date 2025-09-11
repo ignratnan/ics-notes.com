@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/ignratnan/ics-notes.com/backend/models"
 )
 
 var db *gorm.DB
@@ -19,13 +21,13 @@ func connectDB() {
 		panic("Failed to connect to database!")
 	}
 
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&models.Event{})
 }
 
-func getUsers(c *gin.Context) {
-	var users []User
-	db.Find(&users)
-	c.JSON(http.StatusOK, users)
+func getEvents(c *gin.Context) {
+	var events []models.Event
+	db.Find(&events)
+	c.JSON(http.StatusOK, events)
 }
 
 func main() {
@@ -36,7 +38,8 @@ func main() {
 	// Enable CORS so Vue can access
 	r.Use(cors.Default())
 
-	r.GET("/api/users", getUsers)
+	r.GET("/events", getEvents)
 
 	r.Run(":8080") // Run on http://localhost:8080
+
 }

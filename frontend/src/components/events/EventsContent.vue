@@ -33,28 +33,30 @@
                         <span class="sr-only">Search</span>
                     </button>
                 </form>
-
-                <div class="grid place-content-end">
-                    <button wire:click="create()"
-                        class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
-                        Create New Event
-                    </button>
-                </div>
+                <router-link to="/events/create-event">
+                    <div class="grid place-content-end">
+                        <button wire:click="create()"
+                            class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
+                            Create New Event
+                        </button>
+                    </div>
+                </router-link>
      
             </div>
             <div class="grid grid-cols-4 gap-2">
-                    <article class="w-full max-w-sm px-4 py-3 rounded-md shadow-md bg-white border border-gray-600">
-                        <div>
-                            <div class="flex flex-row mt-2">
+                <div v-for="event in events" :key="event.id">
+                    <article class="h-full min-h-32 px-4 py-2 rounded-md shadow-md bg-white border border-gray-600 flex flex-col">
+                            <div class="flex flex-row-reverse">
                                 <span
-                                    class="text-sm font-light text-gray-800 dark:text-gray-800">Created Date</span>
+                                    class="text-sm font-light text-gray-800 dark:text-gray-800">{{ formatDate(event.created_at) }}</span>
                             </div>
-                            <div>
+                            <div class="flex-grow">
                                 <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
-                                    Event name
+                                    {{ event.event_name }}
                                 </h1>
                             </div>
-                            <div class="flex flex-row-reverse">
+                            <hr>
+                            <div class="flex flex-row-reverse h-10">
                                 <button wire:click="#"
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="trash" />
@@ -63,17 +65,37 @@
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="pen" />
                                 </button>
-                                <a href="#">
-                                    <button
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
+                                <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
+                                    <button>
                                         <font-awesome-icon icon="magnifying-glass" />
                                     </button>
                                 </a>
                             </div>
-                        </div>
                     </article>
-
+                </div>
             </div>
         </div>
     </div>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue'
+import axios from 'axios'
+import dayjs from 'dayjs'
+
+const events = ref([])
+
+onMounted(async () => {
+  try {
+    const res = await axios.get('http://localhost:8080/events')
+    events.value = res.data
+  } catch (err) {
+    console.error('Error fetching users:', err)
+  }
+})
+
+function formatDate(dateStr) {
+  return dayjs(dateStr).format('D MMMM YYYY')
+}
+
+</script>
