@@ -43,23 +43,23 @@
                 </div>
             </div>
             <div class="grid grid-cols-4 gap-2">
-
+                <div v-for="company in companies" :key="company.id">
                     <article class="w-auto max-w-sm h-fit px-4 py-3 rounded-md shadow-md bg-gray-50 border border-gray-800">
                         <div>
                             <div class="flex flex-row-reverse mt-2">
                                 <span
-                                    class="text-sm font-light text-gray-800 dark:text-gray-800"> Creator name || Created date</span>
+                                    class="text-sm font-light text-gray-800 dark:text-gray-800">{{ company.user.name }} || {{ formatDate(company.created_at) }}</span>
                             </div>
                             <div>
                                 <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
-                                    Company name
+                                    {{ company.company_name }}
                                 </h1>
                                 <p class="font-normal text-gray-700 dark:text-black"><font-awesome-icon icon="building" />
-                                    Company country </p>
+                                    {{ company.company_country }} </p>
                                 <p class="font-normal text-gray-700 dark:text-black"><font-awesome-icon icon="user-tie" />
-                                    Agent type </p>
+                                    {{ company.agent_type }} </p>
                                 <p class="font-normal text-gray-700 dark:text-black"><font-awesome-icon icon="tag" />
-                                    Business source </p>
+                                    {{ company.business_source }} </p>
                                 <p class="font-normal text-gray-700 dark:text-black"><font-awesome-icon icon="pen-fancy" />
                                     Company Notes : 
                                     <span class="truncate"></span>
@@ -92,7 +92,30 @@
                             </div>
                         </div>
                     </article>
+                </div>
             </div>
         </div>
     </div>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue'
+import axios from 'axios'
+import dayjs from 'dayjs'
+
+const companies = ref([])
+
+onMounted(async () => {
+  try {
+    const res = await axios.get('http://localhost:8080/companies')
+    companies.value = res.data
+  } catch (err) {
+    console.error('Error fetching users:', err)
+  }
+})
+
+function formatDate(dateStr) {
+  return dayjs(dateStr).format('D MMMM YYYY')
+}
+
+</script>

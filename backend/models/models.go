@@ -6,9 +6,19 @@ import (
 
 // Model
 type User struct {
-	ID    uint   `json:"id" gorm:"primaryKey"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	ID                     uint      `json:"id" gorm:"primaryKey"`
+	Name                   string    `json:"name"`
+	Email                  string    `json:"email"`
+	EmailVerifiedAt        time.Time `json:"email_verified_at"`
+	Password               string    `json:"password"`
+	TwoFactorSecret        string    `json:"two_factor_secret"`
+	TwoFactorRecoveryCodes string    `json:"two_factor_recovery_codes"`
+	TwoFactorConfirmedAt   time.Time `json:"two_factor_confirmed_at"`
+	RememberToken          string    `json:"remember_token"`
+	CurrentTeamID          uint      `json:"current_team_id"`
+	ProfilePhotoPath       string    `json:"profile_photo_path"`
+	CreatedAt              time.Time `json:"created_at"`
+	UpdatedAt              time.Time `json:"updated_at"`
 }
 
 type Event struct {
@@ -17,6 +27,8 @@ type Event struct {
 	EventName string    `json:"event_name"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+	DeletedAt time.Time `json:"deleted_at"`
+	User      User      `json:"user" gorm:"foreignKey:UserID"`
 }
 
 type Contact struct {
@@ -32,4 +44,51 @@ type Contact struct {
 	EditedBy      string    `json:"edited_by"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
+	User          User      `json:"user" gorm:"foreignKey:UserID"`
+	Company       Company   `json:"company" gorm:"foreignKey:CompanyID"`
+}
+
+type Company struct {
+	ID             uint      `json:"id"`
+	UserID         uint      `json:"user_id"`
+	CompanyName    string    `json:"company_name"`
+	AgentType      string    `json:"agent_type"`
+	BusinessSource string    `json:"business_source"`
+	CompanyCountry string    `json:"company_country"`
+	CompanyNotes   string    `json:"company_notes"`
+	EditedBy       string    `json:"edited_by"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	User           User      `json:"user" gorm:"foreignKey:UserID"`
+}
+
+type Note struct {
+	ID        uint      `json:"id"`
+	UserID    uint      `json:"user_id"`
+	ContactID uint      `json:"contact_id"`
+	EventID   uint      `json:"event_id"`
+	CompanyID uint      `json:"company_id"`
+	Title     string    `json:"title"`
+	Body      string    `json:"body"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	User      User      `json:"user" gorm:"foreignKey:UserID"`
+	Contact   Contact   `json:"contact" gorm:"foreignKey:ContactID"`
+	Event     Event     `json:"event" gorm:"foreignKey:EventID"`
+	Company   Company   `json:"company" gorm:"foreignKey:CompanyID"`
+}
+
+type Team struct {
+	ID           uint      `json:"id"`
+	UserID       uint      `json:"user_id"`
+	Name         string    `json:"name"`
+	PersonalTeam string    `json:"personal_tema"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	User         User      `json:"user" gorm:"foreignKey:UserID"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }

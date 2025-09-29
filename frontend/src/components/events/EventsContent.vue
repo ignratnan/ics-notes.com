@@ -1,4 +1,48 @@
 <template>
+    <div :class="createClass" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+        <div class="flex flex-row">
+            <div class="w-full bg-white">
+                <div class="py-1">
+                    <div class="mx-auto sm:px-12 lg:px-24">
+                        <div name="header" class="mt-2 p-2">
+                            <h1 class="font-bold text-xl text-gray-800">
+                                EVENTS <font-awesome-icon icon="angle-right" />
+                                CREATE-EVENT
+                            </h1>
+                            <hr>
+                        </div>
+
+                        <form class="space-y-4">
+                            <div class="mt-4 mb-4">
+                                <label for="title" class="block text-gray-700 text-sm font-bold my-2">Event</label>
+                                <input type="text"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="title"  required placeholder="Enter Event Name">
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                    <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                                        <button type="submit"
+                                            class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                            Save
+                                        </button>
+                                    </span>
+
+                                    <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                                        <button type="button" @click="closeCreate"
+                                            class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                            Cancel
+                                        </button>
+                                    </span>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
     <div class="py-1">
         <div class="mx-auto sm:px-6 lg:px-8">
             <div name="header" class="mt-2 p-2">
@@ -33,14 +77,14 @@
                         <span class="sr-only">Search</span>
                     </button>
                 </form>
-                <router-link to="/events/create-event">
-                    <div class="grid place-content-end">
-                        <button wire:click="create()"
-                            class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
-                            Create New Event
-                        </button>
-                    </div>
-                </router-link>
+    
+                <div class="grid place-content-end">
+                    <button @click="openCreate"
+                        class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
+                        Create New Event
+                    </button>
+                </div>
+
      
             </div>
             <div class="grid grid-cols-4 gap-2">
@@ -48,7 +92,7 @@
                     <article class="h-full min-h-32 px-4 py-2 rounded-md shadow-md bg-white border border-gray-600 flex flex-col">
                             <div class="flex flex-row-reverse">
                                 <span
-                                    class="text-sm font-light text-gray-800 dark:text-gray-800">{{ formatDate(event.created_at) }}</span>
+                                    class="text-sm font-light text-gray-800 dark:text-gray-800">{{ event.user.name }} || {{ formatDate(event.created_at) }}</span>
                             </div>
                             <div class="flex-grow">
                                 <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
@@ -84,15 +128,38 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 
 const events = ref([])
+const create = ref(0)
+const createClass = ref('hidden')
 
 onMounted(async () => {
-  try {
-    const res = await axios.get('http://localhost:8080/events')
-    events.value = res.data
-  } catch (err) {
-    console.error('Error fetching users:', err)
-  }
+    try {
+        const res = await axios.get('http://localhost:8080/events')
+        events.value = res.data
+        createClass.value = 'hidden'
+    } catch (err) {
+        console.error('Error fetching users:', err)
+    }
 })
+
+const openCreate = async () => {
+    try {
+        const res = await axios.get('http://localhost:8080/events')
+        events.value = res.data
+        createClass.value = ''
+    } catch (err) {
+        console.error('Error fetching users:', err)
+    }
+}
+
+const closeCreate = async () => {
+    try {
+        const res = await axios.get('http://localhost:8080/events')
+        events.value = res.data
+        createClass.value = 'hidden'
+    } catch (err) {
+        console.error('Error fetching users:', err)
+    }
+}
 
 function formatDate(dateStr) {
   return dayjs(dateStr).format('D MMMM YYYY')

@@ -8,7 +8,7 @@
             <h1 class="text-3xl font-bold text-center text-gray-800">Login to ICS-Notes</h1>
 
             <!-- Form with Vue event handling -->
-            <form class="space-y-4">
+            <form @submit.prevent="submitLogin" class="space-y-4">
                 
                 <!-- Email Input Field -->
                 <div>
@@ -16,6 +16,7 @@
                     <input 
                         type="email" 
                         id="email" 
+                        v-model="form.email"
                         required 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
                 </div>
@@ -26,6 +27,7 @@
                     <input 
                         type="password" 
                         id="password" 
+                        v-model="form.password"
                         required 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
                 </div>
@@ -38,21 +40,76 @@
                 </button>
 
             </form>
+            <!-- Status Message -->
+            <div v-if="message" :class="messageClass" class="p-4 rounded-lg mb-4 text-sm font-medium">
+                {{ message }}
+            </div>
+
+            <div v-if="rePassword" :class="messageClass" class="p-4 rounded-lg mb-4 text-sm font-medium">
+                {{ inPassword }} != {{ rePassword }}
+            </div>
 
         </div>
     </div>
 </template>
 
 <script setup>
-    import logoBlack from '@/assets/ics_logo_black.png'
+    import { ref, reactive } from 'vue';
+    import logoBlack from '@/assets/ics_logo_black.png';
     import { useRouter } from 'vue-router';
+    import axios from 'axios'
 
     // Get the router instance
     const router = useRouter();
-
     // Method to handle the navigation
     const goToDashboard = () => {
     // Navigate to the route with the name 'dashboard'
     router.push({ name: 'dashboard' });
+    };
+
+    const message = ref('');
+    const messageClass = ref('');
+    const loginStatus = ref('');
+    const inPassword = ref('');
+    const rePassword = ref('');
+
+    const form = reactive({
+        email: '',
+        password: ''
+    });
+
+    const API_URL = 'http://localhost:8080/login';
+
+    const submitLogin = async () => {
+        // Reset messages before new submission
+        message.value = '';
+        messageClass.value = '';
+        loginStatus.value = 0;
+        inPassword.value = '';
+        rePassword.value = '';
+
+        try {
+            const response = await axios.post(API_URL, form);
+            
+
+            message.value = response.data.message;
+            messageClass.value = 'bg-green-100 text-green-700';
+            loginStatus.value = response.data.loginStatus;
+            inPassword.value = response.data.inPassword;
+            rePassword.value = response. data.rePassword;
+
+            // Reset the form after successful submission
+            form.email = '';
+            form.password = '';
+
+            if (loginStatus.value == 1) {
+                router.push({ name: 'dashboard' });
+            }
+
+        } catch (error) {
+            const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
+            message.value = errorMessage;
+            messageClass.value = 'bg-red-100 text-red-700';
+        }
     };
 </script>

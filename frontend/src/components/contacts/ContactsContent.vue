@@ -44,24 +44,25 @@
             </div>
             <!-- Sesuaikan jumlah kolom beserta gap jika ingin merubah jumlah data yang ditampilkan-->
             <div class="grid grid-cols-4 gap-2">
+                <div v-for="contact in contacts" :key="contact.id">
                     <article class="w-full max-w-sm px-4 py-3 rounded-md shadow-md bg-white border border-gray-600">
                         <div>
                             <div class="flex flex-row-reverse mt-2">
                                 <span
-                                    class="text-sm font-light text-gray-800 dark:text-gray-800"> Creator name || Created date</span>
+                                    class="text-sm font-light text-gray-800 dark:text-gray-800"> {{ contact.user.name }} || {{ formatDate(contact.created_at) }}</span>
                             </div>
                             <div>
                                 <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
-                                    Contact full name
+                                    {{ contact.first_name }} {{ contact.last_name }}
                                 </h1>
                                 <p class="font-normal text-sm text-gray-700 dark:text-black"><font-awesome-icon icon="building" />
-                                    Company name </p>
+                                    {{ contact.company.company_name }} </p>
                                 <p class="font-normal text-sm text-gray-700 dark:text-black"><font-awesome-icon icon="thumbtack" />
-                                    Contact title </p>
+                                    {{ contact.title }} </p>
                                 <p class="font-normal text-sm text-gray-700 dark:text-black"><font-awesome-icon icon="phone" />
-                                    Phone number </p>
+                                    {{ contact.phone_number }} </p>
                                 <p class="font-normal text-sm text-gray-700 dark:text-black"><font-awesome-icon icon="envelope" />
-                                    Email </p>
+                                    {{ contact.email }} </p>
                             </div>
                             <div class="flex flex-row-reverse">
                                 <button wire:click=""
@@ -81,8 +82,30 @@
                             </div>
                         </div>
                     </article>
-                    
+                </div> 
             </div>
         </div>
     </div>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue'
+import axios from 'axios'
+import dayjs from 'dayjs'
+
+const contacts = ref([])
+
+onMounted(async () => {
+  try {
+    const res = await axios.get('http://localhost:8080/contacts')
+    contacts.value = res.data
+  } catch (err) {
+    console.error('Error fetching users:', err)
+  }
+})
+
+function formatDate(dateStr) {
+  return dayjs(dateStr).format('D MMMM YYYY')
+}
+
+</script>
