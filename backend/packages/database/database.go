@@ -23,6 +23,37 @@ func ConnectDB() {
 	}
 }
 
+func CheckAdmin() bool {
+	var count int64
+	result := db.Model(&models.Admin{}).Count(&count)
+
+	if result.Error != nil {
+		log.Println("Error counting admin records:", result.Error)
+		return false // Handle database error
+	}
+	// Return true if count > 0 (admins exist)
+	return count > 0
+}
+
+func CreateAdmin(adminStatus bool) {
+	if !adminStatus {
+		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+		password := string(hashedPassword)
+		admin := models.Admin{
+			Role:     "admin",
+			Password: password,
+		}
+
+		db.Create(&admin)
+	}
+}
+
+func GetUsers(c *gin.Context) {
+	var getUsers []models.User
+	db.Find(&getUsers)
+	c.JSON(http.StatusOK, getUsers)
+}
+
 func GetEvents(c *gin.Context) {
 	var getEvents []models.Event
 	db.Preload("User").Find(&getEvents)
@@ -65,38 +96,55 @@ func PostCreateEvent(c *gin.Context) {
 
 func PostLogin(c *gin.Context) {
 	var postLogin models.LoginRequest
+	var getAdmins []models.Admin
 	var getUsers []models.User
-	var loginStatus int = 0
+	var adminStatus int = 0
+	var userStatus int = 0
 	var inPassword string = ""
-	var rePassword string = ""
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("ngurah@ics2024"), bcrypt.DefaultCost)
-	rePassword = string(hashedPassword)
+	var usPassword string = ""
+	var adPassword string = ""
 
 	db.Find(&getUsers)
+	db.Find(&getAdmins)
 
 	if err := c.ShouldBindJSON(&postLogin); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	for i := range getUsers {
-		if postLogin.Email == getUsers[i].Email {
-			err := bcrypt.CompareHashAndPassword([]byte(rePassword), []byte(postLogin.Password))
+	for i := range getAdmins {
+		if postLogin.Email == getAdmins[i].Role {
+			err := bcrypt.CompareHashAndPassword([]byte(getAdmins[i].Password), []byte(postLogin.Password))
 			if err != nil {
 				hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(postLogin.Password), bcrypt.DefaultCost)
 				inPassword = string(hashedPassword)
-				rePassword = getUsers[i].Password
+				adPassword = getAdmins[i].Password
 			} else {
-				loginStatus = 1
+				adminStatus = 1
+			}
+		}
+	}
+
+	for i := range getUsers {
+		if postLogin.Email == getUsers[i].Email {
+			err := bcrypt.CompareHashAndPassword([]byte(getUsers[i].Password), []byte(postLogin.Password))
+			if err != nil {
+				hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(postLogin.Password), bcrypt.DefaultCost)
+				inPassword = string(hashedPassword)
+				usPassword = getUsers[i].Password
+			} else {
+				userStatus = 1
 			}
 
 		}
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"loginStatus": loginStatus,
+		"adminStatus": adminStatus,
+		"userStatus":  userStatus,
 		"inPassword":  inPassword,
-		"rePassword":  rePassword,
+		"adPassword":  adPassword,
+		"usPassword":  usPassword,
 	})
 
 }

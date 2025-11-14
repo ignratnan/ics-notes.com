@@ -14,7 +14,7 @@
                 <div>
                     <label for="email" class="block text-gray-700 font-medium">Email Address</label>
                     <input 
-                        type="email" 
+                        type="text" 
                         id="email" 
                         v-model="form.email"
                         required 
@@ -34,19 +34,19 @@
 
                 <!-- Login Button -->
                 <button 
-                    type="submit" @click="goToDashboard"
+                    type="submit"
                     class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
                     Login
                 </button>
 
             </form>
+            <div>
+                Input Password: {{ inPassword }} <br>
+                User Password: {{ usPassword }} <br>
+            </div>
             <!-- Status Message -->
             <div v-if="message" :class="messageClass" class="p-4 rounded-lg mb-4 text-sm font-medium">
                 {{ message }}
-            </div>
-
-            <div v-if="rePassword" :class="messageClass" class="p-4 rounded-lg mb-4 text-sm font-medium">
-                {{ inPassword }} != {{ rePassword }}
             </div>
 
         </div>
@@ -69,9 +69,11 @@
 
     const message = ref('');
     const messageClass = ref('');
-    const loginStatus = ref('');
+    const userStatus = ref('');
+    const adminStatus = ref('');
     const inPassword = ref('');
-    const rePassword = ref('');
+    const usPassword = ref('');
+
 
     const form = reactive({
         email: '',
@@ -84,9 +86,11 @@
         // Reset messages before new submission
         message.value = '';
         messageClass.value = '';
-        loginStatus.value = 0;
-        inPassword.value = '';
-        rePassword.value = '';
+        adminStatus.value = 0;
+        userStatus.value = 0;
+        inPassword.value = 0;
+        usPassword.value = 0;
+
 
         try {
             const response = await axios.post(API_URL, form);
@@ -94,17 +98,25 @@
 
             message.value = response.data.message;
             messageClass.value = 'bg-green-100 text-green-700';
-            loginStatus.value = response.data.loginStatus;
+            adminStatus.value = response.data.adminStatus;
+            userStatus.value = response.data.userStatus;
             inPassword.value = response.data.inPassword;
-            rePassword.value = response. data.rePassword;
+            usPassword.value = response.data.usPassword;
+
+
 
             // Reset the form after successful submission
             form.email = '';
             form.password = '';
 
-            if (loginStatus.value == 1) {
+            if (adminStatus.value == 1) {
                 router.push({ name: 'dashboard' });
+            } if (userStatus.value == 1) {
+                router.push({ name: 'dashboard' })
+            } else {
+                
             }
+
 
         } catch (error) {
             const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';

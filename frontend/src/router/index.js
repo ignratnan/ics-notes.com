@@ -12,6 +12,7 @@ import EventsCreateEvent from '@/components/events/CreateEvent.vue'
 import ContactsCreateContact from '@/components/contacts/CreateContact.vue'
 import NotesCreateCompany from '@/components/notes/CreateCompany.vue'
 import CompaniesCreateCompany from '@/components/companies/CreateCompany.vue'
+import SettingsChangePassword from '@/components/settings/ChangePassword.vue'
 
 const routes = [
     {
@@ -78,6 +79,11 @@ const routes = [
         path: '/companies/create-company',
         name: 'companies_create_company',
         component: CompaniesCreateCompany
+    },
+    {
+        path: '/settings/change-password',
+        name: 'settings_change_password',
+        component: SettingsChangePassword
     }
     
 ];

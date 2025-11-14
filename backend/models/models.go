@@ -5,6 +5,12 @@ import (
 )
 
 // Model
+type Admin struct {
+	ID       uint   `json:"id" gorm:"primaryKey"`
+	Role     string `json:"role"`
+	Password string `json:"password"`
+}
+
 type User struct {
 	ID                     uint      `json:"id" gorm:"primaryKey"`
 	Name                   string    `json:"name"`
