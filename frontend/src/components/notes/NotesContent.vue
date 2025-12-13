@@ -49,14 +49,15 @@
                     </router-link>
                 </div>
             </div>
-                <div class="max-w mb-5">
+                <div v-for="note in notes" :key="note.id"
+                    class="max-w mb-5 bg-black">
                     <div
                         class="divide-y divide-gray-100 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                         <details class="group" open>
                             <summary
                                 class="flex cursor-pointer list-none items-center justify-between p-2 text-lg font-medium text-secondary-900 group-open:bg-gray-50">
                                 <div class="flex items-center justify-between">
-                                    Note title
+                                    {{ note.title }}
                                 </div>
                                 <div class="text-secondary-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -67,25 +68,26 @@
                                     </svg>
                                 </div>
                             </summary>
-                            <div class="border-t border-t-gray-100 p-4 text-secondary-500">Note body</div>
+                            <div v-html="note.body"
+                                class="border-t border-t-gray-100 p-4 text-secondary-500"></div>
                             <hr class="">
 
                             <div class="p-2 group-open:bg-gray-50 flex flex-col ml-2 italic text-sm">
                                 <div>
                                     Company :
-                                    <a href="#">Company name</a>
+                                    <a href="#">{{ note.company.company_name }}</a>
                                 </div>
                                 <div>
                                     Contact :
-                                    <a href="#">Contacts name</a>
+                                    <a href="#">{{ note.contact.first_name }} {{ note.contact.last_name }}</a>
                                 </div>
                                 <div>
                                     Event :
-                                    <a href="#">Event</a>
+                                    <a href="#">{{ note.event.event_name }}</a>
                                 </div>
                                 <div>
                                     Created date :
-                                    <a>Date</a>
+                                    <a>{{ formatDate(note.created_at) }}</a>
                                 </div>
 
                                 <div class="flex flex-row-reverse">
@@ -119,13 +121,33 @@
 
 <script setup>
     import { useRouter } from 'vue-router';
+    import { onMounted, ref } from 'vue';
+    import axios from 'axios';
+    import dayjs from 'dayjs'
 
     // Get the router instance
     const router = useRouter();
 
+    const notes = ref([]);
+
+    const BASE_URL = "http://localhost:8080/notes"
+
+    function formatDate(dateStr) {
+        return dayjs(dateStr).format('D MMMM YYYY')
+    }
+
+    onMounted(async () => {
+        try {
+            const resNotes = await axios.get(BASE_URL)
+            notes.value = resNotes.data
+        } catch (err) {
+            console.error('Error fetching users:', err)
+        }
+    })
+
     // Method to handle the navigation
     const goToNoteCreate = () => {
-    // Navigate to the route with the name 'dashboard'
+    // Navigate to the route with the name 'note_create'
     router.push({ name: 'note_create' });
     };
 </script>

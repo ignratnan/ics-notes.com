@@ -7,6 +7,9 @@ import DashboardContent from '@/components/dashboard/DashboardContent.vue'
 <template>
   <div class="flex flex-row">
     <div>
+      
+    </div>
+    <div>
       <SidebarBlock />
       <Sidebar />
     </div>

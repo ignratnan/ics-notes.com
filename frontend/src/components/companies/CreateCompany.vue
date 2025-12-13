@@ -21,15 +21,15 @@
                                     <label for="company_name" class="block text-gray-700 text-sm font-bold my-2">
                                         Company Name
                                     </label>
-                                    <input type="text"
+                                    <input type="text" v-model="form.company_name"
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="company_name" placeholder="Enter Company Name" wire:model="company_name">
+                                        id="company_name" placeholder="Enter Company Name">
                                 </div>
                                 <div class="mb-4">
                                     <label for="company_country" class="block text-gray-700 text-sm font-bold my-2">
                                         Company Country
                                     </label>
-                                    <select wire:model="company_country" placeholder="Choose Country"
+                                    <select v-model="form.company_country" placeholder="Choose Country"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
                                         <option value="" selected disabled>Select Option</option>
                                         <option value="Afghanistan">Afghanistan</option>
@@ -282,7 +282,7 @@
                                 <label for="agent_type" class="block text-gray-700 text-sm font-bold my-2">
                                     Agent Type
                                 </label>
-                                <select wire:model="agent_type" placeholder="Choose Agent Type"
+                                <select v-model="form.agent_type" placeholder="Choose Agent Type"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
                                     <option value="" selected>Select Option</option>
                                     <option value="TA">Travel Agent</option>
@@ -298,7 +298,7 @@
                                     class="block text-gray-700 text-sm font-bold my-2">
                                     Business Source
                                 </label>
-                                    <select wire:model="business_source" placeholder="Choose Business Source Type"
+                                    <select v-model="form.business_source" placeholder="Choose Business Source Type"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
                                         <option value="" selected disabled>Select Option</option>
                                         <option value="RER">RER</option>
@@ -343,4 +343,22 @@
 import Sidebar from '@/components/layout/Sidebar.vue'
 import SidebarBlock from '@/components/layout/SidebarBlock.vue'
 import TrixEditor from '../layout/TrixEditor.vue';
+
+import { onMounted, reactive, ref } from 'vue';
+import axios from 'axios';
+import dayjs from 'dayjs';
+
+const BASE_URL = 'http://localhost:8080/companies/create-company'
+
+const form = reactive({
+    user_id: 0,
+    company_name: "",
+    agent_type: "",
+    business_source: "",
+    company_country: "",
+    company_notes: "",
+    edited_by: "",
+})
+
+
 </script>

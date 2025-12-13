@@ -4,6 +4,14 @@ import (
 	"time"
 )
 
+type Session struct {
+	ID           uint      `json:"id" gorm:"primaryKey"`
+	SessionID    string    `json:"session_id"`
+	UserID       uint      `json:"user_id"`
+	SessionStart time.Time `json:"session_start"`
+	SessionEnd   time.Time `json:"session_end"`
+}
+
 // Model
 type Admin struct {
 	ID       uint   `json:"id" gorm:"primaryKey"`
@@ -97,4 +105,9 @@ type Team struct {
 type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type UpdateEventInput struct {
+	EventName string `json:"event_name" binding:"required"`
+	// Add other updatable fields here
 }

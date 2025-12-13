@@ -40,10 +40,6 @@
                 </button>
 
             </form>
-            <div>
-                Input Password: {{ inPassword }} <br>
-                User Password: {{ usPassword }} <br>
-            </div>
             <!-- Status Message -->
             <div v-if="message" :class="messageClass" class="p-4 rounded-lg mb-4 text-sm font-medium">
                 {{ message }}
@@ -71,8 +67,6 @@
     const messageClass = ref('');
     const userStatus = ref('');
     const adminStatus = ref('');
-    const inPassword = ref('');
-    const usPassword = ref('');
 
 
     const form = reactive({
@@ -88,20 +82,16 @@
         messageClass.value = '';
         adminStatus.value = 0;
         userStatus.value = 0;
-        inPassword.value = 0;
-        usPassword.value = 0;
+
 
 
         try {
             const response = await axios.post(API_URL, form);
-            
 
             message.value = response.data.message;
             messageClass.value = 'bg-green-100 text-green-700';
             adminStatus.value = response.data.adminStatus;
             userStatus.value = response.data.userStatus;
-            inPassword.value = response.data.inPassword;
-            usPassword.value = response.data.usPassword;
 
 
 
@@ -114,7 +104,7 @@
             } if (userStatus.value == 1) {
                 router.push({ name: 'dashboard' })
             } else {
-                
+                messageClass.value = 'bg-red-100 text-red-700';
             }
 
 

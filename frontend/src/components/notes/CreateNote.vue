@@ -158,6 +158,13 @@
                                 <TrixEditor input="body"/>
                             </div>
 
+                            <div class="mt-4 form-group">
+                                <label for="body" class="block text-gray-700 text-sm font-bold my-2">
+                                    Note
+                                </label>
+                               
+                            </div>
+
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                 <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                                     <button type="button"
@@ -186,4 +193,23 @@
 import Sidebar from '@/components/layout/Sidebar.vue'
 import SidebarBlock from '@/components/layout/SidebarBlock.vue'
 import TrixEditor from '../layout/TrixEditor.vue';
+
+import { onMounted, ref, reactive } from 'vue';
+import axios from 'axios';
+
+const note = reactive ({
+    id: 0,
+    event_id: 0,
+    company_id: 0,
+    contact1_id: 0,
+    contact2_id: 0,
+    contact3_id: 0,
+    contact4_id: 0,
+    contact5_id: 0,
+    title: "",
+    body: "",
+    created_at: "",
+
+})
+
 </script>
