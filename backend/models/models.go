@@ -83,7 +83,7 @@ type Note struct {
 	EventID   uint      `json:"event_id"`
 	CompanyID uint      `json:"company_id"`
 	Title     string    `json:"title"`
-	Body      string    `json:"body"`
+	Body      string    `json:"body" gorm:"type:text"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	User      User      `json:"user" gorm:"foreignKey:UserID"`

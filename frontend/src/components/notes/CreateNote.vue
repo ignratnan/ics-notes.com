@@ -33,7 +33,7 @@
                                 Event
                             </label>
                             <div class="flex flex-row">
-                                <select
+                                <select v-model="note.event_id"
                                     class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
                                     <option value=0 disabled selected>Select Event</option>
                                     <option v-for="event in events" :key="event.id" :value="event.id">{{ event.event_name }}</option>
@@ -44,9 +44,9 @@
                                 Company
                             </label>
                             <div class="flex flex-row">
-                                <select
+                                <select v-model="note.company_id"
                                     class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                    <option value=0 disabled selected>Select Company</option>
+                                    <option value="" disabled selected>Select Company</option>
                                     <option v-for="company in companies" :key="company.id" :value="company.id" required>{{ company.company_name }}</option>
                                 </select>
                             </div>
@@ -57,10 +57,10 @@
                                     Contact
                                 </label>
                                 <div class="flex flex-row items-center">
-                                    <select
+                                    <select v-model="note.contact_id" :disabled="!contacts.length"
                                         class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                        <option value=0  selected>Select Contact</option>
-                                        <option value="">Full name</option>
+                                        <option value=0 disabled selected>Select Contact</option>
+                                        <option v-for="contact in contacts" :key="contact.id" :value="contact.id">{{ contact.first_name }} {{ contacts.last_name }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -69,7 +69,7 @@
                                 <label for="title" class="block text-gray-700 text-sm font-bold my-2">
                                     Note Title
                                 </label>
-                                <input type="text"
+                                <input v-model="note.title" type="text"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="title" placeholder="Enter Note Title">
                             </div>
@@ -78,22 +78,12 @@
                                 <label for="body" class="block text-gray-700 text-sm font-bold my-2">
                                     Note
                                 </label>
-                                <input
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    type="hidden" name="content" id="body">
-                                <TrixEditor input="body"/>
-                            </div>
-
-                            <div class="mt-4 form-group">
-                                <label for="body" class="block text-gray-700 text-sm font-bold my-2">
-                                    Note
-                                </label>
-                               
+                                <NoteEditor v-model="note.body"/>
                             </div>
 
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                 <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                                    <button type="button"
+                                    <button type="button" @click="submitNote"
                                         class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
                                         Save
                                     </button>
@@ -119,8 +109,9 @@
 import Sidebar from '@/components/layout/Sidebar.vue'
 import SidebarBlock from '@/components/layout/SidebarBlock.vue'
 import TrixEditor from '../layout/TrixEditor.vue';
+import NoteEditor from '../layout/NoteEditor.vue';
 
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref, reactive, watch } from 'vue';
 import axios from 'axios';
 const events = ref([])
 const companies = ref([])
@@ -134,8 +125,6 @@ const note = reactive ({
     contact_id: 0,
     title: "",
     body: "",
-    created_at: "",
-
 })
 
 onMounted(async () => {
@@ -146,12 +135,50 @@ onMounted(async () => {
         const resCompanies = await axios.get(BASE_URL + "/companies")
         companies.value = resCompanies.data
 
-        const resContacts = await axios.get(BASE_URL + "/contacts")
-        contacts.value = resContacts.data
+        contacts.value = []
 
     }   catch (err) {
         console.error('Error fetching users:', err)
     }
 })
+
+const fetchNotes = async () => {
+    try {
+        const res = await axios.get(BASE_URL + "/notes")
+        notes.value = res.data
+    } catch (err) {
+        console.error('Error fetching users:', err)
+    }
+};
+
+watch(() => note.company_id, async (companyID) => {
+    note.contact_id = null
+    contacts.value = []
+
+    if (!companyID) return
+
+    try {
+        const resContacts = await axios.get(
+            `${BASE_URL}/companies/${companyID}/contacts`
+        )
+        contacts.value = resContacts.data.data
+    } catch (err) {
+        console.error('Error fetching contacts:', err)
+    }
+})
+
+const submitNote = async () => {
+    const url = `${BASE_URL}/notes/create-note`
+    await axios.post(url, note)
+
+    note.id = 0;
+    note.event_id = 0;
+    note.company_id = 0;
+    note.contact_id = 0;
+    note.title = "";
+    note.body = "";
+
+    await fetchNotes();
+}
 
 </script>

@@ -36,6 +36,7 @@ func main() {
 	protected.Use(middleware.AuthRequired())
 	{
 		protected.GET("/notes", request.GetUserNotes)
+		protected.POST("/notes/create-note", request.PostNotes)
 		protected.GET("/events", request.GetEvents)
 		protected.GET("/events/:id", request.GetEventByID)
 		protected.GET("/contacts", request.GetContacts)
@@ -44,6 +45,7 @@ func main() {
 		protected.PUT("/contacts/:id", request.EditContact)
 		protected.DELETE("/contacts/:id", request.DeleteContact)
 		protected.GET("/companies", request.GetCompanies)
+		protected.GET("/companies/:company_id/contacts", request.GetContactsByCompany)
 		protected.GET("/events/create-event", request.GetEvents)
 		protected.POST("/events", request.PostEvent)
 		protected.PUT("/events/:id", request.EditEvent)

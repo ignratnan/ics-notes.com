@@ -155,6 +155,12 @@ func ReadContact(contactID string) models.Contact {
 	return readContact
 }
 
+func ReadContactsByCompany(companyID string) []models.Contact {
+	var readContactsByCompany []models.Contact
+	db.Preload("User").Preload("Company").Where("company_id = ?", companyID).Order("first_name").Find(&readContactsByCompany)
+	return readContactsByCompany
+}
+
 func CreateEvent(event models.Event) {
 	var createEvent models.Event
 	createEvent = event
@@ -163,7 +169,7 @@ func CreateEvent(event models.Event) {
 
 func ReadEvents() []models.Event {
 	var readEvents []models.Event
-	db.Preload("User").Find(&readEvents)
+	db.Preload("User").Order("event_name").Find(&readEvents)
 	return readEvents
 }
 

@@ -84,6 +84,15 @@ func GetContacts(c *gin.Context) {
 	c.JSON(http.StatusOK, getContacts)
 }
 
+func GetContactsByCompany(c *gin.Context) {
+	companyID := c.Param("company_id")
+	var contacts []models.Contact
+	contacts = database.ReadContactsByCompany(companyID)
+	c.JSON(http.StatusOK, gin.H{
+		"data": contacts,
+	})
+}
+
 func GetContactById(c *gin.Context) {
 	contactID := c.Param("id")
 	var contact models.Contact
@@ -128,6 +137,16 @@ func GetUserNotes(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	getUserNotes = database.ReadUserNotes(userID.(uint))
 	c.JSON(http.StatusOK, getUserNotes)
+}
+
+func PostNotes(c *gin.Context) {
+	var postNotes models.Note
+	if err := c.ShouldBindJSON(&postNotes); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+	database.CreateNote(postNotes)
+	c.JSON(http.StatusCreated, gin.H{"message": "Post saved successfully!"})
 }
 
 func LogoutHandler(c *gin.Context) {
