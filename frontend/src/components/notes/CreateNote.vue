@@ -35,8 +35,8 @@
                             <div class="flex flex-row">
                                 <select
                                     class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                    <option value=0 selected>Select Event</option>
-                                        <option value="">Event name</option>
+                                    <option value=0 disabled selected>Select Event</option>
+                                    <option v-for="event in events" :key="event.id" :value="event.id">{{ event.event_name }}</option>
                                 </select>
                             </div>
                             <label for="company_id"
@@ -46,8 +46,8 @@
                             <div class="flex flex-row">
                                 <select
                                     class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                    <option value=0 selected>Select Company</option>
-                                    <option value="">Company name</option>
+                                    <option value=0 disabled selected>Select Company</option>
+                                    <option v-for="company in companies" :key="company.id" :value="company.id" required>{{ company.company_name }}</option>
                                 </select>
                             </div>
 
@@ -59,83 +59,9 @@
                                 <div class="flex flex-row items-center">
                                     <select
                                         class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                        <option value=0  selected>Select Contact 1</option>
-                                        <option value="">Full name 1</option>
+                                        <option value=0  selected>Select Contact</option>
+                                        <option value="">Full name</option>
                                     </select>
-                                </div>
-                                <div class="flex flex-row items-center mt-1 ml-3">
-                                    <button type="button"
-                                            class="inline-flex justify-center rounded-md bg-black border border-gray-300 px-2 py-2 text-base leading-6 font-medium text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            <font-awesome-icon icon="plus" />
-                                    </button>
-                                </div>
-
-                                <div class="flex flex-row items-center mt-1">
-                                    <select
-                                        class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                        <option value=0 selected>Select Contact 2</option>
-                                        <option value="">Full name 2</option>
-                                    </select>
-                                </div>
-                                <div class="flex flex-row items-center mt-1 ml-3">
-                                    <button type="button"
-                                            class="inline-flex justify-center rounded-md bg-black border border-gray-300 px-2 py-2 text-base leading-6 font-medium text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            <font-awesome-icon icon="plus" />
-                                    </button>
-                                    <button type="button"
-                                            class="ml-3 inline-flex justify-center rounded-md bg-black border border-gray-300 px-2 py-2 text-base leading-6 font-medium text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            <font-awesome-icon icon="minus" />
-                                    </button>
-                                </div>
-
-                                <div class="flex flex-row items-center mt-1">
-                                    <select
-                                        class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                        <option value=0 selected>Select Contact 3</option>
-                                        <option value="">Full name 3</option>
-                                    </select>
-                                </div>
-                                <div class="flex flex-row items-center mt-1 ml-3">
-                                    <button type="button"
-                                            class="inline-flex justify-center rounded-md bg-black border border-gray-300 px-2 py-2 text-base leading-6 font-medium text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            <font-awesome-icon icon="plus" />
-                                    </button>
-                                    <button type="button"
-                                            class="ml-3 inline-flex justify-center rounded-md bg-black border border-gray-300 px-2 py-2 text-base leading-6 font-medium text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            <font-awesome-icon icon="minus" />
-                                    </button>
-                                </div>
-
-                                <div class="flex flex-row items-center mt-1">
-                                    <select
-                                        class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                        <option value=0 selected>Select Contact 4</option>
-                                        <option value="">Full name 4</option>
-                                    </select>
-                                </div>
-                                <div class="flex flex-row items-center mt-1 ml-3">
-                                    <button type="button"
-                                            class="inline-flex justify-center rounded-md bg-black border border-gray-300 px-2 py-2 text-base leading-6 font-medium text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            <font-awesome-icon icon="plus" />
-                                    </button>
-                                    <button type="button"
-                                            class="ml-3 inline-flex justify-center rounded-md bg-black border border-gray-300 px-2 py-2 text-base leading-6 font-medium text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            <font-awesome-icon icon="minus" />
-                                    </button>
-                                </div>
-
-                                <div class="flex flex-row items-center mt-1">
-                                    <select
-                                        class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                        <option value=0 selected>Select Contact 5</option>
-                                        <option value="">Full name 5</option>
-                                    </select>
-                                </div>
-                                <div class="flex flex-row items-center mt-1 ml-3">
-                                    <button type="button"
-                                            class="inline-flex justify-center rounded-md bg-black border border-gray-300 px-2 py-2 text-base leading-6 font-medium text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                            <font-awesome-icon icon="minus" />
-                                    </button>
                                 </div>
                             </div>
 
@@ -196,20 +122,36 @@ import TrixEditor from '../layout/TrixEditor.vue';
 
 import { onMounted, ref, reactive } from 'vue';
 import axios from 'axios';
+const events = ref([])
+const companies = ref([])
+const contacts = ref([])
+const BASE_URL = "http://localhost:8080"
 
 const note = reactive ({
     id: 0,
     event_id: 0,
     company_id: 0,
-    contact1_id: 0,
-    contact2_id: 0,
-    contact3_id: 0,
-    contact4_id: 0,
-    contact5_id: 0,
+    contact_id: 0,
     title: "",
     body: "",
     created_at: "",
 
+})
+
+onMounted(async () => {
+    try {
+        const resEvents = await axios.get(BASE_URL + "/events")
+        events.value = resEvents.data
+
+        const resCompanies = await axios.get(BASE_URL + "/companies")
+        companies.value = resCompanies.data
+
+        const resContacts = await axios.get(BASE_URL + "/contacts")
+        contacts.value = resContacts.data
+
+    }   catch (err) {
+        console.error('Error fetching users:', err)
+    }
 })
 
 </script>

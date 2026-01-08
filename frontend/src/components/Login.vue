@@ -86,7 +86,9 @@
 
 
         try {
-            const response = await axios.post(API_URL, form);
+            const response = await axios.post(API_URL, form, {
+                withCredentials: true
+            });
 
             message.value = response.data.message;
             messageClass.value = 'bg-green-100 text-green-700';

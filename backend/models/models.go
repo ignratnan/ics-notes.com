@@ -63,7 +63,7 @@ type Contact struct {
 }
 
 type Company struct {
-	ID             uint      `json:"id"`
+	ID             uint      `json:"id" gorm:"primaryKey"`
 	UserID         uint      `json:"user_id"`
 	CompanyName    string    `json:"company_name"`
 	AgentType      string    `json:"agent_type"`
@@ -77,7 +77,7 @@ type Company struct {
 }
 
 type Note struct {
-	ID        uint      `json:"id"`
+	ID        uint      `json:"id" gorm:"primaryKey"`
 	UserID    uint      `json:"user_id"`
 	ContactID uint      `json:"contact_id"`
 	EventID   uint      `json:"event_id"`
@@ -93,7 +93,7 @@ type Note struct {
 }
 
 type Team struct {
-	ID           uint      `json:"id"`
+	ID           uint      `json:"id" gorm:"primaryKey"`
 	UserID       uint      `json:"user_id"`
 	Name         string    `json:"name"`
 	PersonalTeam string    `json:"personal_tema"`
