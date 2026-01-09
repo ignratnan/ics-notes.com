@@ -35,8 +35,9 @@ func main() {
 	protected := r.Group("/")
 	protected.Use(middleware.AuthRequired())
 	{
+		protected.GET("/me", request.GetUserMe)
 		protected.GET("/notes", request.GetUserNotes)
-		protected.POST("/notes/create-note", request.PostNotes)
+		protected.POST("/notes", request.PostNotes)
 		protected.GET("/events", request.GetEvents)
 		protected.GET("/events/:id", request.GetEventByID)
 		protected.GET("/contacts", request.GetContacts)

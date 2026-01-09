@@ -10,7 +10,7 @@
                     <div name="header" class="mt-2 p-2">
                         <h1 class="font-bold text-xl text-gray-800">
                             NOTES <font-awesome-icon icon="angle-right" />
-                            CREATE-NOTE
+                            CREATE-NOTE {{ user_me.id }}
                         </h1>
                         <hr>
                     </div>
@@ -78,7 +78,9 @@
                                 <label for="body" class="block text-gray-700 text-sm font-bold my-2">
                                     Note
                                 </label>
-                                <NoteEditor v-model="note.body"/>
+                                <div class="note-write">
+                                    <NoteEditor v-model="note.body" />
+                                </div>
                             </div>
 
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
@@ -108,18 +110,23 @@
 <script setup>
 import Sidebar from '@/components/layout/Sidebar.vue'
 import SidebarBlock from '@/components/layout/SidebarBlock.vue'
-import TrixEditor from '../layout/TrixEditor.vue';
 import NoteEditor from '../layout/NoteEditor.vue';
 
 import { onMounted, ref, reactive, watch } from 'vue';
+import { useRouter } from 'vue-router'
 import axios from 'axios';
+
+const router = useRouter()
+
 const events = ref([])
 const companies = ref([])
 const contacts = ref([])
+const user_me = ref({})
 const BASE_URL = "http://localhost:8080"
 
 const note = reactive ({
     id: 0,
+    user_id: 0,
     event_id: 0,
     company_id: 0,
     contact_id: 0,
@@ -129,6 +136,9 @@ const note = reactive ({
 
 onMounted(async () => {
     try {
+        const resMe = await axios.get(BASE_URL + "/me")
+        user_me.value = resMe.data.get_me
+
         const resEvents = await axios.get(BASE_URL + "/events")
         events.value = resEvents.data
 
@@ -141,15 +151,6 @@ onMounted(async () => {
         console.error('Error fetching users:', err)
     }
 })
-
-const fetchNotes = async () => {
-    try {
-        const res = await axios.get(BASE_URL + "/notes")
-        notes.value = res.data
-    } catch (err) {
-        console.error('Error fetching users:', err)
-    }
-};
 
 watch(() => note.company_id, async (companyID) => {
     note.contact_id = null
@@ -168,17 +169,20 @@ watch(() => note.company_id, async (companyID) => {
 })
 
 const submitNote = async () => {
-    const url = `${BASE_URL}/notes/create-note`
+    note.user_id = user_me.value.id
+
+    const url = `${BASE_URL}/notes`
     await axios.post(url, note)
 
     note.id = 0;
+    note.user_id = 0;
     note.event_id = 0;
     note.company_id = 0;
     note.contact_id = 0;
     note.title = "";
     note.body = "";
 
-    await fetchNotes();
+    router.push({ name: 'notes' })
 }
 
 </script>

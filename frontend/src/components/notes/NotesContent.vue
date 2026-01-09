@@ -49,7 +49,7 @@
                     </router-link>
                 </div>
             </div>
-                <div v-for="note in notes" :key="note.id"
+                <div v-for="note in sanitizedNotes" :key="note.id"
                     class="max-w mb-5 bg-black">
                     <div
                         class="divide-y divide-gray-100 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -68,11 +68,16 @@
                                     </svg>
                                 </div>
                             </summary>
-                            <div v-html="note.body"
-                                class="border-t border-t-gray-100 p-4 text-secondary-500"></div>
+                            <div class="p-4">
+                                <div 
+                                    class="note-content prose" 
+                                    v-html="note.safeContent"
+                                ></div>
+                            </div>
+                            
                             <hr class="">
 
-                            <div class="p-2 group-open:bg-gray-50 flex flex-col ml-2 italic text-sm">
+                            <div class="p-2 group-open:bg-gray-50 flex flex-col ml-2 italic text-secondary-500 text-sm">
                                 <div>
                                     Company :
                                     <a href="#">{{ note.company.company_name }}</a>
@@ -121,14 +126,17 @@
 
 <script setup>
     import { useRouter } from 'vue-router';
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, computed } from 'vue';
     import axios from 'axios';
     import dayjs from 'dayjs'
+    import DOMPurify from 'dompurify'
 
     // Get the router instance
     const router = useRouter();
 
     const notes = ref([]);
+
+    const user_id = ref();
 
     const BASE_URL = "http://localhost:8080/notes"
 
@@ -139,11 +147,20 @@
     onMounted(async () => {
         try {
             const resNotes = await axios.get(BASE_URL)
-            notes.value = resNotes.data
+            notes.value = resNotes.data.getUserNotes
+            user_id.value = resNotes.data.userID
+
         } catch (err) {
             console.error('Error fetching users:', err)
         }
     })
+
+    const sanitizedNotes = computed(() =>
+        notes.value.map(note => ({
+            ...note,
+            safeContent: DOMPurify.sanitize(note.body)
+        }))
+    )
 
     // Method to handle the navigation
     const goToNoteCreate = () => {
@@ -151,3 +168,17 @@
     router.push({ name: 'note_create' });
     };
 </script>
+
+<style scoped>
+.prose-note p {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  line-height: 1.4;
+}
+
+.prose-note ul,
+.prose-note ol {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+</style>

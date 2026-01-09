@@ -83,6 +83,12 @@ func ReadUser(userID string) models.User {
 	return readUser
 }
 
+func ReadUserMe(userID uint) models.User {
+	var readUser models.User
+	db.First(&readUser, userID)
+	return readUser
+}
+
 func CreateCompany(company models.Company) {
 	var createCompany models.Company
 	createCompany = company

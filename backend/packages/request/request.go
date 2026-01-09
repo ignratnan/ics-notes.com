@@ -16,6 +16,15 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, getUsers)
 }
 
+func GetUserMe(c *gin.Context) {
+	var getMe models.User
+	userID, _ := c.Get("user_id")
+	getMe = database.ReadUserMe(userID.(uint))
+	c.JSON(http.StatusOK, gin.H{
+		"get_me": getMe,
+	})
+}
+
 func PostEvent(c *gin.Context) {
 	var postEvents models.Event
 	if err := c.ShouldBindJSON(&postEvents); err != nil {
@@ -136,7 +145,10 @@ func GetUserNotes(c *gin.Context) {
 	var getUserNotes []models.Note
 	userID, _ := c.Get("user_id")
 	getUserNotes = database.ReadUserNotes(userID.(uint))
-	c.JSON(http.StatusOK, getUserNotes)
+	c.JSON(http.StatusOK, gin.H{
+		"getUserNotes": getUserNotes,
+		"userID":       userID,
+	})
 }
 
 func PostNotes(c *gin.Context) {
