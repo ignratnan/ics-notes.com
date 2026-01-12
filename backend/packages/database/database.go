@@ -2,19 +2,31 @@ package database
 
 import (
 	"github.com/ignratnan/ics-notes.com/backend/models"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var db *gorm.DB
 
 func ConnectDB() {
-	dsn := "host=localhost user=postgres password=jkfd90-= dbname=icsnotes port=5432 sslmode=disable"
+
+	/*
+		dsn := "host=localhost user=postgres password=jkfd90-= dbname=icsnotes port=5432 sslmode=disable"
+		var err error
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err != nil {
+			panic("Failed to connect to database!")
+		}
+	*/
+
+	dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
+
 	var err error
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
+
 }
 
 func CreateAdmin(admin models.Admin) {

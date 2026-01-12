@@ -21,7 +21,7 @@ func GetUserMe(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	getMe = database.ReadUserMe(userID.(uint))
 	c.JSON(http.StatusOK, gin.H{
-		"get_me": getMe,
+		"userMe": getMe,
 	})
 }
 
@@ -38,7 +38,9 @@ func PostEvent(c *gin.Context) {
 func GetEvents(c *gin.Context) {
 	var getEvents []models.Event
 	getEvents = database.ReadEvents()
-	c.JSON(http.StatusOK, getEvents)
+	c.JSON(http.StatusOK, gin.H{
+		"events": getEvents,
+	})
 }
 
 func GetEventByID(c *gin.Context) {

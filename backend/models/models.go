@@ -41,7 +41,6 @@ type Event struct {
 	EventName string    `json:"event_name"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	DeletedAt time.Time `json:"deleted_at"`
 	User      User      `json:"user" gorm:"foreignKey:UserID"`
 }
 
