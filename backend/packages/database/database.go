@@ -145,10 +145,26 @@ func CreateContact(contact models.Contact) {
 	db.Create(&createContact)
 }
 
-func ReadContacts() []models.Contact {
+func ReadContacts(order string) ([]models.Contact, error) {
 	var readContacts []models.Contact
-	db.Preload("User").Preload("Company").Find(&readContacts)
-	return readContacts
+	query := db.Preload("User").Preload("Company")
+
+	switch order {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "first_name_desc":
+		query = query.Order("first_name DESC")
+	default:
+		query = query.Order("first_name ASC")
+	}
+
+	if err := query.Find(&readContacts).Error; err != nil {
+		return nil, err
+	}
+
+	return readContacts, nil
 }
 
 func UpdateContact(contact models.Contact) {
@@ -187,11 +203,11 @@ func CreateEvent(event models.Event) {
 	db.Create(&createEvent)
 }
 
-func ReadEvents(sort string) ([]models.Event, error) {
+func ReadEvents(order string) ([]models.Event, error) {
 	var readEvents []models.Event
 	query := db.Preload("User")
 
-	switch sort {
+	switch order {
 	case "oldest":
 		query = query.Order("created_at ASC")
 	case "event_name_asc":

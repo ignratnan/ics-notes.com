@@ -7,7 +7,9 @@
                 </h1>
                 <hr>
             </div>
-
+            <div :class="messageClass" name="message" class="mt-2 p-2">
+                {{ message }}
+            </div>
             <div class="mt-3 grid grid-cols-2">
                 <form class="flex items-center">
                     <div class="relative w-full">
@@ -271,9 +273,9 @@ const openDeleteModalId = ref(null)
 const deletedContactId = ref(null)
 
 const message = ref('');
-const messageClass = ref('');
+const messageClass = ref('hidden');
 
-const BASE_URL = 'http://localhost:8080/contacts'
+const BASE_URL = 'http://localhost:8080'
 
 const countryCodes = ref([
     
@@ -545,12 +547,11 @@ const form = reactive({
 
 onMounted(async () => {
   try {
-    const resContacts = await axios.get(BASE_URL)
-    contacts.value = resContacts.data
+    const resContacts = await axios.get(`${BASE_URL}/contacts`)
+    contacts.value = resContacts.data.contacts
 
-    const resCompanies = await axios.get("http://localhost:8080/companies")
+    const resCompanies = await axios.get(`${BASE_URL}/companies`)
     companies.value = resCompanies.data
-
   } catch (err) {
     console.error('Error fetching users:', err)
   }
@@ -559,8 +560,11 @@ onMounted(async () => {
 
 const fetchContacts = async () => {
     try {
-        const res = await axios.get(BASE_URL)
-        contacts.value = res.data
+        const resContacts = await axios.get(`${BASE_URL}/contacts`)
+        contacts.value = resContacts.data.contacts
+
+        const resCompanies = await axios.get(`${BASE_URL}/companies`)
+        companies.value = resCompanies.data
     } catch (err) {
         console.error('Error fetching users:', err)
     }
@@ -605,6 +609,41 @@ const splitPhoneNumber = (phoneNumber) => {
     }
 }
 
+const submitContact = async () => {
+    try {
+        form.phone_number = phone.code + " " + phone.number
+        
+        const url = `${BASE_URL}/contacts`;
+        const res = await axios.post(url, form);
+
+        message.value = res.data.message;
+        messageClass.value = 'bg-green-100 text-green-700';
+
+        form.id = 0;
+        form.user_id = 0;
+        form.company_id = 0;
+        form.contact_gender = "";
+        form.first_name = "";
+        form.last_name = "";
+        form.title = "";
+        form.phone_number = "";
+        form.email = "";
+        form.edited_by = "";
+        phone.code = "";
+        phone.number = "";
+
+        closeCreateModal()
+        await fetchContacts();
+
+    } catch (error) {
+        const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
+        message.value = errorMessage;
+        messageClass.value = 'bg-red-100 text-red-700';
+    }
+}
+
+
+
 const openEditModal = async (contactID) => {
     try {
         const url = `${BASE_URL}/${contactID}`;
@@ -635,38 +674,7 @@ const openEditModal = async (contactID) => {
     }
 }
 
-const submitContact = async () => {
-    try {
-        form.phone_number = phone.code + " " + phone.number
-        
-        const url = `${BASE_URL}`;
-        const res = await axios.post(url, form);
 
-        message.value = res.data.message;
-        messageClass.value = 'bg-green-100 text-green-700';
-
-        form.id = 0;
-        form.user_id = 0;
-        form.company_id = 0;
-        form.contact_gender = "";
-        form.first_name = "";
-        form.last_name = "";
-        form.title = "";
-        form.phone_number = "";
-        form.email = "";
-        form.edited_by = "";
-        phone.code = "";
-        phone.number = "";
-
-        closeCreateModal()
-        await fetchContacts();
-
-    } catch (error) {
-        const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
-        message.value = errorMessage;
-        messageClass.value = 'bg-red-100 text-red-700';
-    }
-}
 
 const editContact = async (contactID) => {
     try {

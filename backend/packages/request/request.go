@@ -114,14 +114,33 @@ func PostContact(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
+	userID, _ := c.Get("user_id")
+	postContacts.UserID = userID.(uint)
+	firstName := postContacts.FirstName
+	lastName := postContacts.LastName
+
 	database.CreateContact(postContacts)
-	c.JSON(http.StatusCreated, gin.H{"message": "Post saved successfully!"})
+	message := "'" + firstName + " " + lastName + "'" + " has been successfully saved !"
+	c.JSON(http.StatusCreated, gin.H{
+		"message": message,
+	})
 }
 
 func GetContacts(c *gin.Context) {
 	var getContacts []models.Contact
-	getContacts = database.ReadContacts()
-	c.JSON(http.StatusOK, getContacts)
+
+	order := c.DefaultQuery("order", "first_name_asc")
+	getContacts, err := database.ReadContacts(order)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to fetch events",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"contacts": getContacts,
+	})
 }
 
 func GetContactsByCompany(c *gin.Context) {

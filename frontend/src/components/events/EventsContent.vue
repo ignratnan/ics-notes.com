@@ -210,7 +210,6 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 
 const events = ref([])
-const userMe = ref(null)
 
 const createClass = ref('hidden')
 const openDeleteModalId = ref(null)
@@ -234,9 +233,6 @@ const fetchEvents = async () => {
     try {
         const res = await axios.get(`${BASE_URL}/events`)
         events.value = res.data.events
-
-        const resMe = await axios.get(`${BASE_URL}/me`)
-        userMe.value = resMe.data.userMe
     } catch (err) {
         console.error('Error fetching users:', err)
     }
@@ -246,9 +242,6 @@ onMounted(async () => {
     try {
         const res = await axios.get(`${BASE_URL}/events`)
         events.value = res.data.events
-
-        const resMe = await axios.get(`${BASE_URL}/me`)
-        userMe.value = resMe.data.userMe
     } catch (err) {
         console.error('Error fetching users:', err)
     }
