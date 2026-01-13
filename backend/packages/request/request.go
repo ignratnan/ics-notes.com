@@ -31,8 +31,16 @@ func PostEvent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
+
+	userID, _ := c.Get("user_id")
+	postEvents.UserID = userID.(uint)
+
 	database.CreateEvent(postEvents)
-	c.JSON(http.StatusCreated, gin.H{"message": "Post saved successfully!"})
+	message := "'" + postEvents.EventName + "'" + " has been successfully saved !"
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": message,
+	})
 }
 
 func GetEvents(c *gin.Context) {
@@ -67,20 +75,31 @@ func EditEvent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	newEvent := input.EventName
+
 	var event models.Event
 	event = database.ReadEvent(eventID)
+	oldEvent := event.EventName
+
 	event.EventName = input.EventName
 	database.UpdateEvent(event)
+
+	message := "'" + oldEvent + "'" + " has been successfully updated to " + "'" + newEvent + "' !"
 	c.JSON(http.StatusOK, gin.H{
-		"message":  "Event updated successfully",
-		"event_id": event.ID,
+		"message": message,
 	})
 }
 
 func DeleteEvent(c *gin.Context) {
 	eventID := c.Param("id")
+	event := database.ReadEvent(eventID)
+	delEvent := event.EventName
+
 	database.DeleteEvent(eventID)
-	c.JSON(http.StatusOK, gin.H{"message": "Event deleted successfully"})
+	message := "'" + delEvent + "'" + " has been successfully deleted !"
+	c.JSON(http.StatusOK, gin.H{
+		"message": message,
+	})
 }
 
 func GetCompanies(c *gin.Context) {

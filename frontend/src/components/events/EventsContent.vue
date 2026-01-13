@@ -48,7 +48,9 @@
                     </h1>
                     <hr>
                 </div>
-
+                <div :class="messageClass" name="message" class="mt-2 p-2">
+                    {{ message }}
+                </div>
                 <div class="mt-3 grid grid-cols-2">
                     <form class="flex items-center">
                         <div class="relative w-full">
@@ -209,18 +211,20 @@ import dayjs from 'dayjs'
 
 const events = ref([])
 const userMe = ref(null)
-const createClass = ref('hidden')
 
+const createClass = ref('hidden')
 const openDeleteModalId = ref(null)
 const deletedEventId = ref(null)
 const openEditModalId = ref(null)
 
 const message = ref('');
-const messageClass = ref('');
+const messageClass = ref('hidden');
+
+//messageClass.value = 'bg-green-100 text-green-700';
+//messageClass.value = 'bg-red-100 text-red-700';
 
 const form = reactive({
     id: 0,
-    user_id: 0,
     event_name: '',
 })
 
@@ -229,7 +233,10 @@ const BASE_URL = 'http://localhost:8080'
 const fetchEvents = async () => {
     try {
         const res = await axios.get(`${BASE_URL}/events`)
-        events.value = res.data
+        events.value = res.data.events
+
+        const resMe = await axios.get(`${BASE_URL}/me`)
+        userMe.value = resMe.data.userMe
     } catch (err) {
         console.error('Error fetching users:', err)
     }
@@ -242,8 +249,6 @@ onMounted(async () => {
 
         const resMe = await axios.get(`${BASE_URL}/me`)
         userMe.value = resMe.data.userMe
-
-        createClass.value = 'hidden'
     } catch (err) {
         console.error('Error fetching users:', err)
     }
@@ -258,6 +263,33 @@ const openCreate = () => {
 const closeCreate = () => {
     createClass.value = 'hidden'
 }
+
+const submitEvent = async () => {
+    message.value = '';
+    messageClass.value = 'hidden';
+
+    try {
+        // Simpler and often preferred for POST requests
+    
+        const url = `${BASE_URL}/events`;
+        const res = await axios.post(url, form);
+
+        message.value = res.data.message;
+        messageClass.value = 'bg-green-100 text-green-700';
+
+        // Reset form and editing state
+        form.id = 0;
+        form.event_name = '';
+
+    } catch (error) {
+        const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
+        message.value = errorMessage;
+        messageClass.value = 'bg-red-100 text-red-700';
+    }
+
+    closeCreate()
+    await fetchEvents();
+};
 
 const openEditModal = async (id) => {
     try {
@@ -286,6 +318,32 @@ const closeEditModal = () => {
     openEditModalId.value = null;
 }
 
+const submitEdit = async (eventID) => {
+    message.value = '';
+    messageClass.value = 'hidden';
+
+    try {
+        // Simpler and often preferred for POST requests
+        const url = `${BASE_URL}/events/${eventID}`;
+        const res = await axios.put(url, form);
+
+        message.value = res.data.message;
+        messageClass.value = 'bg-green-100 text-green-700';
+
+        // Reset form and editing state
+        form.id = 0;
+        form.event_name = '';
+
+    } catch (error) {
+        const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
+        message.value = errorMessage;
+        messageClass.value = 'bg-red-100 text-red-700';
+    }
+
+    closeEditModal()
+    await fetchEvents();
+}
+
 const openDeleteModal = (id) => {
     openDeleteModalId.value = id;
     deletedEventId.value = null;
@@ -295,83 +353,30 @@ const closeDeleteModal = () => {
     openDeleteModalId.value = null;
 }
 
-const submitEvent = async () => {
-    message.value = '';
-    messageClass.value = '';
-    form.user_id = userMe.value.id
-
-    try {
-        // Simpler and often preferred for POST requests
-    
-        const url = `${BASE_URL}`;
-        const res = await axios.post(url, form);
-
-        message.value = res.data.message;
-        messageClass.value = 'bg-green-100 text-green-700';
-
-        // Reset form and editing state
-        form.id = 0;
-        form.user_id = 0;
-        form.event_name = '';
-
-        closeCreate()
-
-        await fetchEvents();
-
-    } catch (error) {
-        const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
-        message.value = errorMessage;
-        messageClass.value = 'bg-red-100 text-red-700';
-    }
-};
-
-const submitEdit = async (eventID) => {
-    message.value = '';
-    messageClass.value = '';
-
-    try {
-        // Simpler and often preferred for POST requests
-        const url = `${BASE_URL}/${eventID}`;
-        const res = await axios.put(url, form);
-
-        message.value = res.data.message;
-        messageClass.value = 'bg-green-100 text-green-700';
-
-        // Reset form and editing state
-        form.id = 0;
-        form.user_id = 0;
-        form.event_name = '';
-
-        closeEditModal()
-
-        // Fetch updated posts
-        await fetchEvents();
-    } catch (error) {
-        const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
-        message.value = errorMessage;
-        messageClass.value = 'bg-red-100 text-red-700';
-    }
-
-}
-
 const deleteEvent = async (eventID) => {
     message.value = '';
+    messageClass.value = 'hidden';
+
+    const oldEvents = [...events.value]
+
+    events.value = events.value.filter(e => e.id !== eventID)
 
     try {
-        const url = `${BASE_URL}/${eventID}`;
+        const url = `${BASE_URL}/events/${eventID}`;
         const res = await axios.delete(url);
 
-        message.value = `Successfully deleted: ${res.data.message}`;
+        message.value = res.data.message;
+        messageClass.value = 'bg-green-100 text-green-700';
+
     } catch (error) {
-        
+        events.value = oldEvents
         const errorMessage = error.response?.data?.error || 'Failed to delete event.';
         message.value = `Error: ${errorMessage}`;
         console.error('Delete error:', error);
     }
 
     closeDeleteModal()
-    
-    await fetchEvents();
+    await fetchEvents()
 }
 
 function formatDate(dateStr) {
