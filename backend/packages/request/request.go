@@ -37,7 +37,17 @@ func PostEvent(c *gin.Context) {
 
 func GetEvents(c *gin.Context) {
 	var getEvents []models.Event
-	getEvents = database.ReadEvents()
+
+	order := c.DefaultQuery("order", "newest")
+
+	getEvents, err := database.ReadEvents(order)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to fetch events",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"events": getEvents,
 	})

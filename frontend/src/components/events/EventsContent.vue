@@ -224,11 +224,11 @@ const form = reactive({
     event_name: '',
 })
 
-const BASE_URL = 'http://localhost:8080/events'
+const BASE_URL = 'http://localhost:8080'
 
 const fetchEvents = async () => {
     try {
-        const res = await axios.get(BASE_URL)
+        const res = await axios.get(`${BASE_URL}/events`)
         events.value = res.data
     } catch (err) {
         console.error('Error fetching users:', err)
@@ -237,10 +237,10 @@ const fetchEvents = async () => {
 
 onMounted(async () => {
     try {
-        const res = await axios.get(BASE_URL)
+        const res = await axios.get(`${BASE_URL}/events`)
         events.value = res.data.events
 
-        const resMe = await axios.get('http://localhost:8080/me')
+        const resMe = await axios.get(`${BASE_URL}/me`)
         userMe.value = resMe.data.userMe
 
         createClass.value = 'hidden'
@@ -262,7 +262,7 @@ const closeCreate = () => {
 const openEditModal = async (id) => {
     try {
         // 1. Fetch the specific event data using the ID
-        const url = `${BASE_URL}/${id}`; 
+        const url = `${BASE_URL}/events/${id}`; 
         const res = await axios.get(url);
         
         // 2. Populate the form with the fetched data

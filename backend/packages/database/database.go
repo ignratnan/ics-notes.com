@@ -19,7 +19,9 @@ func ConnectDB() {
 		}
 	*/
 
-	dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
+
+	//dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -185,10 +187,26 @@ func CreateEvent(event models.Event) {
 	db.Create(&createEvent)
 }
 
-func ReadEvents() []models.Event {
+func ReadEvents(sort string) ([]models.Event, error) {
 	var readEvents []models.Event
-	db.Preload("User").Order("event_name").Find(&readEvents)
-	return readEvents
+	query := db.Preload("User")
+
+	switch sort {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "event_name_asc":
+		query = query.Order("event_name ASC")
+	case "event_name_desc":
+		query = query.Order("event_name DESC")
+	default:
+		query = query.Order("created_at DESC")
+	}
+
+	if err := query.Find(&readEvents).Error; err != nil {
+		return nil, err
+	}
+
+	return readEvents, nil
 }
 
 func UpdateEvent(event models.Event) {
