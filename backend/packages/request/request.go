@@ -166,13 +166,21 @@ func EditContact(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	firstName := input.FirstName
+	lastName := input.LastName
 	var contact models.Contact
 	contact = database.ReadContact(contactID)
-	contact = input
+	contact.CompanyID = input.CompanyID
+	contact.ContactGender = input.ContactGender
+	contact.FirstName = input.FirstName
+	contact.LastName = input.LastName
+	contact.Title = input.Title
+	contact.PhoneNumber = input.PhoneNumber
+	contact.Email = input.Email
 	database.UpdateContact(contact)
+	message := "'" + firstName + " " + lastName + "'" + " has been successfully updated !"
 	c.JSON(http.StatusOK, gin.H{
-		"message":  "Contact updated successfully",
-		"event_id": contact.ID,
+		"message": message,
 	})
 }
 

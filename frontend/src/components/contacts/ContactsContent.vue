@@ -646,7 +646,7 @@ const submitContact = async () => {
 
 const openEditModal = async (contactID) => {
     try {
-        const url = `${BASE_URL}/${contactID}`;
+        const url = `${BASE_URL}/contacts/${contactID}`;
         const res = await axios.get(url);
 
         form.id = res.data.id;
@@ -680,7 +680,7 @@ const editContact = async (contactID) => {
     try {
         form.phone_number = phone.code + " " + phone.number
         
-        const url = `${BASE_URL}/${contactID}`;
+        const url = `${BASE_URL}/contacts/${contactID}`;
         const res = await axios.put(url, form);
 
         message.value = res.data.message;
