@@ -106,7 +106,20 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
-type UpdateEventInput struct {
+type EventUpdate struct {
+	ID        uint   `json:"id"`
 	EventName string `json:"event_name" binding:"required"`
-	// Add other updatable fields here
+}
+
+type ContactUpdate struct {
+	ID            uint   `json:"id" gorm:"primaryKey"`
+	UserID        uint   `json:"user_id"`
+	CompanyID     uint   `json:"company_id"`
+	ContactGender string `json:"contact_gender"`
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	Title         string `json:"title"`
+	PhoneNumber   string `json:"phone_number"`
+	Email         string `json:"email"`
+	EditedBy      string `json:"edited_by"`
 }

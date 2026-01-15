@@ -19,9 +19,9 @@ func ConnectDB() {
 		}
 	*/
 
-	dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
+	//dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
 
-	//dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -167,14 +167,27 @@ func ReadContacts(order string) ([]models.Contact, error) {
 	return readContacts, nil
 }
 
-func UpdateContact(contact models.Contact) {
-	var updateContact models.Contact
+func UpdateContact(contact models.ContactUpdate) {
+	var updateContact models.ContactUpdate
 	updateContact = contact
-	db.Save(&updateContact)
+
+	db.Model(&models.Contact{}).
+		Where("id = ?", updateContact.ID).
+		Updates(map[string]interface{}{
+			"company_id":     updateContact.CompanyID,
+			"contact_gender": updateContact.ContactGender,
+			"first_name":     updateContact.FirstName,
+			"last_name":      updateContact.LastName,
+			"title":          updateContact.Title,
+			"phone_number":   updateContact.PhoneNumber,
+			"email":          updateContact.Email,
+			"edited_by":      updateContact.EditedBy,
+		})
+
 }
 
-func DeleteContact(contactID string) {
-	var deleteContact string
+func DeleteContact(contactID uint) {
+	var deleteContact uint
 	deleteContact = contactID
 	db.Delete(&models.Contact{}, deleteContact)
 }
@@ -185,7 +198,7 @@ func CountContacts() int64 {
 	return countContacts
 }
 
-func ReadContact(contactID string) models.Contact {
+func ReadContact(contactID uint) models.Contact {
 	var readContact models.Contact
 	db.Preload("User").Preload("Company").First(&readContact, contactID)
 	return readContact
@@ -225,14 +238,17 @@ func ReadEvents(order string) ([]models.Event, error) {
 	return readEvents, nil
 }
 
-func UpdateEvent(event models.Event) {
-	var updateEvent models.Event
+func UpdateEvent(event models.EventUpdate) {
+	var updateEvent models.EventUpdate
 	updateEvent = event
-	db.Save(&updateEvent)
+
+	db.Model(&models.Event{}).
+		Where("id = ?", updateEvent.ID).
+		Update("event_name", updateEvent.EventName)
 }
 
-func DeleteEvent(eventID string) {
-	var deleteEvent string
+func DeleteEvent(eventID uint) {
+	var deleteEvent uint
 	deleteEvent = eventID
 	db.Delete(&models.Event{}, deleteEvent)
 }
@@ -243,7 +259,7 @@ func CountEvents() int64 {
 	return countEvents
 }
 
-func ReadEvent(eventID string) models.Event {
+func ReadEvent(eventID uint) models.Event {
 	var readEvent models.Event
 	db.Preload("User").First(&readEvent, eventID)
 	return readEvent

@@ -713,18 +713,20 @@ const deleteContact = async (contactID) => {
     message.value = '';
 
     try {
-        const url = `${BASE_URL}/${contactID}`;
+        const url = `${BASE_URL}/contacts/${contactID}`;
         const res = await axios.delete(url);
 
-        message.value = `Successfully deleted: ${res.data.message}`;
-        contacts
+        message.value = res.data.message;
+        messageClass.value = 'bg-green-100 text-green-700';
     } catch (error) {
         
         const errorMessage = error.response?.data?.error || 'Failed to delete event.';
         message.value = `Error: ${errorMessage}`;
+        messageClass.value = 'bg-red-100 text-red-700';
         console.error('Delete error:', error);
     }
 
+    closeDeleteModal()
     await fetchContacts();
 }
 

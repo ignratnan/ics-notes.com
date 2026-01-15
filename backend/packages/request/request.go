@@ -3,6 +3,7 @@ package request
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -62,27 +63,41 @@ func GetEvents(c *gin.Context) {
 }
 
 func GetEventByID(c *gin.Context) {
-	eventID := c.Param("id")
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	eventID := uint(idInt)
+
 	var event models.Event
 	event = database.ReadEvent(eventID)
 	c.JSON(http.StatusOK, event)
 }
 
 func EditEvent(c *gin.Context) {
-	eventID := c.Param("id")
-	var input models.UpdateEventInput
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	eventID := uint(idInt)
+
+	var input models.EventUpdate
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	input.ID = eventID
 	newEvent := input.EventName
 
 	var event models.Event
 	event = database.ReadEvent(eventID)
 	oldEvent := event.EventName
 
-	event.EventName = input.EventName
-	database.UpdateEvent(event)
+	database.UpdateEvent(input)
 
 	message := "'" + oldEvent + "'" + " has been successfully updated to " + "'" + newEvent + "' !"
 	c.JSON(http.StatusOK, gin.H{
@@ -91,7 +106,14 @@ func EditEvent(c *gin.Context) {
 }
 
 func DeleteEvent(c *gin.Context) {
-	eventID := c.Param("id")
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	eventID := uint(idInt)
+
 	event := database.ReadEvent(eventID)
 	delEvent := event.EventName
 
@@ -114,8 +136,18 @@ func PostContact(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
-	userID, _ := c.Get("user_id")
-	postContacts.UserID = userID.(uint)
+
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	idUint := userIDRaw.(uint)
+	idStr := strconv.FormatUint(uint64(idUint), 10)
+
+	postContacts.UserID = idUint
+	postContacts.EditedBy = idStr
 	firstName := postContacts.FirstName
 	lastName := postContacts.LastName
 
@@ -153,31 +185,50 @@ func GetContactsByCompany(c *gin.Context) {
 }
 
 func GetContactById(c *gin.Context) {
-	contactID := c.Param("id")
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	contactID := uint(idInt)
+
 	var contact models.Contact
 	contact = database.ReadContact(contactID)
 	c.JSON(http.StatusOK, contact)
 }
 
 func EditContact(c *gin.Context) {
-	contactID := c.Param("id")
-	var input models.Contact
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	contactID := uint(idInt)
+
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	idUint := userIDRaw.(uint)
+	userID := strconv.FormatUint(uint64(idUint), 10)
+
+	var input models.ContactUpdate
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	firstName := input.FirstName
 	lastName := input.LastName
-	var contact models.Contact
-	contact = database.ReadContact(contactID)
-	contact.CompanyID = input.CompanyID
-	contact.ContactGender = input.ContactGender
-	contact.FirstName = input.FirstName
-	contact.LastName = input.LastName
-	contact.Title = input.Title
-	contact.PhoneNumber = input.PhoneNumber
-	contact.Email = input.Email
-	database.UpdateContact(contact)
+
+	input.ID = contactID
+	input.EditedBy = userID
+
+	database.UpdateContact(input)
+
 	message := "'" + firstName + " " + lastName + "'" + " has been successfully updated !"
 	c.JSON(http.StatusOK, gin.H{
 		"message": message,
@@ -185,9 +236,23 @@ func EditContact(c *gin.Context) {
 }
 
 func DeleteContact(c *gin.Context) {
-	contactID := c.Param("id")
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	contactID := uint(idInt)
+	var contact models.Contact
+	contact = database.ReadContact(contactID)
+	firstName := contact.FirstName
+	lastName := contact.LastName
+
 	database.DeleteContact(contactID)
-	c.JSON(http.StatusOK, gin.H{"message": "Contact deleted successfully"})
+	message := "'" + firstName + " " + lastName + "'" + " has been successfully deleted !"
+	c.JSON(http.StatusOK, gin.H{
+		"message": message,
+	})
 }
 
 func GetNotes(c *gin.Context) {
