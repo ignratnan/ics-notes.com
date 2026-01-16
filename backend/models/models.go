@@ -123,3 +123,14 @@ type ContactUpdate struct {
 	Email         string `json:"email"`
 	EditedBy      string `json:"edited_by"`
 }
+
+type CompanyUpdate struct {
+	ID             uint   `json:"id" gorm:"primaryKey"`
+	UserID         uint   `json:"user_id"`
+	CompanyName    string `json:"company_name"`
+	AgentType      string `json:"agent_type"`
+	BusinessSource string `json:"business_source"`
+	CompanyCountry string `json:"company_country"`
+	CompanyNotes   string `json:"company_notes"`
+	EditedBy       string `json:"edited_by"`
+}

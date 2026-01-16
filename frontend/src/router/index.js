@@ -12,6 +12,7 @@ import EventsCreateEvent from '@/components/events/CreateEvent.vue'
 import ContactsCreateContact from '@/components/contacts/CreateContact.vue'
 import NotesCreateCompany from '@/components/notes/CreateCompany.vue'
 import CompaniesCreateCompany from '@/components/companies/CreateCompany.vue'
+import CompaniesEditCompany from '@/components/companies/EditCompany.vue'
 import SettingsChangePassword from '@/components/settings/ChangePassword.vue'
 
 const routes = [
@@ -81,9 +82,15 @@ const routes = [
         component: CompaniesCreateCompany
     },
     {
+        path: '/companies/edit-company/:id',
+        name: 'companies_edit_company',
+        component: CompaniesEditCompany,
+        props: true
+    },
+    {
         path: '/settings/change-password',
         name: 'settings_change_password',
-        component: SettingsChangePassword
+        component: SettingsChangePassword,
     }
     
 ];

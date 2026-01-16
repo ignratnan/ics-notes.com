@@ -73,7 +73,7 @@
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="trash" />
                                 </button>
-                                <button wire:click=""
+                                <button @click="goEdit(company.id)""
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="pen" />
                                 </button>
@@ -102,8 +102,10 @@
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
 import dayjs from 'dayjs'
+import { useRouter } from 'vue-router'
 
 const companies = ref([])
+const router = useRouter()
 
 onMounted(async () => {
   try {
@@ -113,6 +115,10 @@ onMounted(async () => {
     console.error('Error fetching users:', err)
   }
 })
+
+const goEdit = (id) => {
+    router.push({ name: 'companies_edit_company', params: { id } })
+}
 
 function formatDate(dateStr) {
   return dayjs(dateStr).format('D MMMM YYYY')

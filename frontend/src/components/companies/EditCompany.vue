@@ -10,7 +10,7 @@
                     <div name="header" class="mt-2 p-2">
                         <h1 class="font-bold text-xl text-gray-800">
                             COMPANIES <font-awesome-icon icon="angle-right" />
-                            CREATE-COMPANY
+                            EDIT-COMPANY
                         </h1>
                         <hr>
                     </div>
@@ -307,7 +307,7 @@
                                 <div class="mt-4 form-group">
                                     <label for="company_notes" class="block text-gray-700 text-sm font-bold my-2">Company Detail</label>
                                     <div class="note-write">
-                                        <NoteEditor v-model="form.company_notes" />
+                                        <NoteEdit v-model="form.company_notes" />
                                     </div>
                                 </div>
 
@@ -345,12 +345,14 @@
 import Sidebar from '@/components/layout/Sidebar.vue'
 import SidebarBlock from '@/components/layout/SidebarBlock.vue'
 import NoteEditor from '../layout/NoteEditor.vue';
-import { useRouter } from 'vue-router'
+import NoteEdit from '../layout/NoteEdit.vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import { onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
+const route = useRoute()
 const router = useRouter()
 const message = ref('');
 const messageClass = ref('hidden');
@@ -367,6 +369,25 @@ const form = reactive({
     company_notes: "",
     edited_by: "",
 })
+
+const fetchCompany = async () => {
+    try {
+        const res = await axios.get(`${BASE_URL}/companies/${route.params.id}`)
+        form.id = res.data.company.id
+        form.user_id = res.data.company.user_id
+        form.company_name = res.data.company.company_name
+        form.agent_type = res.data.company.agent_type
+        form.business_source = res.data.company.business_source
+        form.company_country = res.data.company.company_country
+        form.company_notes = res.data.company.company_notes
+        form.edited_by = res.data.company.edited_by
+
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+onMounted(fetchCompany)
 
 const submitCompany = async () => {
     try {

@@ -133,7 +133,7 @@ func CountCompanies() int64 {
 	return countCompanies
 }
 
-func ReadCompany(companyID string) models.Company {
+func ReadCompany(companyID uint) models.Company {
 	var readCompany models.Company
 	db.Preload("User").First(&readCompany, companyID)
 	return readCompany

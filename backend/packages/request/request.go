@@ -130,6 +130,49 @@ func GetCompanies(c *gin.Context) {
 	c.JSON(http.StatusOK, getCompanies)
 }
 
+func GetCompanyById(c *gin.Context) {
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	companyID := uint(idInt)
+
+	var company models.Company
+	company = database.ReadCompany(companyID)
+	c.JSON(http.StatusOK, gin.H{
+		"company": company,
+	})
+}
+
+func PostCompany(c *gin.Context) {
+	var postCompany models.Company
+	if err := c.ShouldBindJSON(&postCompany); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	idUint := userIDRaw.(uint)
+	idStr := strconv.FormatUint(uint64(idUint), 10)
+
+	postCompany.UserID = idUint
+	postCompany.EditedBy = idStr
+
+	database.CreateCompany(postCompany)
+	message := "'" + postCompany.CompanyName + "'" + " has been successfully created !"
+	c.JSON(http.StatusCreated, gin.H{
+		"message": message,
+	})
+
+}
+
 func PostContact(c *gin.Context) {
 	var postContacts models.Contact
 	if err := c.ShouldBindJSON(&postContacts); err != nil {
@@ -176,7 +219,7 @@ func GetContacts(c *gin.Context) {
 }
 
 func GetContactsByCompany(c *gin.Context) {
-	companyID := c.Param("company_id")
+	companyID := c.Param("id")
 	var contacts []models.Contact
 	contacts = database.ReadContactsByCompany(companyID)
 	c.JSON(http.StatusOK, gin.H{

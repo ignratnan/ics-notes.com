@@ -160,7 +160,7 @@ watch(() => note.company_id, async (companyID) => {
 
     try {
         const resContacts = await axios.get(
-            `${BASE_URL}/companies/${companyID}/contacts`
+            `${BASE_URL}/contacts/company/${companyID}`
         )
         contacts.value = resContacts.data.data
     } catch (err) {
