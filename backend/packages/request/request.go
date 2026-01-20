@@ -173,6 +173,32 @@ func PostCompany(c *gin.Context) {
 
 }
 
+func EditCompany(c *gin.Context) {
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	idUint := userIDRaw.(uint)
+	idStr := strconv.FormatUint(uint64(idUint), 10)
+
+	var input models.CompanyUpdate
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request body",
+		})
+	}
+
+	input.EditedBy = idStr
+	database.UpdateCompany(input)
+
+	message := "'" + input.CompanyName + "'" + " has been successfully edited !"
+	c.JSON(http.StatusOK, gin.H{
+		"message": message,
+	})
+}
+
 func PostContact(c *gin.Context) {
 	var postContacts models.Contact
 	if err := c.ShouldBindJSON(&postContacts); err != nil {

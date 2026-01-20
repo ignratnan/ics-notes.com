@@ -19,9 +19,9 @@ func ConnectDB() {
 		}
 	*/
 
-	//dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
 
-	dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
+	//dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -115,10 +115,20 @@ func ReadCompanies() []models.Company {
 	return readCompanies
 }
 
-func UpdateCompany(company models.Company) {
-	var updateCompany models.Company
+func UpdateCompany(company models.CompanyUpdate) {
+	var updateCompany models.CompanyUpdate
 	updateCompany = company
-	db.Save(&updateCompany)
+
+	db.Model(&models.Company{}).
+		Where("id = ?", updateCompany.ID).
+		Updates(map[string]interface{}{
+			"company_name":    updateCompany.CompanyName,
+			"agent_type":      updateCompany.AgentType,
+			"business_source": updateCompany.BusinessSource,
+			"company_country": updateCompany.CompanyCountry,
+			"company_notes":   updateCompany.CompanyNotes,
+			"edited_by":       updateCompany.EditedBy,
+		})
 }
 
 func DeleteCompany(companyID string) {
