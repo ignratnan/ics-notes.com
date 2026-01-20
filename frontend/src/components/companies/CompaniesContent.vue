@@ -8,6 +8,10 @@
                 <hr>
             </div>
 
+            <div :class="messageClass" name="message" class="mt-2 p-2">
+                {{ message }}
+            </div>
+
             <div class="mt-3 grid grid-cols-2">
                 <form class="flex items-center">
                     <div class="relative w-full">
@@ -69,7 +73,7 @@
                                 </p>  
                             </div>
                             <div class="flex flex-row-reverse">
-                                <button wire:click=""
+                                <button @click="openDeleteModal(company.id)"
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="trash" />
                                 </button>
@@ -94,6 +98,46 @@
                     </article>
                 </div>
             </div>
+
+            <div v-for="company in companies" :key="'delete-' + company.id" >
+                <div v-if="openDeleteModalId === company.id"
+                    class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div class="flex flex-row max-w-lg w-full">
+                        <div class="w-full bg-white rounded-xl shadow-2xl overflow-hidden">
+                            <div class="py-1">
+                                <div class="sm:px-6 lg:px-8">
+                                    <div name="header" class="mt-4 p-2">
+                                        <h1 class="font-bold text-2xl text-center text-gray-800">
+                                            DELETE COMPANY
+                                        </h1>
+                                        <hr class="mt-2 border-gray-200">
+                                    </div>
+
+                                    <div class="my-6 py-2 text-center">
+                                        <p class="text-lg text-gray-700">Are you sure you want to delete 
+                                            <b class="text-red-600">"{{ company.company_name }}"</b>?
+                                        </p>
+                                    </div>
+
+                                    <div class="bg-gray-50 p-4 flex justify-between space-x-4">
+                                        <!-- Cancel Button -->
+                                        <button type="button" @click="closeDeleteModal"
+                                                class="flex-1 rounded-md border border-gray-300 px-4 py-2 bg-white text-base font-medium text-gray-700 shadow-sm hover:bg-gray-100 transition ease-in-out duration-150">
+                                            Cancel
+                                        </button>
+
+                                        <!-- Delete Button -->
+                                        <button type="button" @click="deleteCompany(company.id)"
+                                                class="flex-1 rounded-md border border-transparent px-4 py-2 bg-red-600 text-base font-medium text-white shadow-sm hover:bg-red-700 transition ease-in-out duration-150">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -107,17 +151,72 @@ import { useRouter } from 'vue-router'
 const companies = ref([])
 const router = useRouter()
 
+const openDeleteModalId = ref(null)
+const deletedCompanyId = ref(null)
+
+const message = ref('')
+const messageClass = ref('hidden')
+
+const BASE_URL = 'http://localhost:8080'
+
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:8080/companies')
-    companies.value = res.data
+    const res = await axios.get(`${BASE_URL}/companies`)
+    companies.value = res.data.companies
   } catch (err) {
     console.error('Error fetching users:', err)
   }
 })
 
+const fetchCompanies = async () => {
+    try {
+        const res = await axios.get(`${BASE_URL}/companies`)
+
+        companies.value = res.data.companies
+    } catch (error) {
+        const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
+        message.value = errorMessage;
+        messageClass.value = 'bg-red-100 text-red-700';
+    }
+}
+
 const goEdit = (id) => {
     router.push({ name: 'companies_edit_company', params: { id } })
+}
+
+const openDeleteModal = (id) => {
+    openDeleteModalId.value = id;
+    deletedCompanyId.value = null;
+}
+
+const closeDeleteModal = () => {
+    openDeleteModalId.value = null;
+}
+
+const deleteCompany = async (companyID) => {
+    message.value = '';
+    messageClass.value = 'hidden';
+
+    const oldCompanies = [...companies.value]
+
+    companies.value = companies.value.filter(c => c.id !== companyID)
+
+    try {
+        const url = `${BASE_URL}/companies/${companyID}`;
+        const res = await axios.delete(url);
+
+        message.value = res.data.message;
+        messageClass.value = 'bg-green-100 text-green-700';
+
+    } catch (error) {
+        events.value = oldCompanies
+        const errorMessage = error.response?.data?.error || 'Failed to delete event.';
+        message.value = `Error: ${errorMessage}`;
+        console.error('Delete error:', error);
+    }
+
+    closeDeleteModal()
+    await fetchCompanies()
 }
 
 function formatDate(dateStr) {

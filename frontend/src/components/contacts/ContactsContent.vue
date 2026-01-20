@@ -222,7 +222,7 @@
                                 <div class="sm:px-6 lg:px-8">
                                     <div name="header" class="mt-4 p-2">
                                         <h1 class="font-bold text-2xl text-center text-gray-800">
-                                            DELETE EVENT
+                                            DELETE CONTACT
                                         </h1>
                                         <hr class="mt-2 border-gray-200">
                                     </div>

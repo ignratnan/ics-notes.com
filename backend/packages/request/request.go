@@ -127,7 +127,9 @@ func DeleteEvent(c *gin.Context) {
 func GetCompanies(c *gin.Context) {
 	var getCompanies []models.Company
 	getCompanies = database.ReadCompanies()
-	c.JSON(http.StatusOK, getCompanies)
+	c.JSON(http.StatusOK, gin.H{
+		"companies": getCompanies,
+	})
 }
 
 func GetCompanyById(c *gin.Context) {
@@ -194,6 +196,24 @@ func EditCompany(c *gin.Context) {
 	database.UpdateCompany(input)
 
 	message := "'" + input.CompanyName + "'" + " has been successfully edited !"
+	c.JSON(http.StatusOK, gin.H{
+		"message": message,
+	})
+}
+func DeleteCompany(c *gin.Context) {
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	companyID := uint(idInt)
+
+	company := database.ReadCompany(companyID)
+	delCompany := company.CompanyName
+
+	database.DeleteCompany(companyID)
+	message := "'" + delCompany + "'" + " has been successfully deleted !"
 	c.JSON(http.StatusOK, gin.H{
 		"message": message,
 	})

@@ -50,6 +50,7 @@ func main() {
 		protected.GET("/companies/:id", request.GetCompanyById)
 		protected.POST("/companies", request.PostCompany)
 		protected.PUT("/companies", request.EditCompany)
+		protected.DELETE("/companies/:id", request.DeleteCompany)
 		protected.GET("/events/create-event", request.GetEvents)
 		protected.POST("/events", request.PostEvent)
 		protected.PUT("/events/:id", request.EditEvent)

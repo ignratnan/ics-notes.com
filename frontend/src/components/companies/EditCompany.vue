@@ -307,7 +307,7 @@
                                 <div class="mt-4 form-group">
                                     <label for="company_notes" class="block text-gray-700 text-sm font-bold my-2">Company Detail</label>
                                     <div class="note-write">
-                                        <NoteEditor v-model="form.company_notes" />
+                                        <NoteEdit v-model="form.company_notes" />
                                     </div>
                                 </div>
 
