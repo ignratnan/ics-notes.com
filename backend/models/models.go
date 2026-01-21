@@ -134,3 +134,13 @@ type CompanyUpdate struct {
 	CompanyNotes   string `json:"company_notes"`
 	EditedBy       string `json:"edited_by"`
 }
+
+type NoteUpdate struct {
+	ID        uint   `json:"id" gorm:"primaryKey"`
+	UserID    uint   `json:"user_id"`
+	ContactID uint   `json:"contact_id"`
+	EventID   uint   `json:"event_id"`
+	CompanyID uint   `json:"company_id"`
+	Title     string `json:"title"`
+	Body      string `json:"body" gorm:"type:text"`
+}

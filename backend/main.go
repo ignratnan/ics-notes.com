@@ -37,7 +37,10 @@ func main() {
 	{
 		protected.GET("/me", request.GetUserMe)
 		protected.GET("/notes", request.GetUserNotes)
+		protected.GET("/notes/:id", request.GetNoteByID)
 		protected.POST("/notes", request.PostNotes)
+		protected.PUT("/notes/:id", request.EditNote)
+		protected.DELETE("/notes/:id", request.DeleteNote)
 		protected.GET("/events", request.GetEvents)
 		protected.GET("/events/:id", request.GetEventByID)
 		protected.GET("/contacts", request.GetContacts)

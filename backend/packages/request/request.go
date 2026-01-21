@@ -353,6 +353,23 @@ func GetNotes(c *gin.Context) {
 	c.JSON(http.StatusOK, getNotes)
 }
 
+func GetNoteByID(c *gin.Context) {
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	noteID := uint(idInt)
+
+	var note models.Note
+	note = database.ReadNote(noteID)
+
+	c.JSON(http.StatusOK, gin.H{
+		"note": note,
+	})
+}
+
 func GetUserNotes(c *gin.Context) {
 	var getUserNotes []models.Note
 	userID, _ := c.Get("user_id")
@@ -369,8 +386,66 @@ func PostNotes(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
+
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	idUint := userIDRaw.(uint)
+	postNotes.UserID = idUint
+
 	database.CreateNote(postNotes)
-	c.JSON(http.StatusCreated, gin.H{"message": "Post saved successfully!"})
+	message := "Notes successfully created !"
+	c.JSON(http.StatusCreated, gin.H{
+		"message": message,
+	})
+}
+
+func EditNote(c *gin.Context) {
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	idUint := uint(idInt)
+
+	var note models.NoteUpdate
+	if err := c.ShouldBindJSON(&note); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+	note.ID = idUint
+
+	database.UpdateNote(note)
+	message := "Note successfully updated"
+	c.JSON(http.StatusOK, gin.H{
+		"message": message,
+	})
+}
+
+func DeleteNote(c *gin.Context) {
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request body",
+		})
+		return
+	}
+	idUint := uint(idInt)
+
+	var deletedNote models.Note
+	deletedNote = database.ReadNote(idUint)
+
+	database.DeleteNote(idUint)
+	message := "'" + deletedNote.Title + "'" + " has been successfully deleted !"
+	c.JSON(http.StatusOK, gin.H{
+		"message": message,
+	})
+
 }
 
 func LogoutHandler(c *gin.Context) {

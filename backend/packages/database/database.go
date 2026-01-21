@@ -293,14 +293,24 @@ func ReadUserNotes(userID uint) []models.Note {
 	return readUserNotes
 }
 
-func UpdateNote(note models.Note) {
-	var updateNote models.Note
+func UpdateNote(note models.NoteUpdate) {
+	var updateNote models.NoteUpdate
 	updateNote = note
-	db.Save(&updateNote)
+
+	db.Model(&models.Note{}).
+		Where("id = ?", updateNote.ID).
+		Updates(map[string]interface{}{
+			"contact_id": updateNote.ContactID,
+			"event_id":   updateNote.EventID,
+			"company_id": updateNote.CompanyID,
+			"title":      updateNote.Title,
+			"body":       updateNote.Body,
+		})
+
 }
 
-func DeleteNote(noteID string) {
-	var deleteNote string
+func DeleteNote(noteID uint) {
+	var deleteNote uint
 	deleteNote = noteID
 	db.Delete(&models.Note{}, deleteNote)
 }
@@ -311,7 +321,7 @@ func CountNotes() int64 {
 	return countNotes
 }
 
-func ReadNote(noteID string) models.Note {
+func ReadNote(noteID uint) models.Note {
 	var readNote models.Note
 	db.Preload("User").Preload("Company").Preload("Contact").Preload("Event").First(&readNote, noteID)
 	return readNote

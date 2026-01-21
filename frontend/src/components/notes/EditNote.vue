@@ -117,9 +117,10 @@ import SidebarBlock from '@/components/layout/SidebarBlock.vue'
 import NoteEditor from '../layout/NoteEditor.vue';
 
 import { onMounted, ref, reactive, watch } from 'vue';
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios';
 
+const route = useRoute()
 const router = useRouter()
 
 const events = ref([])
@@ -154,13 +155,21 @@ onMounted(async () => {
 
         contacts.value = []
 
+        const resNote = await axios.get(`${BASE_URL}/notes/${route.params.id}`)
+        note.id = resNote.data.note.id
+        note.user_id = resNote.data.note.user_id
+        note.event_id = resNote.data.note.event_id
+        note.company_id = resNote.data.note.company_id
+        note.contact_id = resNote.data.note.contact_id
+        note.title = resNote.data.note.title
+        note.body = resNote.data.note.body
+
     }   catch (err) {
         console.error('Error fetching users:', err)
     }
 })
 
 watch(() => note.company_id, async (companyID) => {
-    note.contact_id = null
     contacts.value = []
 
     if (!companyID) return
@@ -177,8 +186,8 @@ watch(() => note.company_id, async (companyID) => {
 
 const submitNote = async () => {
     
-    const url = `${BASE_URL}/notes`
-    const res = await axios.post(url, note)
+    const url = `${BASE_URL}/notes/${note.id}`
+    const res = await axios.put(url, note)
 
     message.value = res.data.message;
     messageClass.value = 'bg-green-100 text-green-700';

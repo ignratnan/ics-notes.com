@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
 
@@ -35,9 +35,21 @@ onMounted(() => {
 
     // set initial value
     quill.value.root.innerHTML = props.modelValue
-
+    //
     quill.value.on('text-change', () => {
         emit('update:modelValue', quill.value.root.innerHTML)
     })
+
 })
+
+
+watch(
+    () => props.modelValue,
+    (newValue) => {
+        if (quill.value && newValue !== quill.value.root.innerHTML) {
+            quill.value.root.innerHTML = newValue || ''
+        }
+    }
+)
+
 </script>

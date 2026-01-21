@@ -7,10 +7,11 @@ import Contacts from '@/components/contacts/Contacts.vue';
 import Companies from '@/components/companies/Companies.vue';
 import NotesCreateNote from '@/components/notes/CreateNote.vue'
 import NotesCreateEvent from '@/components/notes/CreateEvent.vue'
+import NotesCreateCompany from '@/components/notes/CreateCompany.vue'
 import NotesCreateContact from '@/components/notes/CreateContact.vue'
+import NotesEditNote from '@/components/notes/EditNote.vue'
 import EventsCreateEvent from '@/components/events/CreateEvent.vue'
 import ContactsCreateContact from '@/components/contacts/CreateContact.vue'
-import NotesCreateCompany from '@/components/notes/CreateCompany.vue'
 import CompaniesCreateCompany from '@/components/companies/CreateCompany.vue'
 import CompaniesEditCompany from '@/components/companies/EditCompany.vue'
 import SettingsChangePassword from '@/components/settings/ChangePassword.vue'
@@ -70,6 +71,12 @@ const routes = [
         path: '/events/create-event',
         name: 'events_create_event',
         component: EventsCreateEvent
+    },
+    {
+        path: '/notes/edit-note/:id',
+        name: 'notes_edit_note',
+        component: NotesEditNote,
+        props: true
     },
     {
         path: '/contacts/create-contact',
