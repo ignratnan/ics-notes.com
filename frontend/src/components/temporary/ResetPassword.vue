@@ -5,10 +5,10 @@
                 <img :src="logoBlack" class="h-20" alt="ICS" />
             </div>
             <hr>
-            <h1 class="text-3xl font-bold text-center text-gray-800">Login to ICS-Notes</h1>
+            <h1 class="text-3xl font-bold text-center text-gray-800">Reset Password</h1>
 
             <!-- Form with Vue event handling -->
-            <form @submit.prevent="submitLogin" class="space-y-4">
+            <form @submit.prevent="resetPassword" class="space-y-4">
                 
                 <!-- Email Input Field -->
                 <div>
@@ -17,7 +17,8 @@
                         type="text" 
                         id="email" 
                         v-model="form.email"
-                        required 
+                        required
+                        autocomplete="off" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
                 </div>
 
@@ -28,23 +29,22 @@
                         type="password" 
                         id="password" 
                         v-model="form.password"
-                        required 
+                        required
+                        autocomplete="off" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
                 </div>
-
-                <div>
-                    <button @click="goToResetPassword" type="button"
-                    class="underline text-blue-600">
-                        Forgot Password ?
+                <div class="flex flex-row gap-2">
+                    <button @click="goToLogin"
+                        class="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit"
+                        class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
+                        Reset
                     </button>
                 </div>
-
-                <!-- Login Button -->
-                <button 
-                    type="submit"
-                    class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
-                    Login
-                </button>
+                
 
             </form>
             <!-- Status Message -->
@@ -65,15 +65,12 @@
     // Get the router instance
     const router = useRouter();
     // Method to handle the navigation
-    const goToResetPassword = () => {
-    // Navigate to the route with the name 'dashboard'
-    router.push({ name: 'reset_password' });
+    const goToLogin = () => {
+        router.push({ name: 'login' });
     };
 
     const message = ref('');
     const messageClass = ref('');
-    const userStatus = ref('');
-    const adminStatus = ref('');
 
 
     const form = reactive({
@@ -81,40 +78,22 @@
         password: ''
     });
 
-    const API_URL = 'http://localhost:8080/login';
+    const BASE_URL = 'http://localhost:8080';
 
-    const submitLogin = async () => {
+    const resetPassword = async () => {
         // Reset messages before new submission
         message.value = '';
         messageClass.value = '';
-        adminStatus.value = 0;
-        userStatus.value = 0;
-
-
-
         try {
-            const response = await axios.post(API_URL, form, {
-                withCredentials: true
-            });
+            const url = `${BASE_URL}/reset-password`;
+            const res = await axios.put(url, form)
 
             message.value = response.data.message;
             messageClass.value = 'bg-green-100 text-green-700';
-            adminStatus.value = response.data.adminStatus;
-            userStatus.value = response.data.userStatus;
-
-
-
+  
             // Reset the form after successful submission
             form.email = '';
             form.password = '';
-
-            if (adminStatus.value == 1) {
-                router.push({ name: 'dashboard' });
-            } if (userStatus.value == 1) {
-                router.push({ name: 'dashboard' })
-            } else {
-                messageClass.value = 'bg-red-100 text-red-700';
-            }
 
 
         } catch (error) {
@@ -122,5 +101,7 @@
             message.value = errorMessage;
             messageClass.value = 'bg-red-100 text-red-700';
         }
+
+        goToLogin()
     };
 </script>

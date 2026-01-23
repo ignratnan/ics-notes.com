@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ignratnan/ics-notes.com/backend/models"
 	"github.com/ignratnan/ics-notes.com/backend/packages/database"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUsers(c *gin.Context) {
@@ -23,6 +24,26 @@ func GetUserMe(c *gin.Context) {
 	getMe = database.ReadUserMe(userID.(uint))
 	c.JSON(http.StatusOK, gin.H{
 		"userMe": getMe,
+	})
+}
+
+func EditUser(c *gin.Context) {
+	var input models.UserUpdate
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+	hashedPassword, _ := bcrypt.GenerateFromPassword(
+		[]byte(input.Password),
+		bcrypt.DefaultCost,
+	)
+
+	input.Password = string(hashedPassword)
+
+	database.UpdateUser(input)
+	message := "The password successfully updated !"
+	c.JSON(http.StatusOK, gin.H{
+		"message": message,
 	})
 }
 

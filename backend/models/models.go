@@ -144,3 +144,10 @@ type NoteUpdate struct {
 	Title     string `json:"title"`
 	Body      string `json:"body" gorm:"type:text"`
 }
+
+type UserUpdate struct {
+	ID       uint   `json:"id" gorm:"primaryKey"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

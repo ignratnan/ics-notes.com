@@ -15,6 +15,7 @@ import ContactsCreateContact from '@/components/contacts/CreateContact.vue'
 import CompaniesCreateCompany from '@/components/companies/CreateCompany.vue'
 import CompaniesEditCompany from '@/components/companies/EditCompany.vue'
 import SettingsChangePassword from '@/components/settings/ChangePassword.vue'
+import ResetPassword from '@/components/temporary/ResetPassword.vue';
 
 const routes = [
     {
@@ -98,6 +99,11 @@ const routes = [
         path: '/settings/change-password',
         name: 'settings_change_password',
         component: SettingsChangePassword,
+    },
+    {
+        path: '/reset-password',
+        name: 'reset_password',
+        component: ResetPassword,
     }
     
 ];

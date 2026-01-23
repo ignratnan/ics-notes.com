@@ -31,6 +31,7 @@ func main() {
 	auth.AdminCheck()
 
 	r.POST("/login", auth.Login)
+	r.PUT("/reset-password", request.EditUser)
 
 	protected := r.Group("/")
 	protected.Use(middleware.AuthRequired())

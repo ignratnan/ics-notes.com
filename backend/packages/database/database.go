@@ -73,10 +73,15 @@ func ReadUsers() []models.User {
 	return readUsers
 }
 
-func UpdateUser(user models.User) {
-	var updateUser models.User
+func UpdateUser(user models.UserUpdate) {
+	var updateUser models.UserUpdate
 	updateUser = user
-	db.Save(&updateUser)
+
+	db.Model(&models.User{}).
+		Where("email = ?", updateUser.Email).
+		Updates(map[string]interface{}{
+			"password": updateUser.Password,
+		})
 }
 
 func DeleteUser(userID string) {
