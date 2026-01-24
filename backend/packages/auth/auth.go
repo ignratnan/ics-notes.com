@@ -82,6 +82,7 @@ func Login(c *gin.Context) {
 	if authenticatedUserID > 0 {
 		session := sessions.Default(c)
 		session.Set("user_id", authenticatedUserID)
+		session.Set("role", authenticatedRole)
 		session.Save()
 
 		c.JSON(http.StatusOK, gin.H{

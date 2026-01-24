@@ -394,10 +394,17 @@ func GetNoteByID(c *gin.Context) {
 func GetUserNotes(c *gin.Context) {
 	var getUserNotes []models.Note
 	userID, _ := c.Get("user_id")
-	getUserNotes = database.ReadUserNotes(userID.(uint))
+	userRole, _ := c.Get("role")
+
+	switch userRole {
+	case "admin":
+		getUserNotes = database.ReadNotes()
+	case "user":
+		getUserNotes = database.ReadUserNotes(userID.(uint))
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"getUserNotes": getUserNotes,
-		"userID":       userID,
 	})
 }
 

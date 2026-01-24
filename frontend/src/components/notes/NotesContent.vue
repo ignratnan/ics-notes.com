@@ -97,6 +97,10 @@
                                 Created date :
                                 <a>{{ formatDate(note.created_at) }}</a>
                             </div>
+                            <div>
+                                Created by :
+                                <a>{{ note.user.name }}</a>
+                            </div>
 
                             <div class="flex flex-row-reverse">
                                 <button
@@ -173,8 +177,6 @@
 
     const notes = ref([]);
 
-    const user_id = ref();
-
     const openDeleteModalId = ref(null)
     const deletedContactId = ref(null)
 
@@ -191,7 +193,6 @@
         try {
             const resNotes = await axios.get(`${BASE_URL}/notes`)
             notes.value = resNotes.data.getUserNotes
-            user_id.value = resNotes.data.userID
 
         } catch (err) {
             console.error('Error fetching users:', err)
