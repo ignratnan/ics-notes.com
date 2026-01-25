@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -19,11 +20,24 @@ func GetUsers(c *gin.Context) {
 }
 
 func GetUserMe(c *gin.Context) {
-	var getMe models.User
+	var getAdmin models.Admin
+	var getUser models.User
+	var userLogin string
+
 	userID, _ := c.Get("user_id")
-	getMe = database.ReadUserMe(userID.(uint))
+	userRole, _ := c.Get("role")
+
+	switch userRole {
+	case "admin":
+		getAdmin = database.ReadAdmin(userID.(uint))
+		userLogin = getAdmin.Role
+	case "user":
+		getUser = database.ReadUser(userID.(uint))
+		userLogin = getUser.Name
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"userMe": getMe,
+		"userLogin": userLogin,
 	})
 }
 
@@ -484,4 +498,62 @@ func LogoutHandler(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "logout success",
 	})
+}
+
+func MigrateOldNotes(c *gin.Context) {
+	var notes []models.Note
+
+	notes = database.ReadNotes()
+
+	count := 0
+
+	for _, note := range notes {
+		newBody := normalizeNoteHTML(note.Body)
+
+		note.Body = newBody
+
+		database.MigrateNotes(note)
+
+		count++
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Migration completed",
+		"updated": count,
+	})
+}
+
+func MigrateOldCompanies(c *gin.Context) {
+	var companies []models.Company
+
+	companies = database.ReadCompanies()
+
+	count := 0
+
+	for _, company := range companies {
+		newNote := normalizeNoteHTML(company.CompanyNotes)
+
+		company.CompanyNotes = newNote
+
+		database.MigrateCompanies(company)
+
+		count++
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Migration completed",
+		"updated": count,
+	})
+}
+
+func normalizeNoteHTML(old string) string {
+	s := strings.TrimSpace(old)
+
+	// Ganti &nbsp;
+	s = strings.ReplaceAll(s, "&nbsp;", " ")
+	s = strings.ReplaceAll(s, "<div>", "<p>")
+	s = strings.ReplaceAll(s, "</div>", "</p>")
+	s = strings.ReplaceAll(s, "<br>", "</p><p>")
+
+	return s
 }

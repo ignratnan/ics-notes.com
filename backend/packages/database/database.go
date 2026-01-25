@@ -43,6 +43,12 @@ func ReadAdmins() []models.Admin {
 	return readAdmins
 }
 
+func ReadAdmin(adminID uint) models.Admin {
+	var readAdmin models.Admin
+	db.First(&readAdmin, adminID)
+	return readAdmin
+}
+
 func UpdateAdmin(admin models.Admin) {
 	var updateAdmin models.Admin
 	updateAdmin = admin
@@ -96,13 +102,7 @@ func CountUsers() int64 {
 	return countUsers
 }
 
-func ReadUser(userID string) models.User {
-	var readUser models.User
-	db.First(&readUser, userID)
-	return readUser
-}
-
-func ReadUserMe(userID uint) models.User {
+func ReadUser(userID uint) models.User {
 	var readUser models.User
 	db.First(&readUser, userID)
 	return readUser
@@ -330,6 +330,30 @@ func ReadNote(noteID uint) models.Note {
 	var readNote models.Note
 	db.Preload("User").Preload("Company").Preload("Contact").Preload("Event").First(&readNote, noteID)
 	return readNote
+}
+
+func MigrateNotes(note models.Note) {
+	var updateNote models.Note
+	updateNote = note
+
+	db.Model(&models.Note{}).
+		Where("id = ?", updateNote.ID).
+		Updates(map[string]interface{}{
+			"body": updateNote.Body,
+		})
+
+}
+
+func MigrateCompanies(company models.Company) {
+	var updateCompany models.Company
+	updateCompany = company
+
+	db.Model(&models.Company{}).
+		Where("id = ?", updateCompany.ID).
+		Updates(map[string]interface{}{
+			"company_notes": updateCompany.CompanyNotes,
+		})
+
 }
 
 func CreateSession(session models.Session) {

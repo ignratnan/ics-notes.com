@@ -36,6 +36,8 @@ func main() {
 	protected := r.Group("/")
 	protected.Use(middleware.AuthRequired())
 	{
+		protected.GET("/migrate-notes", request.MigrateOldNotes)
+		protected.GET("/migrate-companies", request.MigrateOldCompanies)
 		protected.GET("/me", request.GetUserMe)
 		protected.GET("/notes", request.GetUserNotes)
 		protected.GET("/notes/:id", request.GetNoteByID)
