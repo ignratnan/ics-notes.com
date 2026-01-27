@@ -60,7 +60,7 @@
                                     <select v-model="note.contact_id" :disabled="!contacts.length"
                                         class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
                                         <option value=0 disabled selected>Select Contact</option>
-                                        <option v-for="contact in contacts" :key="contact.id" :value="contact.id">{{ contact.first_name }} {{ contacts.last_name }}</option>
+                                        <option v-for="contact in contacts" :key="contact.id" :value="contact.id">{{ contact.first_name }} {{ contact.last_name }}</option>
                                     </select>
                                 </div>
                             </div>

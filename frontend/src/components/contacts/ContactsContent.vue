@@ -551,7 +551,7 @@ onMounted(async () => {
     contacts.value = resContacts.data.contacts
 
     const resCompanies = await axios.get(`${BASE_URL}/companies`)
-    companies.value = resCompanies.data
+    companies.value = resCompanies.data.companies
   } catch (err) {
     console.error('Error fetching users:', err)
   }
@@ -564,7 +564,7 @@ const fetchContacts = async () => {
         contacts.value = resContacts.data.contacts
 
         const resCompanies = await axios.get(`${BASE_URL}/companies`)
-        companies.value = resCompanies.data
+        companies.value = resCompanies.data.companies
     } catch (err) {
         console.error('Error fetching users:', err)
     }

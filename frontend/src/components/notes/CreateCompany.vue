@@ -21,15 +21,15 @@
                                     <label for="company_name" class="block text-gray-700 text-sm font-bold my-2">
                                         Company Name
                                     </label>
-                                    <input type="text"
+                                    <input type="text" v-model="form.company_name"
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="company_name" placeholder="Enter Company Name" wire:model="company_name">
+                                        id="company_name" placeholder="Enter Company Name">
                                 </div>
                                 <div class="mb-4">
                                     <label for="company_country" class="block text-gray-700 text-sm font-bold my-2">
                                         Company Country
                                     </label>
-                                    <select wire:model="company_country" placeholder="Choose Country"
+                                    <select v-model="form.company_country" placeholder="Choose Country"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
                                         <option value="" selected disabled>Select Option</option>
                                         <option value="Afghanistan">Afghanistan</option>
@@ -282,7 +282,7 @@
                                 <label for="agent_type" class="block text-gray-700 text-sm font-bold my-2">
                                     Agent Type
                                 </label>
-                                <select wire:model="agent_type" placeholder="Choose Agent Type"
+                                <select v-model="form.agent_type" placeholder="Choose Agent Type"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
                                     <option value="" selected>Select Option</option>
                                     <option value="TA">Travel Agent</option>
@@ -298,39 +298,40 @@
                                     class="block text-gray-700 text-sm font-bold my-2">
                                     Business Source
                                 </label>
-                                    <select wire:model="business_source" placeholder="Choose Business Source Type"
+                                    <select v-model="form.business_source" placeholder="Choose Business Source Type"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
                                         <option value="" selected disabled>Select Option</option>
                                         <option value="RER">RER</option>
                                         <option value="ICS">ICS</option>
                                     </select>
-                                <div class="mt-4 form-group" wire:model.debounce.365ms="company_notes" wire:ignore>
+                                <div class="mt-4 form-group">
                                     <label for="company_notes" class="block text-gray-700 text-sm font-bold my-2">Company Detail</label>
-                                    <input
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        type="hidden" name="content" id="body">
-                                    <TrixEditor input="body"/>
+                                    <div class="note-write">
+                                        <NoteEditor v-model="form.company_notes" />
+                                    </div>
                                 </div>
-
 
                             </div>
                         </div>
 
+                        <div :class="messageClass" name="message" class="mt-2 p-2">
+                            {{ message }}
+                        </div>
+
                         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                             <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                                <button type="button"
+                                <button type="button" @click="submitCompany"
                                     class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
                                     Save
                                 </button>
                             </span>
-                            <a href="/notes/create-contact">
-                                <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                                    <button type="button"
-                                        class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                        Cancel
-                                    </button>
-                                </span>
-                            </a>
+
+                            <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                                <button type="button" @click="router.push({ name: 'notes_create_contact'})"
+                                    class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                    Cancel
+                                </button>
+                            </span>
                         </div>
                     </form>
                 </div>
@@ -342,5 +343,48 @@
 <script setup>
 import Sidebar from '@/components/layout/Sidebar.vue'
 import SidebarBlock from '@/components/layout/SidebarBlock.vue'
-import TrixEditor from '../layout/TrixEditor.vue';
+import NoteEditor from '../layout/NoteEditor.vue';
+import { useRouter } from 'vue-router'
+
+import { onMounted, reactive, ref } from 'vue';
+import axios from 'axios';
+import dayjs from 'dayjs';
+
+const router = useRouter()
+const message = ref('');
+const messageClass = ref('hidden');
+
+const BASE_URL = 'http://localhost:8080'
+
+const form = reactive({
+    id: 0,
+    user_id: 0,
+    company_name: "",
+    agent_type: "",
+    business_source: "",
+    company_country: "",
+    company_notes: "",
+    edited_by: "",
+})
+
+const submitCompany = async () => {
+    try {
+        const url = `${BASE_URL}/companies`;
+        const res = await axios.post(url, form);
+
+        message.value = res.data.message
+        messageClass.value = 'bg-green-100 text-green-700'
+
+        setTimeout(() => {
+            router.push({ name: 'notes_create_contact' })
+        }, 300)
+
+    } catch (error) {
+        const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
+        message.value = errorMessage;
+        messageClass.value = 'bg-red-100 text-red-700';
+    }
+}
+
+
 </script>
