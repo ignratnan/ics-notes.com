@@ -21,19 +21,13 @@
                                     clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <input type="search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-white dark:border-gray-600 dark:placeholder-black dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search" name="search" value="">
+                        <input
+                            type="search"
+                            v-model="search"
+                            placeholder="Search event..."
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5"
+                        />
                     </div>
-                    <button type="submit"
-                        class="p-2.5 ml-2 text-sm font-medium text-white bg-gray-700 rounded-lg border border-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <span class="sr-only">Search</span>
-                    </button>
                 </form>
                 <div class="flex flex-row-reverse">
                     <button @click="openCreateModal"
@@ -171,27 +165,45 @@
                 </div>
             </div>
             <!-- Sesuaikan jumlah kolom beserta gap jika ingin merubah jumlah data yang ditampilkan-->
-            <div class="grid grid-cols-4 gap-2">
-                <div v-for="contact in contacts" :key="contact.id">
-                    <article class="w-full px-4 py-3 rounded-md shadow-md bg-white border border-gray-600">
+            <div class="grid grid-cols-3 gap-2">
+                <div v-for="contact in filteredContacts" :key="contact.id">
+                    <article class="flex flex-col h-full px-4 py-3 rounded-md shadow-md bg-white border border-gray-600">
+                        <div class="flex flex-row-reverse mt-2">
+                            <span
+                                class="text-sm font-light text-gray-800 dark:text-gray-800"> {{ contact.user.name }} || {{ formatDate(contact.created_at) }}</span>
+                        </div>
                         <div>
-                            <div class="flex flex-row-reverse mt-2">
-                                <span
-                                    class="text-sm font-light text-gray-800 dark:text-gray-800"> {{ contact.user.name }} || {{ formatDate(contact.created_at) }}</span>
+                            <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
+                                {{ contact.first_name }} {{ contact.last_name }}
+                            </h1>
+                        </div>
+                        <div class="flex-grow font-normal text-sm text-gray-800">
+                            <div class="flex flex-row mt-1">
+                                <div><font-awesome-icon icon="building" /></div>
+                                <div class="ml-1break-words">
+                                    {{ contact.company.company_name }} 
+                                </div>
                             </div>
-                            <div>
-                                <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
-                                    {{ contact.first_name }} {{ contact.last_name }}
-                                </h1>
-                                <p class="font-normal text-sm text-gray-700 dark:text-black"><font-awesome-icon icon="building" />
-                                    {{ contact.company.company_name }} </p>
-                                <p class="font-normal text-sm text-gray-700 dark:text-black"><font-awesome-icon icon="thumbtack" />
-                                    {{ contact.title }} </p>
-                                <p class="font-normal text-sm text-gray-700 dark:text-black"><font-awesome-icon icon="phone" />
-                                    {{ contact.phone_number }} </p>
-                                <p class="font-normal text-sm text-gray-700 dark:text-black"><font-awesome-icon icon="envelope" />
-                                    {{ contact.email }} </p>
+                            <div class="flex flex-row mt-1">
+                                <div><font-awesome-icon icon="thumbtack" /></div>
+                                <div class="ml-1 break-words">
+                                    {{ contact.title }} 
+                                </div>
                             </div>
+                            <div class="flex flex-row mt-1">
+                                <div><font-awesome-icon icon="phone" /></div>
+                                <div class="ml-1">
+                                    {{ contact.phone_number }} 
+                                </div>
+                            </div>
+                            <div class="flex flex-row mt-1">
+                                <div><font-awesome-icon icon="envelope" /></div>
+                                <div class="ml-1 break-all">
+                                    {{ contact.email }} 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="">
                             <div class="flex flex-row-reverse">
                                 <button @click="openDeleteModal(contact.id)"
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
@@ -201,14 +213,13 @@
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="pen" />
                                 </button>
-                                <a href="">
-                                    <button
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
-                                        <font-awesome-icon icon="magnifying-glass" />
-                                    </button>
-                                </a>
+                                <button
+                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
+                                    <font-awesome-icon icon="magnifying-glass" />
+                                </button>
                             </div>
                         </div>
+                        
                     </article>
                 </div> 
             </div>
@@ -257,7 +268,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, computed } from 'vue'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
@@ -266,6 +277,7 @@ const companies = ref([])
 const createClass = ref("hidden")
 const submitClass = ref("")
 const editClass = ref("")
+const search = ref("")
 
 const openEditModalId = ref(false)
 
@@ -738,6 +750,18 @@ const openDeleteModal = (id) => {
 const closeDeleteModal = () => {
     openDeleteModalId.value = null;
 }
+
+const filteredContacts = computed(() => {
+    if (!search.value) return contacts.value
+
+    const keyword = search.value.toLowerCase()
+
+    return contacts.value.filter(contact =>    
+        contact.first_name.toLowerCase().includes(keyword) ||
+        contact.last_name.toLowerCase().includes(keyword)
+    )
+})
+
 
 function formatDate(dateStr) {
   return dayjs(dateStr).format('D MMMM YYYY')
