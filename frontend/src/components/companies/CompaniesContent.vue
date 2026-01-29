@@ -23,19 +23,13 @@
                                     clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <input type="search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-white dark:border-gray-600 dark:placeholder-black dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search" name="search" value="">
+                        <input
+                            type="search"
+                            v-model="search"
+                            placeholder="Search company..."
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5"
+                        />
                     </div>
-                    <button type="submit"
-                        class="p-2.5 ml-2 text-sm font-medium text-white bg-gray-700 rounded-lg border border-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <span class="sr-only">Search</span>
-                    </button>
                 </form>
                 <div class="flex flex-row-reverse">
                     <router-link to="/companies/create-company">
@@ -46,53 +40,53 @@
                     </router-link>
                 </div>
             </div>
-            <div class="grid grid-cols-4 gap-2">
-                <div v-for="company in companies" :key="company.id">
-                    <article class="w-auto max-w-sm h-fit px-4 py-3 rounded-md shadow-md bg-gray-50 border border-gray-800">
+            <div class="grid grid-cols-3 gap-2">
+                <div v-for="company in filteredCompanies" :key="company.id">
+                    <article class="flex flex-col h-full w-auto max-w-sm h-fit px-4 py-3 rounded-md shadow-md bg-gray-50 border border-gray-800">
+                        <div class="flex flex-row-reverse mt-2">
+                            <span class="text-sm font-light text-gray-800 dark:text-gray-800">
+                                {{ company.user.name }} || {{ formatDate(company.created_at) }}
+                            </span>
+                        </div>
                         <div>
-                            <div class="flex flex-row-reverse mt-2">
-                                <span
-                                    class="text-sm font-light text-gray-800 dark:text-gray-800">{{ company.user.name }} || {{ formatDate(company.created_at) }}</span>
+                            <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black break-words">
+                                {{ company.company_name }}
+                            </h1>
+                        </div>
+                        <div class="flex-grow font-normal text-sm text-gray-800">
+                            <div class="flex flex-row mt-1">
+                                <div><font-awesome-icon icon="building" /></div>
+                                <div class="ml-1 break-words">
+                                    {{ company.company_country }} 
+                                </div>
                             </div>
-                            <div>
-                                <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
-                                    {{ company.company_name }}
-                                </h1>
-                                <p class="font-normal text-gray-700 dark:text-black"><font-awesome-icon icon="building" />
-                                    {{ company.company_country }} </p>
-                                <p class="font-normal text-gray-700 dark:text-black"><font-awesome-icon icon="user-tie" />
-                                    {{ company.agent_type }} </p>
-                                <p class="font-normal text-gray-700 dark:text-black"><font-awesome-icon icon="tag" />
-                                    {{ company.business_source }} </p>
-                                <p class="font-normal text-gray-700 dark:text-black"><font-awesome-icon icon="pen-fancy" />
-                                    Company Notes : 
-                                    <span class="truncate"></span>
-                                        <span class="read-more-show">More <i class="fa fa-angle-down"></i></span>
-                                        <span class="read-more-content hidden"></span>
-                                        <span class="read-more-less hidden">Less <i class="fa fa-angle-up"></i></span>
-                                </p>  
+                            <div class="flex flex-row mt-1">
+                                <div><font-awesome-icon icon="user-tie" /></div>
+                                <div class="ml-1 break-words">
+                                    {{ company.agent_type }} 
+                                </div>
                             </div>
+                            <div class="flex flex-row mt-1">
+                                <div><font-awesome-icon icon="tag" /></div>
+                                <div class="ml-1 break-words">
+                                    {{ company.business_source }} 
+                                </div>
+                            </div>                            
+                        </div>
+                        <div>
                             <div class="flex flex-row-reverse">
                                 <button @click="openDeleteModal(company.id)"
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="trash" />
                                 </button>
-                                <button @click="goEdit(company.id)""
+                                <button @click="goEdit(company.id)"
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="pen" />
                                 </button>
-                                <a href="">
-                                    <button
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
-                                        <font-awesome-icon icon="user-group" />
-                                    </button>
-                                </a>
-                                <a href="">
-                                    <button
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
-                                        <font-awesome-icon icon="note-sticky" />
-                                    </button>
-                                </a>
+                                <button @click="goDetails(company.id)"
+                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
+                                    <font-awesome-icon icon="magnifying-glass" />
+                                </button>
                             </div>
                         </div>
                     </article>
@@ -143,7 +137,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import { useRouter } from 'vue-router'
@@ -153,6 +147,8 @@ const router = useRouter()
 
 const openDeleteModalId = ref(null)
 const deletedCompanyId = ref(null)
+
+const search = ref("")
 
 const message = ref('')
 const messageClass = ref('hidden')
@@ -182,6 +178,10 @@ const fetchCompanies = async () => {
 
 const goEdit = (id) => {
     router.push({ name: 'companies_edit_company', params: { id } })
+}
+
+const goDetails = (id) => {
+    router.push({ name: 'companies_details_company', params: { id } })
 }
 
 const openDeleteModal = (id) => {
@@ -218,6 +218,16 @@ const deleteCompany = async (companyID) => {
     closeDeleteModal()
     await fetchCompanies()
 }
+
+const filteredCompanies = computed(() => {
+    if (!search.value) return companies.value
+
+    const keyword = search.value.toLowerCase()
+
+    return companies.value.filter(company =>    
+        company.company_name.toLowerCase().includes(keyword)
+    )
+})
 
 function formatDate(dateStr) {
   return dayjs(dateStr).format('D MMMM YYYY')

@@ -180,7 +180,7 @@
                         <div class="flex-grow font-normal text-sm text-gray-800">
                             <div class="flex flex-row mt-1">
                                 <div><font-awesome-icon icon="building" /></div>
-                                <div class="ml-1break-words">
+                                <div class="ml-1 break-words">
                                     {{ contact.company.company_name }} 
                                 </div>
                             </div>
