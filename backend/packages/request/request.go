@@ -422,6 +422,22 @@ func GetUserNotes(c *gin.Context) {
 	})
 }
 
+func GetNotesByCompany(c *gin.Context) {
+	idParam := c.Param("id")
+	idInt, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+	idUint := uint(idInt)
+
+	var notes []models.Note
+	notes = database.ReadNotesByCompany(idUint)
+	c.JSON(http.StatusOK, gin.H{
+		"notes": notes,
+	})
+}
+
 func PostNotes(c *gin.Context) {
 	var postNotes models.Note
 	if err := c.ShouldBindJSON(&postNotes); err != nil {

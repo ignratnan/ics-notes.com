@@ -298,6 +298,12 @@ func ReadUserNotes(userID uint) []models.Note {
 	return readUserNotes
 }
 
+func ReadNotesByCompany(companyID uint) []models.Note {
+	var readNotesByCompany []models.Note
+	db.Preload("User").Preload("Company").Preload("Contact").Preload("Event").Where("company_id = ?", companyID).Order("created_at DESC").Find(&readNotesByCompany)
+	return readNotesByCompany
+}
+
 func UpdateNote(note models.NoteUpdate) {
 	var updateNote models.NoteUpdate
 	updateNote = note

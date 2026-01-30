@@ -41,6 +41,7 @@ func main() {
 		protected.GET("/me", request.GetUserMe)
 		protected.GET("/notes", request.GetUserNotes)
 		protected.GET("/notes/:id", request.GetNoteByID)
+		protected.GET("/notes/company/:id", request.GetNotesByCompany)
 		protected.POST("/notes", request.PostNotes)
 		protected.PUT("/notes/:id", request.EditNote)
 		protected.DELETE("/notes/:id", request.DeleteNote)
