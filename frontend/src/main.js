@@ -15,10 +15,10 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 /* import specific icons */
-import { faFolder, faTrash, faEdit, faPlus, faMagnifyingGlass, faPen, faUserGroup, faNoteSticky, faBuilding, faUserTie, faTag, faPenFancy, faShareFromSquare, faThumbTack, faPhone, faEnvelope, faAngleRight, faMinus, faBold, faItalic, faUnderline, faStrikethrough, faLink, faCalendarDays, faNotesMedical, faAddressBook, faBorderAll, faUser} from '@fortawesome/free-solid-svg-icons';
+import { faFolder, faTrash, faEdit, faPlus, faMagnifyingGlass, faPen, faUserGroup, faNoteSticky, faBuilding, faUserTie, faTag, faPenFancy, faShareFromSquare, faThumbTack, faPhone, faEnvelope, faAngleRight, faMinus, faBold, faItalic, faUnderline, faStrikethrough, faLink, faCalendarDays, faNotesMedical, faAddressBook, faBorderAll, faUser, faCircleInfo, faAngleLeft, faCircle, faSquare} from '@fortawesome/free-solid-svg-icons';
 
 /* add icons to the library */
-library.add(faFolder, faTrash, faEdit, faPlus, faMagnifyingGlass, faPen, faUserGroup, faNoteSticky, faBuilding, faUserTie, faTag, faPenFancy, faShareFromSquare, faThumbTack, faPhone, faEnvelope, faAngleRight, faMinus, faBold, faItalic, faUnderline, faStrikethrough, faLink, faCalendarDays, faNotesMedical, faAddressBook, faBorderAll, faUser);
+library.add(faFolder, faTrash, faEdit, faPlus, faMagnifyingGlass, faPen, faUserGroup, faNoteSticky, faBuilding, faUserTie, faTag, faPenFancy, faShareFromSquare, faThumbTack, faPhone, faEnvelope, faAngleRight, faMinus, faBold, faItalic, faUnderline, faStrikethrough, faLink, faCalendarDays, faNotesMedical, faAddressBook, faBorderAll, faUser, faCircleInfo, faAngleLeft, faCircle, faSquare);
 
 const app = createApp(App);
 
