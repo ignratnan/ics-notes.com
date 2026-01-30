@@ -1,0 +1,3 @@
+1.  Create reset password and change email page
+2.  Re-manage notes view, top-right created date, horizontal details, remove created by for user notes
+3.  Create link to search notes by event, contact, and company

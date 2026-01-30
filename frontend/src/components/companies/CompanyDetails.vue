@@ -123,25 +123,25 @@
                                     <div class="p-3 font-bold text-lg text-gray-800 border-gray-200 shadow-md">
                                         Notes
                                     </div>
-                                    <div class="pr-4">
+                                    <div class="">
                                         <div v-for="note in sanitizedNotes" :key="note.id">
                                             <div class="flex flex-row border-b-2 pb-2">
                                                 <div class="text-xs mt-3 mr-2">
                                                     <font-awesome-icon icon="square" />
                                                 </div>
                                                 <div class="flex-1 min-w-0">
-                                                    <div class="flex flex-row justify-between">
+                                                    <div class="flex flex-row justify-between mb-1">
                                                         <div>
                                                             <h1 class="mt-2 text-base font-semibold text-gray-800 dark:text-black">
                                                                 {{ note.title }}
                                                             </h1>
                                                         </div>
-                                                        <div class="mt-2 text-base font-semibold text-gray-800 dark:text-black">
+                                                        <div class="mt-2 text-sm text-gray-800 dark:text-black">
                                                             {{ formatDate(note.created_at) }}
                                                         </div>
                                                     </div>
                                                         
-                                                    <div class="pt-1 flex-grow font-normal text-sm text-gray-800">
+                                                    <div class="pt-1 pb-1 flex-grow font-normal text-sm text-gray-800">
                                                         <div class="">
                                                             <div 
                                                                 class="note-content prose" 
