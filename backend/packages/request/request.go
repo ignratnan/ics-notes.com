@@ -61,6 +61,44 @@ func EditUser(c *gin.Context) {
 	})
 }
 
+func ResetPasswordByUser(c *gin.Context) {
+	var input models.FormResetPassword
+	var user models.User
+	var userUp models.UserUpdate
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	userID, _ := c.Get("user_id")
+	idUint := userID.(uint)
+	user = database.ReadUser(idUint)
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.OldPassword))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect password"})
+		return
+	}
+
+	hashedPassword, _ := bcrypt.GenerateFromPassword(
+		[]byte(input.NewPassword),
+		bcrypt.DefaultCost,
+	)
+
+	userUp.ID = idUint
+	userUp.Name = user.Name
+	userUp.Email = user.Email
+	userUp.Password = string(hashedPassword)
+
+	database.UpdateUser(userUp)
+	message := "Password updated successfully!"
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": message,
+	})
+
+}
+
 func PostEvent(c *gin.Context) {
 	var postEvents models.Event
 	if err := c.ShouldBindJSON(&postEvents); err != nil {
