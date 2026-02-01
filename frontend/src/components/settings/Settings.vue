@@ -207,6 +207,9 @@ const resetPassword = async () => {
             rePassModal.value = 'hidden'
         } catch (error) {
             console.error("Logout failed, but proceeding with redirect:", error);
+            repassMessage.value = error.response?.data?.error || 'An unexpected error occurred.';
+            repassMessageClass.value = 'bg-red-100 text-red-700'
+
         }
 
     } else {

@@ -58,18 +58,24 @@
                     class="divide-y divide-gray-100 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                     <details class="group" open>
                         <summary
-                            class="flex cursor-pointer list-none items-center justify-between p-2 text-lg font-medium text-secondary-900 group-open:bg-gray-50">
-                            <div class="flex items-center justify-between">
+                            class="flex cursor-pointer list-none items-center justify-between p-2 group-open:bg-gray-50">
+                            <div class="text-lg font-medium text-secondary-900">
                                 {{ note.title }}
                             </div>
-                            <div class="text-secondary-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor"
-                                    class="block h-5 w-5 transition-all duration-300 group-open:rotate-180">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
+                            <div class="flex flex-row">
+                                <div class="text-sm italic text-secondary-900 mr-4">
+                                    {{ formatDate(note.created_at) }}
+                                </div>
+                                <div class="text-secondary-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor"
+                                        class="block h-5 w-5 transition-all duration-300 group-open:rotate-180">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </div>
                             </div>
+                            
                         </summary>
                         <div class="p-4">
                             <div 
@@ -81,26 +87,31 @@
                         <hr class="">
 
                         <div class="p-2 group-open:bg-gray-50 flex flex-col ml-2 italic text-secondary-500 text-sm">
-                            <div>
-                                Company :
-                                <a href="#">{{ note.company.company_name }}</a>
+                            <div class="flex flex-row justify-between">
+                                <div>
+                                    <div class="flex flex-row">
+                                        <div class="w-16">Company</div>
+                                        <div class="mr-2">:</div>
+                                        <button @click="goCompanyDetails(note.company.id)" class="hover:underline">
+                                            {{ note.company.company_name }}
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-row">
+                                        <div class="w-16">Contact</div>
+                                        <div class="mr-2">:</div>
+                                        <button @click="goContacts(note.contact)" class="hover:underline">
+                                            {{ note.contact.first_name }} {{ note.contact.last_name }}
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-row">
+                                        <div class="w-16">Event</div>
+                                        <div class="mr-2">:</div>
+                                        <button>{{ note.event.event_name }}</button>
+                                    </div>
+                                </div> 
                             </div>
-                            <div>
-                                Contact :
-                                <a href="#">{{ note.contact.first_name }} {{ note.contact.last_name }}</a>
-                            </div>
-                            <div>
-                                Event :
-                                <a href="#">{{ note.event.event_name }}</a>
-                            </div>
-                            <div>
-                                Created date :
-                                <a>{{ formatDate(note.created_at) }}</a>
-                            </div>
-                            <div>
-                                Created by :
-                                <a>{{ note.user.name }}</a>
-                            </div>
+                            
+
 
                             <div class="flex flex-row-reverse">
                                 <button
@@ -257,6 +268,22 @@
         closeDeleteModal()
         await fetcNotes()
     }
+
+    const goCompanyDetails = (id) => {
+        router.push({ name: 'companies_details_company', params: { id } })
+    }
+
+    const goContacts = (contact) => {
+        const keyword = `${contact.first_name} ${contact.last_name}`
+
+        router.push({
+            name: 'contacts',
+            query: {
+                search: keyword
+            }
+        })
+    }
+
 </script>
 
 <style scoped>

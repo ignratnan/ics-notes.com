@@ -8,10 +8,15 @@
       <div class="py-1">
         <div class="mx-auto sm:px-6 lg:px-8">
             <div name="header" class="mt-2 p-2">
-                <h1 class="font-bold text-xl text-gray-800">
-                    COMPANIES <font-awesome-icon icon="angle-right" />
-                    DETAILS-COMPANY
-                </h1>
+                <div class="flex flex-row font-bold text-xl text-gray-800">
+                    <div>
+                        <button @click="goToCompanies" class="hover:underline">
+                            COMPANIES
+                        </button>
+                    </div> 
+                    <div><font-awesome-icon icon="angle-right" /></div>
+                    <div>DETAILS-COMPANY</div>
+                </div>
                 <hr>
             </div>
             <div class="max-w mb-5 bg-black">
@@ -19,12 +24,6 @@
                     <div class="flex flex-row justify-between my-1 p-3 font-bold text-2xl text-gray-800 border-gray-200 shadow-md">
                         <div>
                             {{ company.company_name }}
-                        </div>
-                        <div>
-                            <button type="button" @click="goToCompanies"
-                                class="inline items-center px-4 py-2 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
-                                <font-awesome-icon icon="angle-left" />Back
-                            </button>
                         </div>
                     </div>
                     

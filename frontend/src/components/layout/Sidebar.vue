@@ -35,30 +35,7 @@
             </nav>
         </div>
 
-        <div class="w-64 p-2 mb-2 bg-gray-700">
-            <ul class="list-disc list-inside">
-                <li>
-                    <button class="hover:text-gray-400">
-                        Reset Password
-                    </button>
-                </li>
-                <li>
-                    <button @click="migrateNotes" class="hover:text-gray-400">
-                        Re-create Notes
-                    </button>
-                </li>
-                <li>
-                    <button @click="migrateCompanies" class="hover:text-gray-400">
-                        Re-create Companies
-                    </button>
-                </li>
-            </ul>
-        </div>
-
         <div class="mt-auto p-4">
-        
-            
-
             <div class="flex justify-between">
                 <button @click="goSettings" class="flex items-center text-white hover:text-gray-400 transition-colors duration-200">
                     <font-awesome-icon icon="gear" />
@@ -108,30 +85,6 @@ const handleLogout = async () => {
     }
 }
 
-const migrateNotes = async () => {
-    try {
-        const res = await axios.get(`${BASE_URL}/migrate-notes`);
-
-        message.value = res.data.message
-        messageClass.value = 'bg-green-100 text-green-700';
-
-
-    } catch (error) {
-        console.error("Logout failed, but proceeding with redirect:", error);
-    }
-}
-
-const migrateCompanies = async () => {
-    try {
-        const res = await axios.get(`${BASE_URL}/migrate-companies`);
-
-        message.value = res.data.message
-        messageClass.value = 'bg-green-100 text-green-700';
-
-    } catch (error) {
-        console.error("Logout failed, but proceeding with redirect:", error);
-    }
-}
 
 const goSettings = () => {
     router.push({ name: 'settings' })

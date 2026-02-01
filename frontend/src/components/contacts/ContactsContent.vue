@@ -268,10 +268,13 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, computed } from 'vue'
+import { onMounted, reactive, ref, computed, watch } from 'vue'
 import axios from 'axios'
 import dayjs from 'dayjs'
+import { useRoute, useRouter } from 'vue-router'
 
+const route = useRoute()
+const router = useRouter()
 const contacts = ref([])
 const companies = ref([])
 const createClass = ref("hidden")
@@ -564,6 +567,10 @@ onMounted(async () => {
 
     const resCompanies = await axios.get(`${BASE_URL}/companies`)
     companies.value = resCompanies.data.companies
+
+    if (route.query.search) {
+        search.value = route.query.search
+    }
   } catch (err) {
     console.error('Error fetching users:', err)
   }
@@ -752,16 +759,57 @@ const closeDeleteModal = () => {
 }
 
 const filteredContacts = computed(() => {
+  const keyword = search.value.toLowerCase()
+
+  return contacts.value
+    .map(contact => ({
+      ...contact,
+      full_name: `${contact.first_name} ${contact.last_name}`
+    }))
+    .filter(contact => {
+      if (!keyword) return true
+
+      return (
+        contact.first_name.toLowerCase().includes(keyword) ||
+        contact.last_name.toLowerCase().includes(keyword) ||
+        contact.full_name.toLowerCase().includes(keyword)
+      )
+    })
+})
+
+/*
+const filteredContacts = computed(() => {
     if (!search.value) return contacts.value
 
     const keyword = search.value.toLowerCase()
 
-    return contacts.value.filter(contact =>    
+    return contacts.value.filter(contact =>
         contact.first_name.toLowerCase().includes(keyword) ||
         contact.last_name.toLowerCase().includes(keyword)
     )
 })
 
+const newContacts = computed(() =>
+    contacts.value.map(contact => ({
+        ...contact,
+        full_name: `${contact.first_name} ${contact.last_name}`
+    }))
+)
+*/
+
+watch(search, (val) => {
+  router.replace({
+    query: val ? { search: val } : {}
+  })
+})
+/*
+watch(
+  () => route.query.search,
+  (val) => {
+    search.value = val || ''
+  }
+)
+*/
 
 function formatDate(dateStr) {
   return dayjs(dateStr).format('D MMMM YYYY')
