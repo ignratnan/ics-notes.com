@@ -76,7 +76,7 @@ func ResetPasswordByUser(c *gin.Context) {
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.OldPassword))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect password"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect password!"})
 		return
 	}
 
