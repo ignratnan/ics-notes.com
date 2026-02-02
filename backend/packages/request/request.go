@@ -5,12 +5,15 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/ignratnan/ics-notes.com/backend/models"
 	"github.com/ignratnan/ics-notes.com/backend/packages/database"
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/gomail.v2"
 )
 
 func GetUsers(c *gin.Context) {
@@ -612,8 +615,8 @@ func normalizeNoteHTML(old string) string {
 	return s
 }
 
-/*
 func ForgotPassword(c *gin.Context) {
+	var input models.PasswordReset
 	var req struct {
 		Email string `json:"email"`
 	}
@@ -626,12 +629,13 @@ func ForgotPassword(c *gin.Context) {
 	token := uuid.New().String()
 	expiredAt := time.Now().Add(15 * time.Minute)
 
-	db.Exec(`
-        INSERT INTO password_resets (email, token, expired_at)
-        VALUES (?, ?, ?)
-    `, req.Email, token, expiredAt)
+	input.Email = req.Email
+	input.Token = token
+	input.ExpiredAt = expiredAt
 
-	resetLink := "https://frontend.com/reset-password?token=" + token
+	database.CreatePasswordReset(input)
+
+	resetLink := "http://localhost:5173/reset-password?token=" + token
 
 	sendResetEmail(req.Email, resetLink)
 
@@ -639,4 +643,24 @@ func ForgotPassword(c *gin.Context) {
 		"message": "Reset password link sent to your email",
 	})
 }
-*/
+
+func sendResetEmail(to, link string) {
+	m := gomail.NewMessage()
+	m.SetHeader("From", "no-reply@icsnotes.com")
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", "Reset Password")
+	m.SetBody("text/html", `
+        <p>Klik link berikut untuk reset password:</p>
+        <a href="`+link+`">Reset Password</a>
+        <p>Link berlaku 15 menit.</p>
+    `)
+
+	d := gomail.NewDialer(
+		"smtp.gmail.com",
+		587,
+		"notes.ics.api@gmail.com",
+		"ogzvzckordqebrcd",
+	)
+
+	d.DialAndSend(m)
+}

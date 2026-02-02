@@ -15,7 +15,7 @@ import ContactsCreateContact from '@/components/contacts/CreateContact.vue'
 import CompaniesCreateCompany from '@/components/companies/CreateCompany.vue'
 import CompaniesEditCompany from '@/components/companies/EditCompany.vue'
 import CompaniesDetailsCompany from '@/components/companies/CompanyDetails.vue'
-import ResetPassword from '@/components/temporary/ResetPassword.vue';
+import ResetPassword from '@/components/layout/ResetPassword.vue';
 import ForgotPassword from '@/components/layout/ForgotPassword.vue';
 import Settings from '@/components/settings/Settings.vue'
 

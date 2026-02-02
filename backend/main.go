@@ -32,6 +32,7 @@ func main() {
 
 	r.POST("/login", auth.Login)
 	r.PUT("/reset-password", request.EditUser)
+	r.POST("/forgot-password", request.ForgotPassword)
 
 	protected := r.Group("/")
 	protected.Use(middleware.AuthRequired())

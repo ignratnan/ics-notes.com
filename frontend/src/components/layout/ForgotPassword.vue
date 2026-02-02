@@ -8,7 +8,7 @@
             <h1 class="text-lg font-bold text-center text-gray-800">Send email to reset your password</h1>
 
             <!-- Form with Vue event handling -->
-            <form @submit.prevent="resetPassword" class="space-y-4">
+            <form @submit.prevent="submit" class="space-y-4">
                 
                 <!-- Email Input Field -->
                 <div class="mb-8">
@@ -62,33 +62,15 @@
     const message = ref('');
     const messageClass = ref('');
 
-
     const email = ref('')
 
     const BASE_URL = 'http://localhost:8080';
 
-    const resetPassword = async () => {
-        // Reset messages before new submission
-        message.value = '';
-        messageClass.value = '';
-        try {
-            const url = `${BASE_URL}/reset-password`;
-            const res = await axios.put(url, form)
-
-            message.value = response.data.message;
-            messageClass.value = 'bg-green-100 text-green-700';
-  
-            // Reset the form after successful submission
-            form.email = '';
-            form.password = '';
-
-
-        } catch (error) {
-            const errorMessage = error.response?.data?.error || 'An unexpected error occurred.';
-            message.value = errorMessage;
-            messageClass.value = 'bg-red-100 text-red-700';
-        }
-
-        goToLogin()
-    };
+    const submit = async () => {
+        const res = await axios.post(`${BASE_URL}/forgot-password`, {
+            email: email.value
+        })
+        message.value = res.data.message
+    }
+       
 </script>
