@@ -33,9 +33,9 @@
                 </div>
 
                 <div>
-                    <button @click="goToResetPassword" type="button"
-                    class="underline text-blue-600">
-                        Forgot Password ?
+                    <button @click="goToForgotPassword" type="button"
+                    class="text-blue-600 hover:underline">
+                        Forgot Password?
                     </button>
                 </div>
 
@@ -65,9 +65,8 @@
     // Get the router instance
     const router = useRouter();
     // Method to handle the navigation
-    const goToResetPassword = () => {
-    // Navigate to the route with the name 'dashboard'
-    router.push({ name: 'reset_password' });
+    const goToForgotPassword = () => {
+        router.push({ name: 'forgot_password' });
     };
 
     const message = ref('');

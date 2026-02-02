@@ -611,3 +611,32 @@ func normalizeNoteHTML(old string) string {
 
 	return s
 }
+
+/*
+func ForgotPassword(c *gin.Context) {
+	var req struct {
+		Email string `json:"email"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	token := uuid.New().String()
+	expiredAt := time.Now().Add(15 * time.Minute)
+
+	db.Exec(`
+        INSERT INTO password_resets (email, token, expired_at)
+        VALUES (?, ?, ?)
+    `, req.Email, token, expiredAt)
+
+	resetLink := "https://frontend.com/reset-password?token=" + token
+
+	sendResetEmail(req.Email, resetLink)
+
+	c.JSON(200, gin.H{
+		"message": "Reset password link sent to your email",
+	})
+}
+*/

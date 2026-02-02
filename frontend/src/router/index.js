@@ -15,8 +15,8 @@ import ContactsCreateContact from '@/components/contacts/CreateContact.vue'
 import CompaniesCreateCompany from '@/components/companies/CreateCompany.vue'
 import CompaniesEditCompany from '@/components/companies/EditCompany.vue'
 import CompaniesDetailsCompany from '@/components/companies/CompanyDetails.vue'
-import SettingsChangePassword from '@/components/settings/ChangePassword.vue'
 import ResetPassword from '@/components/temporary/ResetPassword.vue';
+import ForgotPassword from '@/components/layout/ForgotPassword.vue';
 import Settings from '@/components/settings/Settings.vue'
 
 const routes = [
@@ -104,14 +104,14 @@ const routes = [
         props: true
     },
     {
-        path: '/settings/change-password',
-        name: 'settings_change_password',
-        component: SettingsChangePassword,
-    },
-    {
         path: '/reset-password',
         name: 'reset_password',
         component: ResetPassword,
+    },
+    {
+        path: '/forgot-password',
+        name: 'forgot_password',
+        component: ForgotPassword,
     },
     {
         path: '/settings',

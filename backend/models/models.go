@@ -157,3 +157,11 @@ type FormResetPassword struct {
 	NewPassword     string `json:"new_password"`
 	ConfirmPassword string `json:"confirm_password"`
 }
+
+type PasswordReset struct {
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	Email     string    `json:"email"`
+	Token     string    `json:"token"`
+	ExpiredAt time.Time `json:"expired_at"`
+	CreatedAt time.Time `json:"created_at"`
+}

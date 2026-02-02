@@ -64,7 +64,7 @@
                             </div>
                             <div class="flex flex-row">
                                 <div class="text-sm italic text-secondary-900 mr-4">
-                                    {{ formatDate(note.created_at) }}
+                                    {{ note.user.name }} || {{ formatDate(note.created_at) }}
                                 </div>
                                 <div class="text-secondary-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -114,10 +114,6 @@
 
 
                             <div class="flex flex-row-reverse">
-                                <button
-                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
-                                    <font-awesome-icon icon="share-from-square" />
-                                </button>
                                 <button @click="goToNoteEdit(note.id)"
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="pen" />

@@ -16,7 +16,7 @@
                     <input 
                         type="text" 
                         id="email" 
-                        v-model="form.email"
+                        v-model="email"
                         required
                         autocomplete="off" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
@@ -63,9 +63,7 @@
     const messageClass = ref('');
 
 
-    const form = reactive({
-        email: '',
-    });
+    const email = ref('')
 
     const BASE_URL = 'http://localhost:8080';
 

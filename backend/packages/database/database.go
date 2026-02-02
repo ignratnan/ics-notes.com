@@ -19,9 +19,9 @@ func ConnectDB() {
 		}
 	*/
 
-	dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
+	//dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
 
-	//dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -384,4 +384,10 @@ func DeleteSession(sessionID string) {
 	var deleteSession string
 	deleteSession = sessionID
 	db.Delete(&models.Session{}, deleteSession)
+}
+
+func CreatePasswordReset(input models.PasswordReset) {
+	var passwordReset models.PasswordReset
+	passwordReset = input
+	db.Create(&passwordReset)
 }

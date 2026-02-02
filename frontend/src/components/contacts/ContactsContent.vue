@@ -49,7 +49,7 @@
                                     </h1>
                                     <hr>
                                 </div>
-                                <form class="">
+                                <form @submit.prevent>
                                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                                         <label for="company_id"
                                             class="block text-gray-700 text-sm font-bold my-2">
@@ -96,7 +96,7 @@
                                             </label>
                                             <input type="text" v-model="form.title"
                                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                id="title" placeholder="Enter Title" wire:model="title">
+                                                id="title" placeholder="Enter Title">
                                         </div>
 
                                         <div class="flex mb-4">
