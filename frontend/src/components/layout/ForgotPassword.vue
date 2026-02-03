@@ -5,43 +5,50 @@
                 <img :src="logoBlack" class="h-20" alt="ICS" />
             </div>
             <hr>
-            <h1 class="text-lg font-bold text-center text-gray-800">Send email to reset your password</h1>
+            <h1 :class="infoBefore" class="text-base font-bold text-center text-gray-800">Send email to reset your password</h1>
+            <h1 :class="infoAfter" class="text-base font-bold text-center text-gray-800">{{ message }}</h1>
 
-            <!-- Form with Vue event handling -->
-            <form @submit.prevent="submit" class="space-y-4">
-                
-                <!-- Email Input Field -->
-                <div class="mb-8">
-                    <label for="email" class="block text-gray-700 font-medium">Email Address</label>
-                    <input 
-                        type="text" 
-                        id="email" 
-                        v-model="email"
-                        required
-                        autocomplete="off" 
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
-                </div>
-
-                <!-- Password Input Field -->
-                <div class="flex flex-row gap-2">
-                    <button @click="goToLogin"
-                        class="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
-                        Cancel
-                    </button>
-                    <button 
-                        type="submit"
-                        class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
-                        Send
-                    </button>
-                </div>
-                
-
-            </form>
-            <!-- Status Message -->
-            <div v-if="message" :class="messageClass" class="p-4 rounded-lg mb-4 text-sm font-medium">
-                {{ message }}
+            <div :class="formBefore">
+                <form @submit.prevent="submit" class="space-y-4">
+                    <div class="mb-8">
+                        <label for="email" class="block text-gray-700 font-medium">Email Address</label>
+                        <input 
+                            type="text" 
+                            id="email" 
+                            v-model="email"
+                            required
+                            autocomplete="off" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+                    </div>
+                    <div class="flex flex-row gap-2">
+                        <button @click="goToLogin"
+                            class="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit"
+                            class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
+                            Send
+                        </button>
+                    </div>
+                </form>
             </div>
 
+            <div :class="formLoading" class="flex justify-center">
+                <img :src="loading" class="w-8" alt="Loading..." />
+            </div>
+
+            <div :class="formAfter" class="mb-8">
+                <label for="email" class="block text-gray-700 font-medium">Email Address</label>
+                <input 
+                    type="text" 
+                    id="email" 
+                    v-model="email"
+                    required
+                    autocomplete="off"
+                    readonly
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+            </div>
         </div>
     </div>
 </template>
@@ -49,6 +56,8 @@
 <script setup>
     import { ref, reactive } from 'vue';
     import logoBlack from '@/assets/ics_logo_black.png';
+    import loading from '@/assets/loading.gif';
+
     import { useRouter } from 'vue-router';
     import axios from 'axios'
 
@@ -60,17 +69,31 @@
     };
 
     const message = ref('');
-    const messageClass = ref('');
+
+    const infoBefore = ref('');
+    const infoAfter = ref('hidden');
+
+    const formBefore = ref('');
+    const formLoading = ref('hidden')
+    const formAfter = ref('hidden');
 
     const email = ref('')
 
     const BASE_URL = 'http://localhost:8080';
 
     const submit = async () => {
+        formBefore.value = 'hidden'
+        formAfter.value = ''
+        formLoading.value = ''
+
         const res = await axios.post(`${BASE_URL}/forgot-password`, {
             email: email.value
         })
+        formLoading.value = 'hidden'
         message.value = res.data.message
+        infoBefore.value = 'hidden'
+        infoAfter.value = ''
+        
     }
        
 </script>

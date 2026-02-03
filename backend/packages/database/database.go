@@ -1,6 +1,8 @@
 package database
 
 import (
+	"time"
+
 	"github.com/ignratnan/ics-notes.com/backend/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -19,9 +21,9 @@ func ConnectDB() {
 		}
 	*/
 
-	dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
+	//dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
 
-	//dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -390,4 +392,26 @@ func CreatePasswordReset(input models.PasswordReset) {
 	var passwordReset models.PasswordReset
 	passwordReset = input
 	db.Create(&passwordReset)
+}
+
+func ReadPasswordReset(input models.FormResetPasswordViaEmail) (models.PasswordReset, error) {
+	var req models.FormResetPasswordViaEmail
+	var passwordReset models.PasswordReset
+
+	req = input
+	err := db.
+		Where("token = ? AND expired_at > ?", req.Token, time.Now()).
+		First(&passwordReset).
+		Error
+	if err != nil {
+		return passwordReset, err
+	}
+
+	return passwordReset, nil
+}
+
+func DeletePasswordResetByToken(input string) {
+	var token string
+	token = input
+	db.Where("token = ?", token).Delete(&models.PasswordReset{})
 }

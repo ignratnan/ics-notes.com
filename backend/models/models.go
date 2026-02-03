@@ -165,3 +165,8 @@ type PasswordReset struct {
 	ExpiredAt time.Time `json:"expired_at"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+type FormResetPasswordViaEmail struct {
+	Token    string `json:"token"`
+	Password string `json:"password"`
+}

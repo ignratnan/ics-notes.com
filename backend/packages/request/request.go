@@ -629,7 +629,7 @@ func ForgotPassword(c *gin.Context) {
 	token := uuid.New().String()
 	expiredAt := time.Now().Add(15 * time.Minute)
 
-	input.Email = req.Email
+	input.Email = "ngurah@icstravelgroup.com"
 	input.Token = token
 	input.ExpiredAt = expiredAt
 
@@ -637,7 +637,7 @@ func ForgotPassword(c *gin.Context) {
 
 	resetLink := "http://localhost:5173/reset-password?token=" + token
 
-	sendResetEmail(req.Email, resetLink)
+	sendResetEmail(input.Email, resetLink)
 
 	c.JSON(200, gin.H{
 		"message": "Reset password link sent to your email",
@@ -646,13 +646,13 @@ func ForgotPassword(c *gin.Context) {
 
 func sendResetEmail(to, link string) {
 	m := gomail.NewMessage()
-	m.SetHeader("From", "no-reply@icsnotes.com")
+	m.SetHeader("From", "ICS Notes <notes.ics.api@gmail.com>")
 	m.SetHeader("To", to)
 	m.SetHeader("Subject", "Reset Password")
 	m.SetBody("text/html", `
-        <p>Klik link berikut untuk reset password:</p>
+        <p>Please use the link below to reset your password:</p>
         <a href="`+link+`">Reset Password</a>
-        <p>Link berlaku 15 menit.</p>
+        <p>The link is valid for 15 minutes.</p>
     `)
 
 	d := gomail.NewDialer(
@@ -663,4 +663,33 @@ func sendResetEmail(to, link string) {
 	)
 
 	d.DialAndSend(m)
+}
+
+func ResetPassword(c *gin.Context) {
+	var input models.FormResetPasswordViaEmail
+	var passwordReset models.PasswordReset
+	var userUpdate models.UserUpdate
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	passwordReset, err := database.ReadPasswordReset(input)
+
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Token invalid or expired"})
+		return
+	}
+
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+
+	userUpdate.Email = passwordReset.Email
+	userUpdate.Password = string(hashedPassword)
+
+	database.UpdateUser(userUpdate)
+
+	database.DeletePasswordResetByToken(input.Token)
+
+	c.JSON(200, gin.H{"message": "Password successfully reset"})
 }

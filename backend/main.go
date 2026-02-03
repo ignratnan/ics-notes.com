@@ -31,7 +31,7 @@ func main() {
 	auth.AdminCheck()
 
 	r.POST("/login", auth.Login)
-	r.PUT("/reset-password", request.EditUser)
+	r.POST("/reset-password", request.ResetPassword)
 	r.POST("/forgot-password", request.ForgotPassword)
 
 	protected := r.Group("/")
