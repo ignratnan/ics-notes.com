@@ -24,7 +24,7 @@
                         <input
                             type="search"
                             v-model="search"
-                            placeholder="Search event..."
+                            placeholder="Search contact..."
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5"
                         />
                     </div>
@@ -34,133 +34,142 @@
                     class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
                     Create New Contact
                     </button>
+                    
+                    <button @click="downloadContactsCsv"
+                    class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
+                    Download
+                    </button>
                 </div>
             </div>
 
-            <div :class="createClass" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-start justify-center p-4 overflow-y-auto sm:items-center z-50 p-4">
+            <div :class="createClass" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-start justify-center p-4 sm:items-center z-50 p-4">
                 <div class="flex flex-row max-w-lg w-full">
-                    <div class="w-full bg-white rounded-xl shadow-2xl overflow-y-auto max-h-screen sm:max-h-[90vh]">
-                        <div class="py-1">
-                            <div class="sm:px-6 lg:px-8">
-                               
-                                <div name="header" class="mt-2 p-2 text-center">
-                                    <h1 class="font-bold text-xl text-gray-800">
-                                        CREATE CONTACT
-                                    </h1>
-                                    <hr>
-                                </div>
-                                <form @submit.prevent>
-                                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <label for="company_id"
-                                            class="block text-gray-700 text-sm font-bold my-2">
-                                            Company
-                                        </label>
-                                        <div class="flex flex-row">
-                                            <select v-model="form.company_id"
-                                                class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                                <option value=0 disabled selected>Select Company</option>
-                                                <option v-for="company in companies" :key="'company' + company.id" :value="company.id" required>{{ company.company_name }}</option>
-                                            </select>
-                                        </div>
-                                        <div class="mt-4 mb-4">
-                                            <label for="contact_gender" class="block text-gray-700 text-sm font-bold my-2">
-                                                Gender
+                    <div class="w-full bg-white rounded-xl shadow-2xl py-4">
+                        <div class="overflow-y-auto max-h-screen sm:max-h-[90vh]">
+                            <div class="py-1">
+                                <div class="sm:px-6 lg:px-8">
+                                
+                                    <div name="header" class="mt-2 p-2 text-center">
+                                        <h1 class="font-bold text-xl text-gray-800">
+                                            CREATE CONTACT
+                                        </h1>
+                                        <hr>
+                                    </div>
+                                    <form @submit.prevent>
+                                        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <label for="company_id"
+                                                class="block text-gray-700 text-sm font-bold my-2">
+                                                Company
                                             </label>
-                                            <select v-model="form.contact_gender"
-                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                                <option value="" selected disabled>Select Option</option>
-                                                <option value="Mr.">Mr. </option>
-                                                <option value="Mrs.">Mrs. </option>
-                                                <option value="Ms.">Ms. </option>
-                                            </select>
-                                        </div>
-                                        <div class="mt-4 mb-4">
-                                            <label for="first_name" class="block text-gray-700 text-sm font-bold my-2">
-                                                First Name
-                                            </label>
-                                            <input type="text" v-model="form.first_name"
-                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                id="first_name" placeholder="Enter First Name">
-                                        </div>
-                                        <div class="mt-4 mb-4">
-                                            <label for="last_name" class="block text-gray-700 text-sm font-bold my-2">
-                                                Last Name
-                                            </label>
-                                            <input type="text" v-model="form.last_name"
-                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                id="last_name" placeholder="Enter Last Name">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="title" class="block text-gray-700 text-sm font-bold my-2">
-                                                Title
-                                            </label>
-                                            <input type="text" v-model="form.title"
-                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                id="title" placeholder="Enter Title">
-                                        </div>
-
-                                        <div class="flex mb-4">
-                                            <div class="w-full">
-                                                <label for="phone_code" class="block text-gray-700 text-sm font-bold my-2">
-                                                    Country
-                                                </label>
-                                                <select v-model="phone.code"
+                                            <div class="flex flex-row">
+                                                <select v-model="form.company_id"
                                                     class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                                                    <option value="" disabled selected>Select Country</option>
-                                                    <option v-for="code in countryCodes" :key="'code' + code.code" :value="code.code" required>{{ code.name }} ({{ code.code }})</option>
+                                                    <option value=0 disabled selected>Select Company</option>
+                                                    <option v-for="company in companies" :key="'company' + company.id" :value="company.id" required>{{ company.company_name }}</option>
                                                 </select>
                                             </div>
-                                        </div>
-
-                                        <label for="phone_" class="block text-gray-700 text-sm font-bold my-2">
-                                            Phone Number
-                                        </label>
-                                        <div class="flex mb-4">
-                                            <div>
-                                                 <input type="tel" v-model="phone.code" readonly
-                                                    class="shadow appearance-none border rounded w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                            <div class="mt-4 mb-4">
+                                                <label for="contact_gender" class="block text-gray-700 text-sm font-bold my-2">
+                                                    Gender
+                                                </label>
+                                                <select v-model="form.contact_gender"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
+                                                    <option value="" selected disabled>Select Option</option>
+                                                    <option value="Mr.">Mr. </option>
+                                                    <option value="Mrs.">Mrs. </option>
+                                                    <option value="Ms.">Ms. </option>
+                                                </select>
                                             </div>
-                                            <div class="w-full">
-                                                <input type="tel" v-model="phone.number"
+                                            <div class="mt-4 mb-4">
+                                                <label for="first_name" class="block text-gray-700 text-sm font-bold my-2">
+                                                    First Name
+                                                </label>
+                                                <input type="text" v-model="form.first_name"
                                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    id="phone_number" placeholder="Enter Phone Number">
+                                                    id="first_name" placeholder="Enter First Name">
+                                            </div>
+                                            <div class="mt-4 mb-4">
+                                                <label for="last_name" class="block text-gray-700 text-sm font-bold my-2">
+                                                    Last Name
+                                                </label>
+                                                <input type="text" v-model="form.last_name"
+                                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                    id="last_name" placeholder="Enter Last Name">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="title" class="block text-gray-700 text-sm font-bold my-2">
+                                                    Title
+                                                </label>
+                                                <input type="text" v-model="form.title"
+                                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                    id="title" placeholder="Enter Title">
+                                            </div>
+
+                                            <div class="flex mb-4">
+                                                <div class="w-full">
+                                                    <label for="phone_code" class="block text-gray-700 text-sm font-bold my-2">
+                                                        Country
+                                                    </label>
+                                                    <select v-model="phone.code"
+                                                        class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
+                                                        <option value="" disabled selected>Select Country</option>
+                                                        <option v-for="code in countryCodes" :key="'code' + code.code" :value="code.code" required>{{ code.name }} ({{ code.code }})</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <label for="phone_number" class="block text-gray-700 text-sm font-bold my-2">
+                                                Phone Number
+                                            </label>
+                                            <div class="flex mb-4">
+                                                <div>
+                                                    <input type="tel" v-model="phone.code"
+                                                        class="shadow appearance-none border rounded w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="phone_code" placeholder="Code" autocomplete="off">
+                                                </div>
+                                                <div class="w-full">
+                                                    <input type="tel" v-model="phone.number"
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="phone_number" placeholder="Enter Phone Number" autocomplete="off">
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-4">
+                                                <label for="email" class="block text-gray-700 text-sm font-bold my-2">
+                                                    Email
+                                                </label>
+                                                <input type="text" v-model="form.email"
+                                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                    id="email" placeholder="Enter Email">
+                                            </div>
+
+                                            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                <span :class="submitClass" class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                                                    <button type="button" @click="submitContact"
+                                                        class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                                        Save
+                                                    </button>
+                                                </span>
+                                                <span :class="editClass" class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                                                    <button type="button" @click="editContact(form.id)"
+                                                        class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                                        Save Edit
+                                                    </button>
+                                                </span>
+                                                <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                                                    <button type="button" @click="closeCreateModal"
+                                                        class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                                                        Cancel
+                                                    </button>
+                                                </span>
                                             </div>
                                         </div>
-
-                                        <div class="mb-4">
-                                            <label for="email" class="block text-gray-700 text-sm font-bold my-2">
-                                                Email
-                                            </label>
-                                            <input type="text" v-model="form.email"
-                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                id="email" placeholder="Enter Email">
-                                        </div>
-
-                                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                            <span :class="submitClass" class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                                                <button type="button" @click="submitContact"
-                                                    class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                                    Save
-                                                </button>
-                                            </span>
-                                            <span :class="editClass" class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                                                <button type="button" @click="editContact(form.id)"
-                                                    class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                                    Save Edit
-                                                </button>
-                                            </span>
-                                            <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                                                <button type="button" @click="closeCreateModal"
-                                                    class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-                                                    Cancel
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </form>
-                                      
+                                    </form>
+                                        
+                                </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -174,7 +183,7 @@
                         </div>
                         <div>
                             <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
-                                {{ contact.first_name }} {{ contact.last_name }}
+                                {{ contact.first_name }} {{ contact.last_name }} ({{ contact.contact_gender }})
                             </h1>
                         </div>
                         <div class="flex-grow font-normal text-sm text-gray-800">
@@ -756,6 +765,20 @@ const openDeleteModal = (id) => {
 
 const closeDeleteModal = () => {
     openDeleteModalId.value = null;
+}
+
+const downloadContactsCsv = async () => {
+  const res = await axios.get(
+    'http://localhost:8080/contacts/export/csv',
+    { responseType: 'blob' }
+  )
+
+  const url = window.URL.createObjectURL(new Blob([res.data]))
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', 'contacts.csv')
+  document.body.appendChild(link)
+  link.click()
 }
 
 const filteredContacts = computed(() => {

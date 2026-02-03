@@ -13,7 +13,7 @@
                     <div class="mb-8">
                         <label for="email" class="block text-gray-700 font-medium">Email Address</label>
                         <input 
-                            type="text" 
+                            type="email" 
                             id="email" 
                             v-model="email"
                             required
@@ -41,7 +41,7 @@
             <div :class="formAfter" class="mb-8">
                 <label for="email" class="block text-gray-700 font-medium">Email Address</label>
                 <input 
-                    type="text" 
+                    type="email" 
                     id="email" 
                     v-model="email"
                     required

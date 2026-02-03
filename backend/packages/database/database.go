@@ -21,9 +21,9 @@ func ConnectDB() {
 		}
 	*/
 
-	//dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
 
-	dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
+	//dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -171,6 +171,8 @@ func ReadContacts(order string) ([]models.Contact, error) {
 		query = query.Order("created_at ASC")
 	case "newest":
 		query = query.Order("created_at DESC")
+	case "first_name_asc":
+		query = query.Order("first_name ASC")
 	case "first_name_desc":
 		query = query.Order("first_name DESC")
 	default:
@@ -414,4 +416,14 @@ func DeletePasswordResetByToken(input string) {
 	var token string
 	token = input
 	db.Where("token = ?", token).Delete(&models.PasswordReset{})
+}
+
+func IsEmailExists(email string) (bool, error) {
+	var count int64
+
+	err := db.Model(&models.User{}).
+		Where("email = ?", email).
+		Count(&count).Error
+
+	return count > 0, err
 }

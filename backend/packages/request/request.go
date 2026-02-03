@@ -1,6 +1,7 @@
 package request
 
 import (
+	"encoding/csv"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -626,6 +627,19 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
+	isExists, err := database.IsEmailExists(req.Email)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Database error"})
+		return
+	}
+
+	if !isExists {
+		c.JSON(200, gin.H{
+			"message": "Reset password link sent to your email",
+		})
+		return
+	}
+
 	token := uuid.New().String()
 	expiredAt := time.Now().Add(15 * time.Minute)
 
@@ -692,4 +706,88 @@ func ResetPassword(c *gin.Context) {
 	database.DeletePasswordResetByToken(input.Token)
 
 	c.JSON(200, gin.H{"message": "Password successfully reset"})
+}
+
+func ExportContactsCSV(c *gin.Context) {
+	var contacts []models.Contact
+	var order string
+	order = "first_name_asc"
+
+	contacts, err := database.ReadContacts(order)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to fetch contacts",
+		})
+		return
+	}
+
+	// Set header agar browser download file
+	filename := "contacts_" + time.Now().Format("20060102_150405") + ".csv"
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", `attachment; filename="`+filename+`"`)
+
+	writer := csv.NewWriter(c.Writer)
+	defer writer.Flush()
+
+	// =====================
+	// CSV HEADER
+	// =====================
+	writer.Write([]string{
+		"ID",
+		"Gender",
+		"First Name",
+		"Last Name",
+		"Company",
+		"Title",
+		"Phone",
+		"Email",
+		"Created At",
+	})
+
+	// =====================
+	// CSV ROWS
+	// =====================
+	for _, contact := range contacts {
+		gender := ""
+		if contact.ContactGender != "" {
+			gender = contact.ContactGender
+		}
+		first_name := ""
+		if contact.FirstName != "" {
+			first_name = contact.FirstName
+		}
+		last_name := ""
+		if contact.LastName != "" {
+			last_name = contact.LastName
+		}
+		company_name := ""
+		if contact.Company.CompanyName != "" {
+			company_name = contact.Company.CompanyName
+		}
+		title := ""
+		if contact.Title != "" {
+			title = contact.Title
+		}
+		phone_number := ""
+		if contact.PhoneNumber != "" {
+			phone_number = contact.PhoneNumber
+		}
+		email := ""
+		if contact.Email != "" {
+			email = contact.Email
+		}
+
+		writer.Write([]string{
+			fmt.Sprint(contact.ID),
+			gender,
+			first_name,
+			last_name,
+			company_name,
+			title,
+			phone_number,
+			email,
+			contact.CreatedAt.Format("2006-01-02"),
+		})
+	}
 }

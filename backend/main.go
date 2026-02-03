@@ -37,6 +37,7 @@ func main() {
 	protected := r.Group("/")
 	protected.Use(middleware.AuthRequired())
 	{
+		protected.GET("/contacts/export/csv", request.ExportContactsCSV)
 		protected.PUT("/reset-password-by-user", request.ResetPasswordByUser)
 		protected.GET("/migrate-notes", request.MigrateOldNotes)
 		protected.GET("/migrate-companies", request.MigrateOldCompanies)

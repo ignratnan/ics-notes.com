@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-    import { ref, reactive } from 'vue';
+    import { ref, reactive, onMounted } from 'vue';
     import logoBlack from '@/assets/ics_logo_black.png';
     import { useRouter, useRoute } from 'vue-router';
     import axios from 'axios'
@@ -74,6 +74,12 @@
     });
 
     const BASE_URL = 'http://localhost:8080';
+
+    onMounted(() => {
+        if (!route.query.token) {
+            router.push({ name: 'login' });
+        }
+    });
 
     const resetPassword = async () => {
         form.token = route.query.token
