@@ -9,14 +9,14 @@
                     <hr>
                 </div>
 
-                <div name="content"  >
+                <div name="content">
                     <div class="p-4 my-2">
                         <div class="font-bold text-xl text-gray-800">
                     
                         </div>
-                        <div class="flex flex-row justify-around my-2">
-                            <div class="w-48 flex flex-col justify-center">
-                                <button @click="" type="button" class="mx-2 flex items-center h-32 w-full border-2 rounded-md shadow-md hover:bg-gray-100">
+                        <div class="flex justify-around my-2">
+                            <div class="w-48">
+                                <button @click="" type="button" class="flex items-center h-32 w-full border-2 rounded-md shadow-md hover:bg-gray-100">
                                     <div class="p-2 justify-items-center w-full">
                                         <div>
                                             <font-awesome-icon icon="note-sticky" class="text-4xl" />
@@ -24,7 +24,7 @@
                                         <div class="mt-2 font-bold text-base text-gray-800">My Notes</div>
                                     </div>
                                 </button>
-                                <div class="mt-1 mx-2 flex flex-row w-full">
+                                <div class="mt-1 flex flex-row w-full">
                                     <div class="flex items-center w-2/4 border-2 shadow-md hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div class="font-bold text-base text-gray-800">
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                             <div class="w-48">
-                                <button @click="" type="button" class="mx-2 flex items-center h-32 w-full border-2 rounded-md shadow-md hover:bg-gray-100">
+                                <button @click="" type="button" class="flex items-center h-32 w-full border-2 rounded-md shadow-md hover:bg-gray-100">
                                     <div class="p-2 justify-items-center w-full">
                                         <div>
                                             <font-awesome-icon icon="calendar-days" class="text-4xl" />
@@ -57,7 +57,7 @@
                                         <div class="mt-2 font-bold text-base text-gray-800">Events</div>
                                     </div>
                                 </button>
-                                <div class="mt-1 mx-2 flex flex-row w-full">
+                                <div class="mt-1 flex flex-row w-full">
                                     <div class="flex items-center w-2/4 border-2 shadow-md hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div class="font-bold text-base text-gray-800">
@@ -82,7 +82,7 @@
                                 </div>
                             </div>
                             <div class="w-48">
-                                <button @click="" type="button" class="mx-2 flex items-center h-32 w-full border-2 rounded-md shadow-md hover:bg-gray-100">
+                                <button @click="" type="button" class="flex items-center h-32 w-full border-2 rounded-md shadow-md hover:bg-gray-100">
                                     <div class="p-2 justify-items-center w-full">
                                         <div>
                                             <font-awesome-icon icon="building" class="text-4xl" />
@@ -90,7 +90,7 @@
                                         <div class="mt-2 font-bold text-base text-gray-800">Companies</div>
                                     </div>
                                 </button>
-                                <div class="mt-1 mx-2 flex flex-row w-full">
+                                <div class="mt-1 flex flex-row w-full">
                                     <div class="flex items-center w-2/4 border-2 shadow-md hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div class="font-bold text-base text-gray-800">
@@ -115,7 +115,7 @@
                                 </div>
                             </div>
                             <div class="w-48">
-                                <button @click="" type="button" class="mx-2 flex items-center h-32 w-full border-2 rounded-md shadow-md hover:bg-gray-100">
+                                <button @click="" type="button" class="flex items-center h-32 w-full border-2 rounded-md shadow-md hover:bg-gray-100">
                                     <div class="p-2 justify-items-center w-full">
                                         <div>
                                             <font-awesome-icon icon="address-book" class="text-4xl" />
@@ -123,7 +123,7 @@
                                         <div class="mt-2 font-bold text-base text-gray-800">Contacts</div>
                                     </div>
                                 </button>
-                                <div class="mt-1 mx-2 flex flex-row w-full">
+                                <div class="mt-1 flex flex-row w-full">
                                     <div class="flex items-center w-2/4 border-2 shadow-md hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div class="font-bold text-base text-gray-800">
@@ -148,10 +148,33 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div v-for="event in events" :key="event.id">
-                                {{ event.event_name }}
+                        <div class="p-6">
+                            <div class="bg-gray-50">
+                                <div>
+                                    <div class="flex flex-row justify-between border-t font-bold text-base text-gray-800">
+                                        <div class="px-4">
+                                            Title
+                                        </div>
+                                        <div class="px-4 w-48 text-right">
+                                            Created At
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </div>
+                                <div v-for="note in notes" :key="note.id">
+                                    <div class="flex flex-row justify-between">
+                                        <div class="px-4">
+                                            {{ note.title }}
+                                        </div>
+                                        <div class="px-4 w-48 text-right">
+                                            {{ formatDate(note.created_at) }}
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </div>
+                        
                             </div>
+                            
                         </div>
         
                     </div>
@@ -187,7 +210,7 @@
     const BASE_URL = "http://localhost:8080"
 
     function formatDate(dateStr) {
-        return dayjs(dateStr).format('D MMMM YYYY')
+        return dayjs(dateStr).format('D-MMM-YYYY')
     }
 
     onMounted(async () => {
