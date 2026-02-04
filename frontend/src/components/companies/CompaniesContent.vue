@@ -38,6 +38,12 @@
                         Create New Company
                         </button>
                     </router-link>
+                    <a :href="downloadCompanies">
+                        <button
+                        class="inline items-center px-4 py-2 my-3 mx-2 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
+                        Download
+                        </button>
+                    </a>
                 </div>
             </div>
             <div class="grid grid-cols-3 gap-2">
@@ -85,7 +91,7 @@
                                 </button>
                                 <button @click="goDetails(company.id)"
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
-                                    <font-awesome-icon icon="magnifying-glass" />
+                                    <font-awesome-icon icon="circle-info" />
                                 </button>
                             </div>
                         </div>
@@ -154,6 +160,8 @@ const message = ref('')
 const messageClass = ref('hidden')
 
 const BASE_URL = 'http://localhost:8080'
+
+const downloadCompanies = `${BASE_URL}/companies/export/csv`
 
 onMounted(async () => {
   try {

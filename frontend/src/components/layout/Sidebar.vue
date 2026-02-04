@@ -24,13 +24,13 @@
                 <font-awesome-icon class="mr-3" icon="calendar-days" />
                 Events
             </router-link>
-            <router-link to="/contacts" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                <font-awesome-icon class="mr-3" icon="address-book" />
-                Contacts
-            </router-link>
             <router-link to="/companies" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
                 <font-awesome-icon class="mr-3" icon="building" />
                 Companies
+            </router-link>
+            <router-link to="/contacts" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                <font-awesome-icon class="mr-3" icon="address-book" />
+                Contacts
             </router-link>
             </nav>
         </div>

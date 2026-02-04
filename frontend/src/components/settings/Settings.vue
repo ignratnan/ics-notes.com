@@ -84,7 +84,7 @@
                                     <label for="old-password" class="block text-gray-700 text-sm font-bold my-2">
                                         Old Password
                                     </label>
-                                    <input v-model="repass.old_password" type="password" 
+                                    <input v-model="repass.old_password" type="password" required
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="old-password" placeholder="Enter the old password">
                                 </div>
@@ -92,7 +92,7 @@
                                     <label for="new-password" class="block text-gray-700 text-sm font-bold my-2">
                                         New Password
                                     </label>
-                                    <input v-model="repass.new_password" type="password"
+                                    <input v-model="repass.new_password" type="password" required
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="new-password" placeholder="Enter the new password">
                                 </div>
@@ -100,7 +100,7 @@
                                     <label for="confirm-password" class="block text-gray-700 text-sm font-bold my-2">
                                         Confirm
                                     </label>
-                                    <input v-model="repass.confirm_password" type="password"
+                                    <input v-model="repass.confirm_password" type="password" required
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="confirm-password" placeholder="Re-enter the new password">
                                 </div>

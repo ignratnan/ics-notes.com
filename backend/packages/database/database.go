@@ -21,9 +21,9 @@ func ConnectDB() {
 		}
 	*/
 
-	dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
+	//dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
 
-	//dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -116,10 +116,29 @@ func CreateCompany(company models.Company) {
 	db.Create(&createCompany)
 }
 
-func ReadCompanies() []models.Company {
+func ReadCompanies(order string) ([]models.Company, error) {
 	var readCompanies []models.Company
-	db.Preload("User").Order("company_name asc").Find(&readCompanies)
-	return readCompanies
+
+	query := db.Preload("User")
+
+	switch order {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "company_name_asc":
+		query = query.Order("company_name ASC")
+	case "company_name_desc":
+		query = query.Order("company_name DESC")
+	default:
+		query = query.Order("company_name ASC")
+	}
+
+	if err := query.Find(&readCompanies).Error; err != nil {
+		return nil, err
+	}
+
+	return readCompanies, nil
 }
 
 func UpdateCompany(company models.CompanyUpdate) {
@@ -426,4 +445,143 @@ func IsEmailExists(email string) (bool, error) {
 		Count(&count).Error
 
 	return count > 0, err
+}
+
+func ReadNotesForDashboard(order string, limit int) ([]models.Note, int64, error) {
+	var readNotes []models.Note
+	var total int64
+
+	db.Model(&models.Note{}).Count(&total)
+
+	query := db.Preload("User").Preload("Company").Preload("Contact").Preload("Event")
+
+	switch order {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "a_to_z":
+		query = query.Order("title ASC")
+	case "z_to_a":
+		query = query.Order("title DESC")
+	default:
+		query = query.Order("created_at DESC")
+	}
+
+	if err := query.Limit(limit).Find(&readNotes).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return readNotes, total, nil
+}
+
+func ReadMyNotesForDashboard(userID uint, order string, limit int) ([]models.Note, int64, error) {
+	var readMyNotes []models.Note
+	var total int64
+
+	db.Model(&models.Note{}).Where("user_id = ?", userID).Count(&total)
+
+	query := db.Preload("User").Preload("Company").Preload("Contact").Preload("Event").Where("user_id = ?", userID)
+
+	switch order {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "a_to_z":
+		query = query.Order("title ASC")
+	case "z_to_a":
+		query = query.Order("title DESC")
+	default:
+		query = query.Order("created_at DESC")
+	}
+
+	if err := query.Limit(limit).Find(&readMyNotes).Error; err != nil {
+		return nil, 0, err
+	}
+	return readMyNotes, total, nil
+}
+
+func ReadEventsForDashboard(order string, limit int) ([]models.Event, int64, error) {
+	var readEvents []models.Event
+	var total int64
+
+	db.Model(&models.Event{}).Count(&total)
+
+	query := db.Preload("User")
+
+	switch order {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "a_to_z":
+		query = query.Order("event_name ASC")
+	case "z_to_a":
+		query = query.Order("event_name DESC")
+	default:
+		query = query.Order("created_at DESC")
+	}
+
+	if err := query.Limit(limit).Find(&readEvents).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return readEvents, total, nil
+}
+
+func ReadCompaniesForDashboard(order string, limit int) ([]models.Company, int64, error) {
+	var readCompanies []models.Company
+	var total int64
+
+	db.Model(&models.Company{}).Count(&total)
+
+	query := db.Preload("User")
+
+	switch order {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "a_to_z":
+		query = query.Order("company_name ASC")
+	case "z_to_a":
+		query = query.Order("company_name DESC")
+	default:
+		query = query.Order("company_name ASC")
+	}
+
+	if err := query.Limit(limit).Find(&readCompanies).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return readCompanies, total, nil
+}
+
+func ReadContactsForDashboard(order string, limit int) ([]models.Contact, int64, error) {
+	var readContacts []models.Contact
+	var total int64
+
+	db.Model(&models.Contact{}).Count(&total)
+
+	query := db.Preload("User").Preload("Company")
+
+	switch order {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "a_to_z":
+		query = query.Order("first_name ASC")
+	case "z_to_a":
+		query = query.Order("first_name DESC")
+	default:
+		query = query.Order("first_name ASC")
+	}
+
+	if err := query.Limit(limit).Find(&readContacts).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return readContacts, total, nil
 }

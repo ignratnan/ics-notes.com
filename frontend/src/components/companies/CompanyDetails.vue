@@ -77,7 +77,7 @@
                     <div class="mb-6">
                         <div class="bg-gray-50 py-2 border-t-2">
                             <div class="flex flex-row">
-                                <div class="p-2 w-2/6 mr-2 border-r-2">
+                                <div class="p-2 pr-4 w-2/6 mr-2 border-r-2">
                                     <div class="p-3 font-bold text-lg text-gray-800 border-gray-200 shadow-md">
                                         Contacts
                                     </div>
@@ -89,10 +89,13 @@
                                                     <font-awesome-icon icon="square" />
                                                 </div>
                                                 <div>
-                                                    <div>
-                                                        <h1 class="mt-2 text-base font-semibold text-gray-800 dark:text-black">
+                                                    <div class="mt-2 text-base font-semibold text-gray-800 dark:text-black">
+                                                        <span>
                                                             {{ contact.first_name }} {{ contact.last_name }}
-                                                        </h1>
+                                                        </span>
+                                                        <span v-if="contact.contact_gender" class="ml-1">
+                                                            ({{ contact.contact_gender }})
+                                                        </span>
                                                     </div>
                                                     <div class="font-normal text-sm text-gray-800 break-words italic">
                                                         {{ contact.title }} 
@@ -160,16 +163,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    
-                    
                 </div>
             </div>
         </div>

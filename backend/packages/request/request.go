@@ -203,7 +203,16 @@ func DeleteEvent(c *gin.Context) {
 
 func GetCompanies(c *gin.Context) {
 	var getCompanies []models.Company
-	getCompanies = database.ReadCompanies()
+	var order string
+	order = "company_name ASC"
+	getCompanies, err := database.ReadCompanies(order)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to get companies",
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"companies": getCompanies,
 	})
@@ -331,7 +340,7 @@ func GetContacts(c *gin.Context) {
 	getContacts, err := database.ReadContacts(order)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to fetch events",
+			"error": "failed to fetch contacts",
 		})
 		return
 	}
@@ -583,8 +592,17 @@ func MigrateOldNotes(c *gin.Context) {
 
 func MigrateOldCompanies(c *gin.Context) {
 	var companies []models.Company
+	var order string
 
-	companies = database.ReadCompanies()
+	order = "company_name ASC"
+	companies, err := database.ReadCompanies(order)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to get companies",
+		})
+		return
+	}
 
 	count := 0
 
@@ -726,6 +744,10 @@ func ExportContactsCSV(c *gin.Context) {
 	filename := "contacts_" + time.Now().Format("20060102_150405") + ".csv"
 	c.Header("Content-Type", "text/csv")
 	c.Header("Content-Disposition", `attachment; filename="`+filename+`"`)
+	c.Header("Cache-Control", "no-cache")
+
+	// UTF-8 BOM (WAJIB untuk Excel)
+	c.Writer.Write([]byte("\xEF\xBB\xBF"))
 
 	writer := csv.NewWriter(c.Writer)
 	defer writer.Flush()
@@ -734,12 +756,10 @@ func ExportContactsCSV(c *gin.Context) {
 	// CSV HEADER
 	// =====================
 	writer.Write([]string{
-		"ID",
-		"Gender",
-		"First Name",
-		"Last Name",
-		"Company",
+		"No",
+		"Full Name",
 		"Title",
+		"Company",
 		"Phone",
 		"Email",
 		"Created At",
@@ -748,10 +768,11 @@ func ExportContactsCSV(c *gin.Context) {
 	// =====================
 	// CSV ROWS
 	// =====================
+	number := 1
 	for _, contact := range contacts {
 		gender := ""
 		if contact.ContactGender != "" {
-			gender = contact.ContactGender
+			gender = "(" + contact.ContactGender + ")"
 		}
 		first_name := ""
 		if contact.FirstName != "" {
@@ -761,6 +782,8 @@ func ExportContactsCSV(c *gin.Context) {
 		if contact.LastName != "" {
 			last_name = contact.LastName
 		}
+		full_name := first_name + " " + last_name + " " + gender
+
 		company_name := ""
 		if contact.Company.CompanyName != "" {
 			company_name = contact.Company.CompanyName
@@ -771,7 +794,7 @@ func ExportContactsCSV(c *gin.Context) {
 		}
 		phone_number := ""
 		if contact.PhoneNumber != "" {
-			phone_number = contact.PhoneNumber
+			phone_number = fmt.Sprintf(`="%s"`, contact.PhoneNumber)
 		}
 		email := ""
 		if contact.Email != "" {
@@ -779,15 +802,169 @@ func ExportContactsCSV(c *gin.Context) {
 		}
 
 		writer.Write([]string{
-			fmt.Sprint(contact.ID),
-			gender,
-			first_name,
-			last_name,
-			company_name,
+			fmt.Sprint(number),
+			full_name,
 			title,
+			company_name,
 			phone_number,
 			email,
 			contact.CreatedAt.Format("2006-01-02"),
 		})
+
+		number++
 	}
+}
+
+func ExportCompaniesCSV(c *gin.Context) {
+	var companies []models.Company
+	var order string
+	order = "company_name_asc"
+
+	companies, err := database.ReadCompanies(order)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to fetch contacts",
+		})
+		return
+	}
+
+	// Set header agar browser download file
+	filename := "companies_" + time.Now().Format("20060102_150405") + ".csv"
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", `attachment; filename="`+filename+`"`)
+	c.Header("Cache-Control", "no-cache")
+
+	// UTF-8 BOM (WAJIB untuk Excel)
+	c.Writer.Write([]byte("\xEF\xBB\xBF"))
+
+	writer := csv.NewWriter(c.Writer)
+	defer writer.Flush()
+
+	// =====================
+	// CSV HEADER
+	// =====================
+	writer.Write([]string{
+		"No",
+		"Company Name",
+		"Country",
+		"Agent Type",
+		"Business Source",
+		"Created At",
+	})
+
+	// =====================
+	// CSV ROWS
+	// =====================
+	number := 1
+	for _, company := range companies {
+		company_name := ""
+		if company.CompanyName != "" {
+			company_name = company.CompanyName
+		}
+		company_country := ""
+		if company.CompanyCountry != "" {
+			company_country = company.CompanyCountry
+		}
+		agent_type := ""
+		if company.AgentType != "" {
+			agent_type = company.AgentType
+		}
+
+		business_source := ""
+		if company.BusinessSource != "" {
+			business_source = company.BusinessSource
+		}
+
+		writer.Write([]string{
+			fmt.Sprint(number),
+			company_name,
+			company_country,
+			agent_type,
+			business_source,
+			company.CreatedAt.Format("2006-01-02"),
+		})
+
+		number++
+	}
+}
+
+func GetDashboard(c *gin.Context) {
+	var notes []models.Note
+	var my_notes []models.Note
+	var events []models.Event
+	var companies []models.Company
+	var contacts []models.Contact
+	var notes_total int64
+	var my_notes_total int64
+	var events_total int64
+	var companies_total int64
+	var contacts_total int64
+
+	var order string
+	var limit int
+
+	order = "newest"
+	limit = 5
+
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	idUint := userIDRaw.(uint)
+
+	notes, notes_total, err := database.ReadNotesForDashboard(order, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
+
+	my_notes, my_notes_total, err = database.ReadMyNotesForDashboard(idUint, order, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
+
+	events, events_total, err = database.ReadEventsForDashboard(order, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
+
+	companies, companies_total, err = database.ReadCompaniesForDashboard(order, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
+
+	contacts, contacts_total, err = database.ReadContactsForDashboard(order, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"notes":           notes,
+		"my_notes":        my_notes,
+		"events":          events,
+		"companies":       companies,
+		"contacts":        contacts,
+		"notes_total":     notes_total,
+		"my_notes_total":  my_notes_total,
+		"events_total":    events_total,
+		"companies_total": companies_total,
+		"contacts_total":  contacts_total,
+	})
 }

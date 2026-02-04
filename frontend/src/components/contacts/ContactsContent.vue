@@ -34,11 +34,12 @@
                     class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
                     Create New Contact
                     </button>
-                    
-                    <button @click="downloadContactsCsv"
-                    class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
-                    Download
-                    </button>
+                    <a :href="downloadContacts">
+                        <button
+                        class="inline items-center px-4 py-2 my-3 mx-2 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
+                        Download
+                        </button>
+                    </a>
                 </div>
             </div>
 
@@ -181,10 +182,11 @@
                             <span
                                 class="text-sm font-light text-gray-800 dark:text-gray-800"> {{ contact.user.name }} || {{ formatDate(contact.created_at) }}</span>
                         </div>
-                        <div>
-                            <h1 class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
-                                {{ contact.first_name }} {{ contact.last_name }} ({{ contact.contact_gender }})
-                            </h1>
+                        <div class="mt-2 text-lg font-semibold text-gray-800 dark:text-black">
+                            <span>
+                                {{ contact.first_name }} {{ contact.last_name }}
+                            </span>
+                            <span v-if="contact.contact_gender" class="ml-2">({{ contact.contact_gender }})</span>
                         </div>
                         <div class="flex-grow font-normal text-sm text-gray-800">
                             <div class="flex flex-row mt-1">
@@ -221,10 +223,6 @@
                                 <button @click="openEditModal(contact.id)"
                                     class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
                                     <font-awesome-icon icon="pen" />
-                                </button>
-                                <button
-                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black bg-gray-0 rounded-lg hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-0 dark:hover:bg-gray-400 dark:focus:ring-gray-300 ease-in-out duration-150">
-                                    <font-awesome-icon icon="magnifying-glass" />
                                 </button>
                             </div>
                         </div>
@@ -300,6 +298,8 @@ const message = ref('');
 const messageClass = ref('hidden');
 
 const BASE_URL = 'http://localhost:8080'
+
+const downloadContacts = `${BASE_URL}/contacts/export/csv`
 
 const countryCodes = ref([
     
@@ -765,20 +765,6 @@ const openDeleteModal = (id) => {
 
 const closeDeleteModal = () => {
     openDeleteModalId.value = null;
-}
-
-const downloadContactsCsv = async () => {
-  const res = await axios.get(
-    'http://localhost:8080/contacts/export/csv',
-    { responseType: 'blob' }
-  )
-
-  const url = window.URL.createObjectURL(new Blob([res.data]))
-  const link = document.createElement('a')
-  link.href = url
-  link.setAttribute('download', 'contacts.csv')
-  document.body.appendChild(link)
-  link.click()
 }
 
 const filteredContacts = computed(() => {
