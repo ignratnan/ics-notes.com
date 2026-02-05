@@ -177,7 +177,7 @@
             <!-- Sesuaikan jumlah kolom beserta gap jika ingin merubah jumlah data yang ditampilkan-->
             <div class="grid grid-cols-3 gap-2">
                 <div v-for="contact in filteredContacts" :key="contact.id">
-                    <article class="flex flex-col h-full px-4 py-3 rounded-md shadow-md bg-white border border-gray-600">
+                    <article class="flex flex-col h-full px-4 py-3 rounded-md shadow-md bg-white border border-gray-400">
                         <div class="flex flex-row-reverse mt-2">
                             <span
                                 class="text-sm font-light text-gray-800 dark:text-gray-800"> {{ contact.user.name }} || {{ formatDate(contact.created_at) }}</span>

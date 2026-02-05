@@ -81,7 +81,7 @@
                 </div>
                 <div class="grid grid-cols-3 gap-2">
                     <div v-for="event in filteredEvents" :key="event.id">
-                        <article class="h-full min-h-32 px-4 py-2 rounded-md shadow-md bg-white border border-gray-600 flex flex-col">  
+                        <article class="h-full min-h-32 px-4 py-2 rounded-md shadow-md bg-white border border-gray-400 flex flex-col">  
                             <div class="flex flex-row-reverse">
                                     <span
                                         class="text-sm font-light text-gray-800 dark:text-gray-800">{{ event.user.name }} || {{ formatDate(event.created_at) }}</span>

@@ -48,7 +48,7 @@
             </div>
             <div class="grid grid-cols-3 gap-2">
                 <div v-for="company in filteredCompanies" :key="company.id">
-                    <article class="flex flex-col h-full w-auto max-w-sm h-fit px-4 py-3 rounded-md shadow-md bg-gray-50 border border-gray-800">
+                    <article class="flex flex-col h-full w-auto max-w-sm h-fit px-4 py-3 rounded-md shadow-md bg-gray-50 border border-gray-400">
                         <div class="flex flex-row-reverse mt-2">
                             <span class="text-sm font-light text-gray-800 dark:text-gray-800">
                                 {{ company.user.name }} || {{ formatDate(company.created_at) }}

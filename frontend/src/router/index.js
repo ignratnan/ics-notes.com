@@ -1,6 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from '@/components/Login.vue'
 import Dashboard from '@/components/dashboard/Dashboard.vue';
+import DashboardCreateNote from '@/components/dashboard/CreateNote.vue';
+import DashboardCreateEvent from '@/components/dashboard/CreateEvent.vue';
+import DashboardCreateCompany from '@/components/dashboard/CreateCompany.vue';
+import DashboardCreateContact from '@/components/dashboard/CreateContact.vue';
 import Notes from '@/components/notes/Notes.vue';
 import Events from '@/components/events/Events.vue';
 import Contacts from '@/components/contacts/Contacts.vue';
@@ -29,6 +33,26 @@ const routes = [
         path: '/dashboard', 
         name: 'dashboard', 
         component: Dashboard 
+    },
+    {
+        path: '/dashboard/create-note', 
+        name: 'dashboard_create_note', 
+        component: DashboardCreateNote
+    },
+    {
+        path: '/dashboard/create-event', 
+        name: 'dashboard_create_event', 
+        component: DashboardCreateEvent
+    },
+    {
+        path: '/dashboard/create-company', 
+        name: 'dashboard_create_company', 
+        component: DashboardCreateCompany
+    },
+    {
+        path: '/dashboard/create-contact', 
+        name: 'dashboard_create_contact', 
+        component: DashboardCreateContact
     },
     { 
         path: '/notes', 
