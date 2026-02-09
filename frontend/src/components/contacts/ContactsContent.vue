@@ -40,6 +40,14 @@
                         Download
                         </button>
                     </a>
+                    <div class="inline items-center my-3 mx-2 bg-black border rounded-md font-semibold text-xs">
+                        <select v-model="sort" @change="sortContacts" class="h-full px-2">
+                            <option value="first_name_asc">A to Z</option>
+                            <option value="first_name_desc">Z to A</option>
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -288,6 +296,7 @@ const createClass = ref("hidden")
 const submitClass = ref("")
 const editClass = ref("")
 const search = ref("")
+const sort = ref("first_name_asc")
 
 const openEditModalId = ref(false)
 
@@ -786,42 +795,25 @@ const filteredContacts = computed(() => {
     })
 })
 
-/*
-const filteredContacts = computed(() => {
-    if (!search.value) return contacts.value
-
-    const keyword = search.value.toLowerCase()
-
-    return contacts.value.filter(contact =>
-        contact.first_name.toLowerCase().includes(keyword) ||
-        contact.last_name.toLowerCase().includes(keyword)
-    )
-})
-
-const newContacts = computed(() =>
-    contacts.value.map(contact => ({
-        ...contact,
-        full_name: `${contact.first_name} ${contact.last_name}`
-    }))
-)
-*/
 
 watch(search, (val) => {
   router.replace({
     query: val ? { search: val } : {}
   })
 })
-/*
-watch(
-  () => route.query.search,
-  (val) => {
-    search.value = val || ''
-  }
-)
-*/
 
 function formatDate(dateStr) {
   return dayjs(dateStr).format('D MMMM YYYY')
 }
+
+const sortContacts = async () => {
+    const res = await axios.get('/contacts', {
+        params: {
+        order: sort.value,
+        }
+    })
+    contacts.value = res.data.contacts
+}
+
 
 </script>

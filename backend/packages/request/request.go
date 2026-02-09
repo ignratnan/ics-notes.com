@@ -337,6 +337,7 @@ func GetContacts(c *gin.Context) {
 	var getContacts []models.Contact
 
 	order := c.DefaultQuery("order", "first_name_asc")
+	fmt.Println(order)
 	getContacts, err := database.ReadContacts(order)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
