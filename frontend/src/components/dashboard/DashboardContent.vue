@@ -21,7 +21,7 @@
                                         <div>
                                             <font-awesome-icon icon="note-sticky" class="text-4xl" />
                                         </div>
-                                        <div class="mt-2 font-bold text-base text-gray-800">My Notes</div>
+                                        <div class="mt-2 font-bold text-base text-gray-800">Notes</div>
                                     </div>
                                 </button>
                                 <div class="mt-1 flex flex-row w-full">

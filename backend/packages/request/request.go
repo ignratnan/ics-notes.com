@@ -204,7 +204,7 @@ func DeleteEvent(c *gin.Context) {
 func GetCompanies(c *gin.Context) {
 	var getCompanies []models.Company
 	var order string
-	order = "company_name ASC"
+	order = c.DefaultQuery("order", "newest")
 	getCompanies, err := database.ReadCompanies(order)
 
 	if err != nil {
@@ -336,8 +336,7 @@ func PostContact(c *gin.Context) {
 func GetContacts(c *gin.Context) {
 	var getContacts []models.Contact
 
-	order := c.DefaultQuery("order", "first_name_asc")
-	fmt.Println(order)
+	order := c.DefaultQuery("order", "newest")
 	getContacts, err := database.ReadContacts(order)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -433,7 +432,18 @@ func DeleteContact(c *gin.Context) {
 
 func GetNotes(c *gin.Context) {
 	var getNotes []models.Note
-	getNotes = database.ReadNotes()
+	var order string
+	var err error
+	order = c.DefaultQuery("order", "newest")
+	getNotes, err = database.ReadNotes(order)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
+
 	userID, _ := c.Get("user_id")
 	fmt.Println(userID)
 
@@ -461,12 +471,21 @@ func GetUserNotes(c *gin.Context) {
 	var getUserNotes []models.Note
 	userID, _ := c.Get("user_id")
 	userRole, _ := c.Get("role")
-
+	var order string
+	var err error
+	order = c.DefaultQuery("order", "newest")
 	switch userRole {
 	case "admin":
-		getUserNotes = database.ReadNotes()
+		getUserNotes, err = database.ReadNotes(order)
 	case "user":
-		getUserNotes = database.ReadUserNotes(userID.(uint))
+		getUserNotes, err = database.ReadUserNotes(order, userID.(uint))
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -483,8 +502,18 @@ func GetNotesByCompany(c *gin.Context) {
 	}
 	idUint := uint(idInt)
 
+	userID, _ := c.Get("user_id")
+	userRole, _ := c.Get("role")
+
 	var notes []models.Note
-	notes = database.ReadNotesByCompany(idUint)
+
+	switch userRole {
+	case "admin":
+		notes = database.ReadNotesByCompany(idUint)
+	case "user":
+		notes = database.ReadUserNotesByCompany(userID.(uint), idUint)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"notes": notes,
 	})
@@ -570,8 +599,17 @@ func LogoutHandler(c *gin.Context) {
 
 func MigrateOldNotes(c *gin.Context) {
 	var notes []models.Note
+	var order string
+	var err error
+	order = c.DefaultQuery("order", "newest")
+	notes, err = database.ReadNotes(order)
 
-	notes = database.ReadNotes()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
 
 	count := 0
 

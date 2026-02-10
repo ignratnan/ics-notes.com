@@ -21,9 +21,9 @@ func ConnectDB() {
 		}
 	*/
 
-	dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
+	//dsn := "ngurah:jkfd90-=@tcp(127.0.0.1:3306)/ics_notes_db?charset=utf8mb4&parseTime=True&loc=Local"
 
-	//dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:jkfd90-=@tcp(127.0.0.1:3306)/if0_35983749_icsnotes?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -261,6 +261,8 @@ func ReadEvents(order string) ([]models.Event, error) {
 	switch order {
 	case "oldest":
 		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
 	case "event_name_asc":
 		query = query.Order("event_name ASC")
 	case "event_name_desc":
@@ -309,21 +311,63 @@ func CreateNote(note models.Note) {
 	db.Create(&createNote)
 }
 
-func ReadNotes() []models.Note {
+func ReadNotes(order string) ([]models.Note, error) {
 	var readNotes []models.Note
-	db.Preload("User").Preload("Company").Preload("Contact").Preload("Event").Find(&readNotes)
-	return readNotes
+	query := db.Preload("User").Preload("Company").Preload("Contact").Preload("Event")
+
+	switch order {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "a_to_z":
+		query = query.Order("title ASC")
+	case "z_to_a":
+		query = query.Order("title DESC")
+	default:
+		query = query.Order("created_at DESC")
+	}
+
+	if err := query.Find(&readNotes).Error; err != nil {
+		return nil, err
+	}
+
+	return readNotes, nil
 }
 
-func ReadUserNotes(userID uint) []models.Note {
+func ReadUserNotes(order string, userID uint) ([]models.Note, error) {
 	var readUserNotes []models.Note
-	db.Preload("User").Preload("Company").Preload("Contact").Preload("Event").Where("user_id = ?", userID).Order("created_at DESC").Find(&readUserNotes)
-	return readUserNotes
+	query := db.Preload("User").Preload("Company").Preload("Contact").Preload("Event").Where("user_id = ?", userID)
+
+	switch order {
+	case "oldest":
+		query = query.Order("created_at ASC")
+	case "newest":
+		query = query.Order("created_at DESC")
+	case "a_to_z":
+		query = query.Order("title ASC")
+	case "z_to_a":
+		query = query.Order("title DESC")
+	default:
+		query = query.Order("created_at DESC")
+	}
+
+	if err := query.Find(&readUserNotes).Error; err != nil {
+		return nil, err
+	}
+
+	return readUserNotes, nil
 }
 
 func ReadNotesByCompany(companyID uint) []models.Note {
 	var readNotesByCompany []models.Note
 	db.Preload("User").Preload("Company").Preload("Contact").Preload("Event").Where("company_id = ?", companyID).Order("created_at DESC").Find(&readNotesByCompany)
+	return readNotesByCompany
+}
+
+func ReadUserNotesByCompany(userID uint, companyID uint) []models.Note {
+	var readNotesByCompany []models.Note
+	db.Preload("User").Preload("Company").Preload("Contact").Preload("Event").Where("user_id = ?", userID).Where("company_id = ?", companyID).Order("created_at DESC").Find(&readNotesByCompany)
 	return readNotesByCompany
 }
 
