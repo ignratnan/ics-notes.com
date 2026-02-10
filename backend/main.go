@@ -38,6 +38,8 @@ func main() {
 	protected.Use(middleware.AuthRequired())
 	{
 		protected.GET("/dashboard", request.GetDashboard)
+		protected.GET("/notes/export/csv", request.ExportNotesCSV)
+		protected.GET("/events/export/csv", request.ExportEventsCSV)
 		protected.GET("/companies/export/csv", request.ExportCompaniesCSV)
 		protected.GET("/contacts/export/csv", request.ExportContactsCSV)
 		protected.PUT("/reset-password-by-user", request.ResetPasswordByUser)
