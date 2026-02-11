@@ -32,13 +32,15 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button @click="" type="button" class="flex items-center ml-1 w-1/4 border-2 shadow-md bg-white hover:bg-gray-100">
-                                        <div class="p-2 justify-items-center w-full">
-                                            <div>
-                                                <font-awesome-icon icon="magnifying-glass" class="text-xmd" />
+                                    <a :href="downloadNotes" class="w-1/4 ml-1">
+                                        <button type="button" class="flex items-center w-full border-2 shadow-md bg-white hover:bg-gray-100">
+                                            <div class="p-2 justify-items-center w-full">
+                                                <div>
+                                                    <font-awesome-icon icon="download" class="text-xmd" />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </button>
+                                        </button>
+                                    </a>
                                     <button @click="toCreateNote" type="button" class="flex items-center ml-1 w-1/4 border-2 shadow-md bg-white hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div>
@@ -65,13 +67,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button @click="" type="button" class="flex items-center ml-1 w-1/4 border-2 shadow-md bg-white hover:bg-gray-100">
-                                        <div class="p-2 justify-items-center w-full">
-                                            <div>
-                                                <font-awesome-icon icon="magnifying-glass" class="text-xmd" />
+                                    <a :href="downloadEvents" class="w-1/4 ml-1">
+                                        <button type="button" class="flex items-center w-full border-2 shadow-md bg-white hover:bg-gray-100">
+                                            <div class="p-2 justify-items-center w-full">
+                                                <div>
+                                                    <font-awesome-icon icon="download" class="text-xmd" />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </button>
+                                        </button>
+                                    </a>
+                                    
                                     <button @click="toCreateEvent" type="button" class="flex items-center ml-1 w-1/4 border-2 shadow-md bg-white hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div>
@@ -98,13 +103,15 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button @click="" type="button" class="flex items-center ml-1 w-1/4 border-2 shadow-md bg-white hover:bg-gray-100">
-                                        <div class="p-2 justify-items-center w-full">
-                                            <div>
-                                                <font-awesome-icon icon="magnifying-glass" class="text-xmd" />
+                                    <a :href="downloadCompanies" class="w-1/4 ml-1">
+                                        <button type="button" class="flex items-center w-full border-2 shadow-md bg-white hover:bg-gray-100">
+                                            <div class="p-2 justify-items-center w-full">
+                                                <div>
+                                                    <font-awesome-icon icon="download" class="text-xmd" />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </button>
+                                        </button>
+                                    </a>
                                     <button @click="toCreateCompany" type="button" class="flex items-center ml-1 w-1/4 border-2 shadow-md bg-white hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div>
@@ -131,13 +138,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button @click="" type="button" class="flex items-center ml-1 w-1/4 border-2 shadow-md bg-white hover:bg-gray-100">
-                                        <div class="p-2 justify-items-center w-full">
-                                            <div>
-                                                <font-awesome-icon icon="magnifying-glass" class="text-xmd" />
+                                    <a :href="downloadContacts" class="w-1/4 ml-1">
+                                        <button type="button" class="flex items-center w-full border-2 shadow-md bg-white hover:bg-gray-100">
+                                            <div class="p-2 justify-items-center w-full">
+                                                <div>
+                                                    <font-awesome-icon icon="download" class="text-xmd" />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </button>
+                                        </button>
+                                    </a>
+                                    
                                     <button @click="toCreateContact" type="button" class="flex items-center ml-1 w-1/4 border-2 shadow-md bg-white hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div>
@@ -280,12 +290,13 @@
 </template>
 
 <script setup>
-    import { useRouter } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
     import { onMounted, ref, computed } from 'vue';
     import axios from 'axios';
     import dayjs from 'dayjs'
 
     const router = useRouter();
+    const route = useRoute();
 
     const notes = ref([]);
     const my_notes = ref([]);
@@ -312,11 +323,20 @@
     const contacts_back = ref('bg-white');
 
     const search = ref("");
+    const show = ref("")
 
     const message = ref('');
     const messageClass = ref('hidden');
 
     const BASE_URL = "http://localhost:8080"
+    const downloadNotes = `${BASE_URL}/notes/export/csv`
+    const downloadEvents = `${BASE_URL}/events/export/csv`
+    const downloadCompanies = `${BASE_URL}/companies/export/csv`
+    const downloadContacts = `${BASE_URL}/contacts/export/csv`
+
+
+
+
 
     function formatDate(dateStr) {
         return dayjs(dateStr).format('D-MMM-YYYY')
@@ -324,7 +344,11 @@
 
     onMounted(async () => {
         try {
-            const res = await axios.get(`${BASE_URL}/dashboard`)
+            const res = await axios.get(`${BASE_URL}/dashboard`, {
+                params: {
+                    show: route.query.show || 'notes'
+                }
+            })
             notes.value = res.data.notes
             my_notes.value = res.data.my_notes
             events.value = res.data.events
@@ -337,12 +361,37 @@
             companies_total.value = res.data.companies_total
             contacts_total.value = res.data.contacts_total
 
+            show.value = res.data.show
+
+            getShow(show.value)
+
         } catch (err) {
             console.error('Error fetching users:', err)
         }
     })
 
-    const fetcDashboard = async () => {
+    const getShow = (show) => {
+        switch (show) {
+            case 'notes':
+                showMyNotes()
+                break
+            case 'events':
+                showEvents()
+                break
+            case 'companies':
+                showCompanies()
+                break
+            case 'contacts':
+                showContacts()
+                break
+            default:
+                showMyNotes()
+                break
+        }
+    }
+
+
+    const fetchDashboard = async () => {
         try {
             const res = await axios.get(`${BASE_URL}/dashboard`)
             notes.value = res.data.notes

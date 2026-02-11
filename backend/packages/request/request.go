@@ -1088,6 +1088,9 @@ func GetDashboard(c *gin.Context) {
 
 	var order string
 	var limit int
+	var show string
+
+	show = c.DefaultQuery("show", "notes")
 
 	order = "newest"
 	limit = 5
@@ -1151,5 +1154,6 @@ func GetDashboard(c *gin.Context) {
 		"events_total":    events_total,
 		"companies_total": companies_total,
 		"contacts_total":  contacts_total,
+		"show":            show,
 	})
 }

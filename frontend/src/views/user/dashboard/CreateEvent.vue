@@ -50,8 +50,8 @@
 </template>
 
 <script setup>
-import Sidebar from '@/components/layout/Sidebar.vue'
-import SidebarBlock from '@/components/layout/SidebarBlock.vue'
+import Sidebar from '@/views/user/layout/Sidebar.vue'
+import SidebarBlock from '@/views/user/layout/SidebarBlock.vue'
 
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -80,7 +80,12 @@ const submitEvent = async () => {
         messageClass.value = 'bg-green-100 text-green-700';
 
         setTimeout(() => {
-            router.push({ name: 'dashboard' })
+            router.push({ 
+                name: 'dashboard', 
+                query: {
+                    show: 'events'
+                }
+            })
         }, 300)
 
     } catch (error) {

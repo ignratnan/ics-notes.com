@@ -99,8 +99,8 @@
 </template>
 
 <script setup>
-import Sidebar from '@/components/layout/Sidebar.vue'
-import SidebarBlock from '@/components/layout/SidebarBlock.vue'
+import Sidebar from '@/views/user/layout/Sidebar.vue'
+import SidebarBlock from '@/views/user/layout/SidebarBlock.vue'
 import NoteEditor from '../layout/NoteEditor.vue';
 
 import { onMounted, ref, reactive, watch } from 'vue';
@@ -179,7 +179,12 @@ const submitNote = async () => {
     note.body = "";
 
     setTimeout(() => {
-        router.push({ name: 'dashboard' })
+        router.push({ 
+            name: 'dashboard', 
+            query: {
+                show: 'notes'
+            }
+        })
     }, 300)
 }
 

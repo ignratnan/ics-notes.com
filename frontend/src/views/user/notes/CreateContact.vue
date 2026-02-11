@@ -9,13 +9,16 @@
                 <div class="mx-auto sm:px-6 lg:px-8">
                     <div name="header" class="mt-2 p-2">
                         <h1 class="font-bold text-xl text-gray-800">
-                            DASHBOARD <font-awesome-icon icon="angle-right" />
+                            NOTES <font-awesome-icon icon="angle-right" />
                             CREATE-CONTACT
                         </h1>
                         <hr>
                     </div>
-             
-                    <form @submit.prevent="submitContact">
+                    <button @click="toCreateCompany" type="button"
+                        class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
+                        Create New Company
+                    </button>
+                    <form class="">
                         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <label for="company_id"
                                 class="block text-gray-700 text-sm font-bold my-2">
@@ -85,7 +88,7 @@
                                 <div>
                                         <input type="tel" v-model="phone.code"
                                         class="shadow appearance-none border rounded w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="phone_code" placeholder="Code">
+                                        id="phone_id" placeholder="Code">
                                 </div>
                                 <div class="w-full">
                                     <input type="tel" v-model="phone.number"
@@ -109,13 +112,13 @@
 
                             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                 <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                                    <button type="submit"
+                                    <button type="button" @click="submitContact"
                                         class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green transition ease-in-out duration-150 sm:text-sm sm:leading-5">
                                         Save
                                     </button>
                                 </span>
                                 <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                                    <button type="button" @click="router.push({ name:'dashboard' })"
+                                    <button type="button" @click="router.push({ name:'notes_create_note' })"
                                         class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
                                         Cancel
                                     </button>
@@ -130,8 +133,8 @@
 </template>
 
 <script setup>
-import Sidebar from '@/components/layout/Sidebar.vue'
-import SidebarBlock from '@/components/layout/SidebarBlock.vue'
+import Sidebar from '@/views/user/layout/Sidebar.vue'
+import SidebarBlock from '@/views/user/layout/SidebarBlock.vue'
 
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -449,7 +452,7 @@ const submitContact = async () => {
         phone.number = "";
 
         setTimeout(() => {
-            router.push({ name: 'dashboard' })
+            router.push({ name: 'notes_create_note' })
         }, 300)        
 
     } catch (error) {
@@ -457,5 +460,10 @@ const submitContact = async () => {
         message.value = errorMessage;
         messageClass.value = 'bg-red-100 text-red-700';
     }
+
+}
+
+const toCreateCompany = () => {
+    router.push({ name: 'notes_create_company' })
 }
 </script>
