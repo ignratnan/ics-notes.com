@@ -48,6 +48,12 @@
                         class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
                         Create New Note
                     </button>
+                    <a :href="downloadNotes">
+                            <button
+                            class="inline items-center px-4 py-2 my-3 mx-2 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
+                            Download
+                            </button>
+                        </a> 
                 </div>
             </div>
 
@@ -191,6 +197,8 @@
     const messageClass = ref('hidden');
 
     const BASE_URL = "http://localhost:8080"
+    const downloadNotes = `${BASE_URL}/notes/export/csv`
+
 
     function formatDate(dateStr) {
         return dayjs(dateStr).format('D MMMM YYYY')

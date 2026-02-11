@@ -81,11 +81,17 @@
                         </div>
                     </div>
                     
-                    <div class="grid place-content-end">
+                    <div class="flex flex-row-reverse">
                         <button @click="openCreate"
                             class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
                             Create New Event
                         </button>
+                        <a :href="downloadEvents">
+                            <button
+                            class="inline items-center px-4 py-2 my-3 mx-2 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
+                            Download
+                            </button>
+                        </a> 
                     </div>
 
                 </div>
@@ -230,6 +236,7 @@ const form = reactive({
 })
 
 const BASE_URL = 'http://localhost:8080'
+const downloadEvents = `${BASE_URL}/events/export/csv`
 
 const fetchEvents = async () => {
     try {

@@ -765,6 +765,152 @@ func ResetPassword(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "Password successfully reset"})
 }
 
+func ExportNotesCSV(c *gin.Context) {
+	var notes []models.Note
+	var order string
+	order = "oldest"
+
+	notes, err := database.ReadNotes(order)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
+
+	// Set header agar browser download file
+	filename := "notes_" + time.Now().Format("20060102_150405") + ".csv"
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", `attachment; filename="`+filename+`"`)
+	c.Header("Cache-Control", "no-cache")
+
+	// UTF-8 BOM (WAJIB untuk Excel)
+	c.Writer.Write([]byte("\xEF\xBB\xBF"))
+
+	writer := csv.NewWriter(c.Writer)
+	defer writer.Flush()
+
+	// =====================
+	// CSV HEADER
+	// =====================
+	writer.Write([]string{
+		"No",
+		"Title",
+		"Note",
+		"Company",
+		"Contact",
+		"Event",
+		"Created By",
+		"Created At",
+	})
+
+	// =====================
+	// CSV ROWS
+	// =====================
+	number := 1
+	for _, note := range notes {
+		title := ""
+		if note.Title != "" {
+			title = note.Title
+		}
+		body := ""
+		if note.Body != "" {
+			body = note.Body
+		}
+		company := ""
+		if note.CompanyID != 0 {
+			company = note.Company.CompanyName
+		}
+		contact := ""
+		if note.ContactID != 0 {
+			contact = note.Contact.FirstName + " " + note.Contact.LastName
+		}
+		event := ""
+		if note.EventID != 0 {
+			event = note.Event.EventName
+		}
+		created_by := ""
+		if note.UserID != 0 {
+			created_by = note.User.Name
+		}
+
+		writer.Write([]string{
+			fmt.Sprint(number),
+			title,
+			body,
+			company,
+			contact,
+			event,
+			created_by,
+			note.CreatedAt.Format("2006-01-02"),
+		})
+
+		number++
+	}
+}
+
+func ExportEventsCSV(c *gin.Context) {
+	var events []models.Event
+	var order string
+	order = "oldest"
+
+	events, err := database.ReadEvents(order)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
+
+	// Set header agar browser download file
+	filename := "events_" + time.Now().Format("20060102_150405") + ".csv"
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", `attachment; filename="`+filename+`"`)
+	c.Header("Cache-Control", "no-cache")
+
+	// UTF-8 BOM (WAJIB untuk Excel)
+	c.Writer.Write([]byte("\xEF\xBB\xBF"))
+
+	writer := csv.NewWriter(c.Writer)
+	defer writer.Flush()
+
+	// =====================
+	// CSV HEADER
+	// =====================
+	writer.Write([]string{
+		"No",
+		"Event",
+		"Created By",
+		"Created At",
+	})
+
+	// =====================
+	// CSV ROWS
+	// =====================
+	number := 1
+	for _, event := range events {
+		event_name := ""
+		if event.EventName != "" {
+			event_name = event.EventName
+		}
+		created_by := ""
+		if event.UserID != 0 {
+			created_by = event.User.Name
+		}
+
+		writer.Write([]string{
+			fmt.Sprint(number),
+			event_name,
+			created_by,
+			event.CreatedAt.Format("2006-01-02"),
+		})
+
+		number++
+	}
+}
+
 func ExportContactsCSV(c *gin.Context) {
 	var contacts []models.Contact
 	var order string
