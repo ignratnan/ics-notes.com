@@ -39,6 +39,7 @@ func main() {
 	{
 		protected.GET("/dashboard", request.GetDashboard)
 		protected.GET("/notes/export/csv", request.ExportNotesCSV)
+		protected.GET("/mynotes/export/csv", request.ExportUserNotesCSV)
 		protected.GET("/events/export/csv", request.ExportEventsCSV)
 		protected.GET("/companies/export/csv", request.ExportCompaniesCSV)
 		protected.GET("/contacts/export/csv", request.ExportContactsCSV)

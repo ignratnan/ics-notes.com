@@ -197,7 +197,7 @@
     const messageClass = ref('hidden');
 
     const BASE_URL = "http://localhost:8080"
-    const downloadNotes = `${BASE_URL}/notes/export/csv`
+    const downloadNotes = `${BASE_URL}/mynotes/export/csv`
 
 
     function formatDate(dateStr) {

@@ -1,7 +1,7 @@
 <script setup>
-import Sidebar from '@/components/layout/Sidebar.vue'
-import SidebarBlock from '@/components/layout/SidebarBlock.vue'
-import NotesContent from '@/components/notes/NotesContent.vue'
+import Sidebar from '@/views/admin/layout/Sidebar.vue'
+import SidebarBlock from '@/views/admin/layout/SidebarBlock.vue'
+import NotesContent from '@/views/admin/notes/NotesContent.vue'
 </script>
 
 <template>

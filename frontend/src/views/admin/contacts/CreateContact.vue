@@ -105,6 +105,6 @@
 </template>
 
 <script setup>
-import Sidebar from '@/components/layout/Sidebar.vue'
-import SidebarBlock from '@/components/layout/SidebarBlock.vue'
+import Sidebar from '@/views/admin/layout/Sidebar.vue'
+import SidebarBlock from '@/views/admin/layout/SidebarBlock.vue'
 </script>

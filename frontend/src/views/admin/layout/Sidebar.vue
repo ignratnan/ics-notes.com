@@ -12,23 +12,23 @@
             </div>
 
             <nav class="flex-1 space-y-2">
-            <router-link to="/dashboard" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+            <router-link to="/admin/dashboard" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
                 <font-awesome-icon class="mr-3" icon="border-all" />
                 Dashboard
             </router-link>
-            <router-link to="/notes" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+            <router-link to="/admin/notes" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
                 <font-awesome-icon class="mr-3" icon="notes-medical" />
                 Notes
             </router-link>
-            <router-link to="/events" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+            <router-link to="/admin/events" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
                 <font-awesome-icon class="mr-3" icon="calendar-days" />
                 Events
             </router-link>
-            <router-link to="/companies" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+            <router-link to="/admin/companies" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
                 <font-awesome-icon class="mr-3" icon="building" />
                 Companies
             </router-link>
-            <router-link to="/contacts" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+            <router-link to="/admin/contacts" class="flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
                 <font-awesome-icon class="mr-3" icon="address-book" />
                 Contacts
             </router-link>
@@ -87,6 +87,6 @@ const handleLogout = async () => {
 
 
 const goSettings = () => {
-    router.push({ name: 'settings' })
+    router.push({ name: 'admin_settings' })
 }
 </script>

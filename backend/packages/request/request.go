@@ -850,6 +850,98 @@ func ExportNotesCSV(c *gin.Context) {
 	}
 }
 
+func ExportUserNotesCSV(c *gin.Context) {
+	var notes []models.Note
+	var order string
+	order = "oldest"
+
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	idUint := userIDRaw.(uint)
+
+	notes, err := database.ReadUserNotes(order, idUint)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Internal Server Error",
+		})
+		return
+	}
+
+	// Set header agar browser download file
+	filename := "notes_" + time.Now().Format("20060102_150405") + ".csv"
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", `attachment; filename="`+filename+`"`)
+	c.Header("Cache-Control", "no-cache")
+
+	// UTF-8 BOM (WAJIB untuk Excel)
+	c.Writer.Write([]byte("\xEF\xBB\xBF"))
+
+	writer := csv.NewWriter(c.Writer)
+	defer writer.Flush()
+
+	// =====================
+	// CSV HEADER
+	// =====================
+	writer.Write([]string{
+		"No",
+		"Title",
+		"Note",
+		"Company",
+		"Contact",
+		"Event",
+		"Created By",
+		"Created At",
+	})
+
+	// =====================
+	// CSV ROWS
+	// =====================
+	number := 1
+	for _, note := range notes {
+		title := ""
+		if note.Title != "" {
+			title = note.Title
+		}
+		body := ""
+		if note.Body != "" {
+			body = note.Body
+		}
+		company := ""
+		if note.CompanyID != 0 {
+			company = note.Company.CompanyName
+		}
+		contact := ""
+		if note.ContactID != 0 {
+			contact = note.Contact.FirstName + " " + note.Contact.LastName
+		}
+		event := ""
+		if note.EventID != 0 {
+			event = note.Event.EventName
+		}
+		created_by := ""
+		if note.UserID != 0 {
+			created_by = note.User.Name
+		}
+
+		writer.Write([]string{
+			fmt.Sprint(number),
+			title,
+			body,
+			company,
+			contact,
+			event,
+			created_by,
+			note.CreatedAt.Format("2006-01-02"),
+		})
+
+		number++
+	}
+}
+
 func ExportEventsCSV(c *gin.Context) {
 	var events []models.Event
 	var order string
@@ -1076,12 +1168,10 @@ func ExportCompaniesCSV(c *gin.Context) {
 
 func GetDashboard(c *gin.Context) {
 	var notes []models.Note
-	var my_notes []models.Note
 	var events []models.Event
 	var companies []models.Company
 	var contacts []models.Contact
 	var notes_total int64
-	var my_notes_total int64
 	var events_total int64
 	var companies_total int64
 	var contacts_total int64
@@ -1089,8 +1179,7 @@ func GetDashboard(c *gin.Context) {
 	var order string
 	var limit int
 	var show string
-
-	show = c.DefaultQuery("show", "notes")
+	var err error
 
 	order = "newest"
 	limit = 5
@@ -1100,23 +1189,32 @@ func GetDashboard(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
-
 	idUint := userIDRaw.(uint)
 
-	notes, notes_total, err := database.ReadNotesForDashboard(order, limit)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Internal Server Error",
-		})
+	userRole, exists := c.Get("role")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
 
-	my_notes, my_notes_total, err = database.ReadMyNotesForDashboard(idUint, order, limit)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Internal Server Error",
-		})
-		return
+	show = c.DefaultQuery("show", "notes")
+
+	if userRole == "admin" {
+		notes, notes_total, err = database.ReadNotesForDashboard(order, limit)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Internal Server Error",
+			})
+			return
+		}
+	} else {
+		notes, notes_total, err = database.ReadMyNotesForDashboard(idUint, order, limit)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Internal Server Error",
+			})
+			return
+		}
 	}
 
 	events, events_total, err = database.ReadEventsForDashboard(order, limit)
@@ -1145,12 +1243,10 @@ func GetDashboard(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"notes":           notes,
-		"my_notes":        my_notes,
 		"events":          events,
 		"companies":       companies,
 		"contacts":        contacts,
 		"notes_total":     notes_total,
-		"my_notes_total":  my_notes_total,
 		"events_total":    events_total,
 		"companies_total": companies_total,
 		"contacts_total":  contacts_total,

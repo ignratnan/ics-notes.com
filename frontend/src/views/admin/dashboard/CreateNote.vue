@@ -99,8 +99,8 @@
 </template>
 
 <script setup>
-import Sidebar from '@/components/layout/Sidebar.vue'
-import SidebarBlock from '@/components/layout/SidebarBlock.vue'
+import Sidebar from '@/views/admin/layout/Sidebar.vue'
+import SidebarBlock from '@/views/admin/layout/SidebarBlock.vue'
 import NoteEditor from '../layout/NoteEditor.vue';
 
 import { onMounted, ref, reactive, watch } from 'vue';
@@ -180,7 +180,7 @@ const submitNote = async () => {
 
     setTimeout(() => {
         router.push({ 
-            name: 'dashboard', 
+            name: 'admin_dashboard', 
             query: {
                 show: 'notes'
             }
@@ -189,7 +189,7 @@ const submitNote = async () => {
 }
 
 const toDashboard = () => {
-    router.push({ name: 'dashboard' })
+    router.push({ name: 'admin_dashboard' })
 }
 
 </script>

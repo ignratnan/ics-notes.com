@@ -15,8 +15,8 @@
                     
                         </div>
                         <div class="flex justify-between">
-                            <div :class="my_notes_back" class="w-56 p-4 pb-6 rounded-t-xl">
-                                <button @click="showMyNotes" type="button" class="flex items-center h-32 w-full border-2 rounded-md shadow-md bg-white hover:bg-gray-100">
+                            <div :class="notes_back" class="w-56 p-4 pb-6 rounded-t-xl">
+                                <button @click="showNotes" type="button" class="flex items-center h-32 w-full border-2 rounded-md shadow-md bg-white hover:bg-gray-100">
                                     <div class="p-2 justify-items-center w-full">
                                         <div>
                                             <font-awesome-icon icon="note-sticky" class="text-4xl" />
@@ -28,7 +28,7 @@
                                     <div class="flex items-center w-2/4 border-2 shadow-md bg-white hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div class="font-bold text-base text-gray-800">
-                                                {{ my_notes_total }}
+                                                {{ notes_total }}
                                             </div>
                                         </div>
                                     </div>
@@ -159,7 +159,7 @@
                             </div>
                         </div>
                         <div class="border border-gray-300 shadow-md pb-4 rounded-b-lg bg-gray-200">
-                            <div :class="my_notes_class" class="">
+                            <div :class="notes_class" class="">
                                 <div class="">
                                     <div class="h-10 flex flex-row items-center justify-between border-t font-bold text-base text-gray-800">
                                         <div class="px-4 grow">
@@ -174,16 +174,16 @@
                                     </div>
                                     <hr>
                                 </div>
-                                <div v-for="my_note in my_notes" :key="my_note.id" class="bg-gray-50">
+                                <div v-for="note in notes" :key="note.id" class="bg-gray-50">
                                     <div class="h-10 flex flex-row items-center justify-between">
                                         <div class="px-4 grow">
-                                            {{ my_note.title }}
+                                            {{ note.title }}
                                         </div>
                                         <div class="px-4 w-64">
-                                            {{ my_note.company.company_name }}
+                                            {{ note.company.company_name }}
                                         </div>
                                         <div class="px-4 w-48 text-right">
-                                            {{ formatDate(my_note.created_at) }}
+                                            {{ formatDate(note.created_at) }}
                                         </div>
                                     </div>
                                     <hr>
@@ -299,25 +299,21 @@
     const route = useRoute();
 
     const notes = ref([]);
-    const my_notes = ref([]);
     const events = ref([]);
     const contacts = ref([]);
     const companies = ref([]);
 
     const notes_total = ref(0);
-    const my_notes_total = ref(0);
     const events_total = ref(0);
     const companies_total = ref(0);
     const contacts_total = ref(0);
 
-    const notes_class = ref('hidden');
-    const my_notes_class = ref('');
+    const notes_class = ref('');
     const events_class = ref('hidden');
     const companies_class = ref('hidden');
     const contacts_class = ref('hidden');
 
-    const notes_back = ref('bg-white');
-    const my_notes_back = ref('bg-gray-200 border border-gray-300');
+    const notes_back = ref('bg-gray-200 border border-gray-300');
     const events_back = ref('bg-white');
     const companies_back = ref('bg-white');
     const contacts_back = ref('bg-white');
@@ -329,12 +325,10 @@
     const messageClass = ref('hidden');
 
     const BASE_URL = "http://localhost:8080"
-    const downloadNotes = `${BASE_URL}/notes/export/csv`
+    const downloadNotes = `${BASE_URL}/mynotes/export/csv`
     const downloadEvents = `${BASE_URL}/events/export/csv`
     const downloadCompanies = `${BASE_URL}/companies/export/csv`
     const downloadContacts = `${BASE_URL}/contacts/export/csv`
-
-
 
 
 
@@ -350,13 +344,11 @@
                 }
             })
             notes.value = res.data.notes
-            my_notes.value = res.data.my_notes
             events.value = res.data.events
             companies.value = res.data.companies
             contacts.value = res.data.contacts
 
             notes_total.value = res.data.notes_total
-            my_notes_total.value = res.data.my_notes_total
             events_total.value = res.data.events_total
             companies_total.value = res.data.companies_total
             contacts_total.value = res.data.contacts_total
@@ -373,7 +365,7 @@
     const getShow = (show) => {
         switch (show) {
             case 'notes':
-                showMyNotes()
+                showNotes()
                 break
             case 'events':
                 showEvents()
@@ -400,7 +392,6 @@
             contacts.value = res.data.contacts
 
             notes_total.value = res.data.notes_total
-            my_notes_total.value = res.data.my_notes_total
             events_total.value = res.data.events_total
             companies_total.value = res.data.companies_total
             contacts_total.value = res.data.contacts_total
@@ -411,42 +402,24 @@
     }
 
     const showNotes = () => {
-        my_notes_class.value = 'hidden';
         events_class.value = 'hidden';
         companies_class.value = 'hidden';
         contacts_class.value = 'hidden';
         notes_class.value = '';
 
-        my_notes_back.value = 'bg-white';
         events_back.value = 'bg-white';
         companies_back.value = 'bg-white';
         contacts_back.value = 'bg-white';
         notes_back.value = 'bg-gray-200 border border-gray-300';
     }
 
-    const showMyNotes = () => {
-        notes_class.value = 'hidden';
-        events_class.value = 'hidden';
-        companies_class.value = 'hidden';
-        contacts_class.value = 'hidden';
-        my_notes_class.value = '';
-
-        notes_back.value = 'bg-white';
-        events_back.value = 'bg-white';
-        companies_back.value = 'bg-white';
-        contacts_back.value = 'bg-white';
-        my_notes_back.value = 'bg-gray-200 border border-gray-300';
-    }
-
     const showEvents = () => {
         notes_class.value = 'hidden';
-        my_notes_class.value = 'hidden';
         companies_class.value = 'hidden';
         contacts_class.value = 'hidden';
         events_class.value = '';
 
         notes_back.value = 'bg-white';
-        my_notes_back.value = 'bg-white';
         companies_back.value = 'bg-white';
         contacts_back.value = 'bg-white';
         events_back.value = 'bg-gray-200 border border-gray-300';
@@ -454,13 +427,11 @@
 
     const showCompanies = () => {
         notes_class.value = 'hidden';
-        my_notes_class.value = 'hidden';
         events_class.value = 'hidden';
         contacts_class.value = 'hidden';
         companies_class.value = '';
 
         notes_back.value = 'bg-white';
-        my_notes_back.value = 'bg-white';
         events_back.value = 'bg-white';
         contacts_back.value = 'bg-white';
         companies_back.value = 'bg-gray-200 border border-gray-300';
@@ -468,13 +439,11 @@
 
     const showContacts = () => {
         notes_class.value = 'hidden';
-        my_notes_class.value = 'hidden';
         events_class.value = 'hidden';
         companies_class.value = 'hidden';
         contacts_class.value = '';
 
         notes_back.value = 'bg-white';
-        my_notes_back.value = 'bg-white';
         events_back.value = 'bg-white';
         companies_back.value = 'bg-white';
         contacts_back.value = 'bg-gray-200 border border-gray-300';

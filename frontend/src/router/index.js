@@ -23,6 +23,29 @@ import ResetPassword from '@/views/user/layout/ResetPassword.vue';
 import ForgotPassword from '@/views/user/layout/ForgotPassword.vue';
 import Settings from '@/views/user/settings/Settings.vue'
 
+import AdminDashboard from '@/views/admin/dashboard/Dashboard.vue';
+import AdminDashboardCreateNote from '@/views/admin/dashboard/CreateNote.vue';
+import AdminDashboardCreateEvent from '@/views/admin/dashboard/CreateEvent.vue';
+import AdminDashboardCreateCompany from '@/views/admin/dashboard/CreateCompany.vue';
+import AdminDashboardCreateContact from '@/views/admin/dashboard/CreateContact.vue';
+import AdminNotes from '@/views/admin/notes/Notes.vue';
+import AdminEvents from '@/views/admin/events/Events.vue';
+import AdminContacts from '@/views/admin/contacts/Contacts.vue';
+import AdminCompanies from '@/views/admin/companies/Companies.vue';
+import AdminNotesCreateNote from '@/views/admin/notes/CreateNote.vue'
+import AdminNotesCreateEvent from '@/views/admin/notes/CreateEvent.vue'
+import AdminNotesCreateCompany from '@/views/admin/notes/CreateCompany.vue'
+import AdminNotesCreateContact from '@/views/admin/notes/CreateContact.vue'
+import AdminNotesEditNote from '@/views/admin/notes/EditNote.vue'
+import AdminEventsCreateEvent from '@/views/admin/events/CreateEvent.vue'
+import AdminContactsCreateContact from '@/views/admin/contacts/CreateContact.vue'
+import AdminCompaniesCreateCompany from '@/views/admin/companies/CreateCompany.vue'
+import AdminCompaniesEditCompany from '@/views/admin/companies/EditCompany.vue'
+import AdminCompaniesDetailsCompany from '@/views/admin/companies/CompanyDetails.vue'
+import AdminResetPassword from '@/views/admin/layout/ResetPassword.vue';
+import AdminForgotPassword from '@/views/admin/layout/ForgotPassword.vue';
+import AdminSettings from '@/views/admin/settings/Settings.vue'
+
 const routes = [
     {
         path: '/', 
@@ -142,6 +165,122 @@ const routes = [
         name: 'settings',
         component: Settings,
     },
+
+    {
+        path: '/admin/dashboard', 
+        name: 'admin_dashboard', 
+        component: AdminDashboard 
+    },
+    {
+        path: '/admin/dashboard/create-note', 
+        name: 'admin_dashboard_create_note', 
+        component: AdminDashboardCreateNote
+    },
+    {
+        path: '/admin/dashboard/create-event', 
+        name: 'admin_dashboard_create_event', 
+        component: AdminDashboardCreateEvent
+    },
+    {
+        path: '/admin/dashboard/create-company', 
+        name: 'admin_dashboard_create_company', 
+        component: AdminDashboardCreateCompany
+    },
+    {
+        path: '/admin/dashboard/create-contact', 
+        name: 'admin_dashboard_create_contact', 
+        component: AdminDashboardCreateContact
+    },
+    { 
+        path: '/admin/notes', 
+        name: 'admin_notes', 
+        component: AdminNotes 
+    },
+    { 
+        path: '/admin/events', 
+        name: 'admin_events', 
+        component: AdminEvents 
+    },
+    { 
+        path: '/admin/contacts', 
+        name: 'admin_contacts', 
+        component: AdminContacts 
+    },
+    { 
+        path: '/admin/companies', 
+        name: 'admin_companies',
+        component: AdminCompanies 
+    },
+    {
+        path: '/admin/notes/create-note',
+        name: 'admin_notes_create_note',
+        component: AdminNotesCreateNote
+    },
+    {
+        path: '/admin/notes/create-event',
+        name: 'admin_notes_create_event',
+        component: AdminNotesCreateEvent
+    },
+    {
+        path: '/admin/notes/create-contact',
+        name: 'admin_notes_create_contact',
+        component: AdminNotesCreateContact
+    },
+    {
+        path: '/admin/notes/create-company',
+        name: 'admin_notes_create_company',
+        component: AdminNotesCreateCompany
+    },
+    {
+        path: '/admin/events/create-event',
+        name: 'admin_events_create_event',
+        component: AdminEventsCreateEvent
+    },
+    {
+        path: '/admin/notes/edit-note/:id',
+        name: 'admin_notes_edit_note',
+        component: AdminNotesEditNote,
+        props: true
+    },
+    {
+        path: '/admin/contacts/create-contact',
+        name: 'admin_contacts_create_contact',
+        component: AdminContactsCreateContact
+    },
+    {
+        path: '/admin/companies/create-company',
+        name: 'admin_companies_create_company',
+        component: AdminCompaniesCreateCompany
+    },
+    {
+        path: '/admin/companies/edit-company/:id',
+        name: 'admin_companies_edit_company',
+        component: AdminCompaniesEditCompany,
+        props: true
+    },
+    {
+        path: '/admin/companies/details-company/:id',
+        name: 'admin_companies_details_company',
+        component: AdminCompaniesDetailsCompany,
+        props: true
+    },
+    {
+        path: '/admin/reset-password',
+        name: 'admin_reset_password',
+        component: AdminResetPassword,
+    },
+    {
+        path: '/admin/forgot-password',
+        name: 'admin_forgot_password',
+        component: AdminForgotPassword,
+    },
+    {
+        path: '/admin/settings',
+        name: 'admin_settings',
+        component: AdminSettings,
+    },
+
+
     
 ];
 

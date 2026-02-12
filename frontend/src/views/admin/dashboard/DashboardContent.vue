@@ -4,7 +4,7 @@
             <div class="mx-auto sm:px-6 lg:px-8">
                 <div name="header" class="mt-2 p-2">
                     <h1 class="font-bold text-xl text-gray-800">
-                        DASHBOARD {{ show }}
+                        DASHBOARD
                     </h1>
                     <hr>
                 </div>
@@ -15,8 +15,8 @@
                     
                         </div>
                         <div class="flex justify-between">
-                            <div :class="my_notes_back" class="w-56 p-4 pb-6 rounded-t-xl">
-                                <button @click="showMyNotes" type="button" class="flex items-center h-32 w-full border-2 rounded-md shadow-md bg-white hover:bg-gray-100">
+                            <div :class="notes_back" class="w-56 p-4 pb-6 rounded-t-xl">
+                                <button @click="showNotes" type="button" class="flex items-center h-32 w-full border-2 rounded-md shadow-md bg-white hover:bg-gray-100">
                                     <div class="p-2 justify-items-center w-full">
                                         <div>
                                             <font-awesome-icon icon="note-sticky" class="text-4xl" />
@@ -28,7 +28,7 @@
                                     <div class="flex items-center w-2/4 border-2 shadow-md bg-white hover:bg-gray-100">
                                         <div class="p-2 justify-items-center w-full">
                                             <div class="font-bold text-base text-gray-800">
-                                                {{ my_notes_total }}
+                                                {{ notes_total }}
                                             </div>
                                         </div>
                                     </div>
@@ -159,7 +159,7 @@
                             </div>
                         </div>
                         <div class="border border-gray-300 shadow-md pb-4 rounded-b-lg bg-gray-200">
-                            <div :class="my_notes_class" class="">
+                            <div :class="notes_class" class="">
                                 <div class="">
                                     <div class="h-10 flex flex-row items-center justify-between border-t font-bold text-base text-gray-800">
                                         <div class="px-4 grow">
@@ -174,16 +174,16 @@
                                     </div>
                                     <hr>
                                 </div>
-                                <div v-for="my_note in my_notes" :key="my_note.id" class="bg-gray-50">
+                                <div v-for="note in notes" :key="note.id" class="bg-gray-50">
                                     <div class="h-10 flex flex-row items-center justify-between">
                                         <div class="px-4 grow">
-                                            {{ my_note.title }}
+                                            {{ note.title }}
                                         </div>
                                         <div class="px-4 w-64">
-                                            {{ my_note.company.company_name }}
+                                            {{ note.company.company_name }}
                                         </div>
                                         <div class="px-4 w-48 text-right">
-                                            {{ formatDate(my_note.created_at) }}
+                                            {{ formatDate(note.created_at) }}
                                         </div>
                                     </div>
                                     <hr>
@@ -373,6 +373,9 @@
     const getShow = (show) => {
         switch (show) {
             case 'notes':
+                showNotes()
+                break
+            case 'my_notes':
                 showMyNotes()
                 break
             case 'events':
@@ -481,19 +484,19 @@
     }
 
     const toCreateNote = () => {
-        router.push({ name: 'dashboard_create_note' })
+        router.push({ name: 'admin_dashboard_create_note' })
     }
 
     const toCreateEvent = () => {
-        router.push({ name: 'dashboard_create_event' })
+        router.push({ name: 'admin_dashboard_create_event' })
     }
 
     const toCreateCompany = () => {
-        router.push({ name: 'dashboard_create_company' })
+        router.push({ name: 'admin_dashboard_create_company' })
     }
 
     const toCreateContact = () => {
-        router.push({ name: 'dashboard_create_contact' })
+        router.push({ name: 'admin_dashboard_create_contact' })
     }
 
 </script>

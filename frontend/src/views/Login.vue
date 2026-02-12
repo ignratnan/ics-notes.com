@@ -108,7 +108,7 @@
             form.password = '';
 
             if (adminStatus.value == 1) {
-                router.push({ name: 'dashboard' });
+                router.push({ name: 'admin_dashboard' });
             } if (userStatus.value == 1) {
                 router.push({ name: 'dashboard' })
             } else {
