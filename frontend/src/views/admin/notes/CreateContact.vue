@@ -14,7 +14,7 @@
                         </h1>
                         <hr>
                     </div>
-                    <button type="button"
+                    <button @click="toCreateCompany" type="button"
                         class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
                         Create New Company
                     </button>
@@ -118,7 +118,7 @@
                                     </button>
                                 </span>
                                 <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                                    <button type="button" @click="router.push({ name:'notes_create_note' })"
+                                    <button type="button" @click="router.push({ name:'admin_notes_create_note' })"
                                         class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
                                         Cancel
                                     </button>
@@ -452,7 +452,7 @@ const submitContact = async () => {
         phone.number = "";
 
         setTimeout(() => {
-            router.push({ name: 'notes_create_note' })
+            router.push({ name: 'admin_notes_create_note' })
         }, 300)        
 
     } catch (error) {
@@ -460,5 +460,9 @@ const submitContact = async () => {
         message.value = errorMessage;
         messageClass.value = 'bg-red-100 text-red-700';
     }
+}
+
+const toCreateCompany = () => {
+    router.push({ name: 'admin_notes_create_company' })
 }
 </script>

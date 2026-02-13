@@ -234,11 +234,11 @@
 
     // Method to handle the navigation
     const goToNoteCreate = () => {
-        router.push({ name: 'notes_create_note' });
+        router.push({ name: 'admin_notes_create_note' });
     }
 
     const goToNoteEdit = (id) => {
-        router.push({ name: 'notes_edit_note', params: { id } });
+        router.push({ name: 'admin_notes_edit_note', params: { id } });
     }
 
     const openDeleteModal = (id) => {
@@ -274,14 +274,14 @@
     }
 
     const goCompanyDetails = (id) => {
-        router.push({ name: 'companies_details_company', params: { id } })
+        router.push({ name: 'admin_companies_details_company', params: { id } })
     }
 
     const goContacts = (contact) => {
         const keyword = `${contact.first_name} ${contact.last_name}`
 
         router.push({
-            name: 'contacts',
+            name: 'admin_contacts',
             query: {
                 search: keyword
             }

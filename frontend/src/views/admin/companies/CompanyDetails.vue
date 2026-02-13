@@ -225,7 +225,7 @@ const fetchCompany = async () => {
 onMounted(fetchCompany)
 
 const goToCompanies = () => {
-    router.push({ name: 'companies' });
+    router.push({ name: 'admin_companies' });
 }
 
 function formatDate(dateStr) {

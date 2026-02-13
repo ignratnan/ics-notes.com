@@ -10,22 +10,10 @@
                     <div name="header" class="mt-2 p-2">
                         <h1 class="font-bold text-xl text-gray-800">
                             NOTES <font-awesome-icon icon="angle-right" />
-                            CREATE-NOTE
+                            EDIT-NOTE
                         </h1>
                         <hr>
                     </div>
-                    <a href="/notes/create-event">
-                        <button type="button"
-                            class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
-                            Create New Event
-                        </button>
-                    </a>
-                    <a href="/notes/create-contact" class="ml-4">
-                        <button type="button"
-                            class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
-                            Create New Contact
-                        </button>
-                    </a>
                     <form>
                         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <label for="event_id"
@@ -60,7 +48,7 @@
                                     <select v-model="note.contact_id" :disabled="!contacts.length"
                                         class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-black focus:border-black p-2.5 dark:text-black dark:focus:ring-black dark:focus:border-black">
                                         <option value=0 disabled selected>Select Contact</option>
-                                        <option v-for="contact in contacts" :key="contact.id" :value="contact.id">{{ contact.first_name }} {{ contacts.last_name }}</option>
+                                        <option v-for="contact in contacts" :key="contact.id" :value="contact.id">{{ contact.first_name }} {{ contact.last_name }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -94,7 +82,7 @@
                                         Save
                                     </button>
                                 </span>
-                                <a href="/notes">
+                                <a href="/admin/notes">
                                     <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                                         <button type="button"
                                             class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
@@ -201,7 +189,7 @@ const submitNote = async () => {
     note.body = "";
 
     setTimeout(() => {
-        router.push({ name: 'notes' })
+        router.push({ name: 'admin_notes' })
     }, 300)
 }
 

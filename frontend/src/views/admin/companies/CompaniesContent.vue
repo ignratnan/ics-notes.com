@@ -43,7 +43,7 @@
                 </div>
                 
                 <div class="flex flex-row-reverse">
-                    <router-link to="/companies/create-company">
+                    <router-link to="/admin/companies/create-company">
                         <button
                         class="inline items-center px-4 py-2 my-3 bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
                         Create New Company
@@ -197,11 +197,11 @@ const fetchCompanies = async () => {
 }
 
 const goEdit = (id) => {
-    router.push({ name: 'companies_edit_company', params: { id } })
+    router.push({ name: 'admin_companies_edit_company', params: { id } })
 }
 
 const goDetails = (id) => {
-    router.push({ name: 'companies_details_company', params: { id } })
+    router.push({ name: 'admin_companies_details_company', params: { id } })
 }
 
 const openDeleteModal = (id) => {

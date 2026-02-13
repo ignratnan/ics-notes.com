@@ -36,7 +36,7 @@
                                     </button>
                                 </span>
                                 <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                                    <button type="button" @click="router.push({ name: 'notes_create_note' })"
+                                    <button type="button" @click="router.push({ name: 'admin_notes_create_note' })"
                                         class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
                                         Cancel
                                     </button>
@@ -80,7 +80,7 @@ const submitEvent = async () => {
         messageClass.value = 'bg-green-100 text-green-700';
 
         setTimeout(() => {
-            router.push({ name: 'notes_create_note' })
+            router.push({ name: 'admin_notes_create_note' })
         }, 300)
 
     } catch (error) {

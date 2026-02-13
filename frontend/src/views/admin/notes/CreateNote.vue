@@ -93,7 +93,7 @@
                                         Save
                                     </button>
                                 </span>
-                                <a href="/notes">
+                                <a href="/admin/notes">
                                     <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                                         <button type="button"
                                             class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
@@ -191,16 +191,16 @@ const submitNote = async () => {
     note.body = "";
 
     setTimeout(() => {
-        router.push({ name: 'notes' })
+        router.push({ name: 'admin_notes' })
     }, 300)
 }
 
 const toCreateEvent = () => {
-    router.push({ name: 'notes_create_event' })
+    router.push({ name: 'admin_notes_create_event' })
 }
 
 const toCreateContact = () => {
-    router.push({ name: 'notes_create_contact' })
+    router.push({ name: 'admin_notes_create_contact' })
 }
 
 </script>
