@@ -110,8 +110,24 @@ func PostEvent(c *gin.Context) {
 		return
 	}
 
-	userID, _ := c.Get("user_id")
-	postEvents.UserID = userID.(uint)
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	idUint := userIDRaw.(uint)
+
+	roleRaw, exists := c.Get("role")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	if roleRaw == "user" {
+		postEvents.UserID = idUint
+	} else {
+		postEvents.UserID = 0
+	}
 
 	database.CreateEvent(postEvents)
 	message := "'" + postEvents.EventName + "'" + " has been successfully saved !"
@@ -246,12 +262,22 @@ func PostCompany(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
-
 	idUint := userIDRaw.(uint)
 	idStr := strconv.FormatUint(uint64(idUint), 10)
 
-	postCompany.UserID = idUint
-	postCompany.EditedBy = idStr
+	roleRaw, exists := c.Get("role")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	if roleRaw == "user" {
+		postCompany.UserID = idUint
+		postCompany.EditedBy = idStr
+	} else {
+		postCompany.UserID = 0
+		postCompany.EditedBy = "0"
+	}
 
 	database.CreateCompany(postCompany)
 	message := "'" + postCompany.CompanyName + "'" + " has been successfully created !"
@@ -317,16 +343,27 @@ func PostContact(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
-
 	idUint := userIDRaw.(uint)
 	idStr := strconv.FormatUint(uint64(idUint), 10)
 
-	postContacts.UserID = idUint
-	postContacts.EditedBy = idStr
-	firstName := postContacts.FirstName
-	lastName := postContacts.LastName
+	roleRaw, exists := c.Get("role")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	if roleRaw == "user" {
+		postContacts.UserID = idUint
+		postContacts.EditedBy = idStr
+	} else {
+		postContacts.UserID = 0
+		postContacts.EditedBy = "0"
+	}
 
 	database.CreateContact(postContacts)
+
+	firstName := postContacts.FirstName
+	lastName := postContacts.LastName
 	message := "'" + firstName + " " + lastName + "'" + " has been successfully saved !"
 	c.JSON(http.StatusCreated, gin.H{
 		"message": message,
@@ -531,9 +568,19 @@ func PostNotes(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
-
 	idUint := userIDRaw.(uint)
-	postNotes.UserID = idUint
+
+	roleRaw, exists := c.Get("role")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	if roleRaw == "user" {
+		postNotes.UserID = idUint
+	} else {
+		postNotes.UserID = 0
+	}
 
 	database.CreateNote(postNotes)
 	message := "Notes successfully created !"
