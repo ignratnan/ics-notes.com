@@ -14,8 +14,6 @@ import NotesCreateEvent from '@/views/user/notes/CreateEvent.vue'
 import NotesCreateCompany from '@/views/user/notes/CreateCompany.vue'
 import NotesCreateContact from '@/views/user/notes/CreateContact.vue'
 import NotesEditNote from '@/views/user/notes/EditNote.vue'
-import EventsCreateEvent from '@/views/user/events/CreateEvent.vue'
-import ContactsCreateContact from '@/views/user/contacts/CreateContact.vue'
 import CompaniesCreateCompany from '@/views/user/companies/CreateCompany.vue'
 import CompaniesEditCompany from '@/views/user/companies/EditCompany.vue'
 import CompaniesDetailsCompany from '@/views/user/companies/CompanyDetails.vue'
@@ -37,8 +35,6 @@ import AdminNotesCreateEvent from '@/views/admin/notes/CreateEvent.vue'
 import AdminNotesCreateCompany from '@/views/admin/notes/CreateCompany.vue'
 import AdminNotesCreateContact from '@/views/admin/notes/CreateContact.vue'
 import AdminNotesEditNote from '@/views/admin/notes/EditNote.vue'
-import AdminEventsCreateEvent from '@/views/admin/events/CreateEvent.vue'
-import AdminContactsCreateContact from '@/views/admin/contacts/CreateContact.vue'
 import AdminCompaniesCreateCompany from '@/views/admin/companies/CreateCompany.vue'
 import AdminCompaniesEditCompany from '@/views/admin/companies/EditCompany.vue'
 import AdminCompaniesDetailsCompany from '@/views/admin/companies/CompanyDetails.vue'
@@ -118,20 +114,10 @@ const routes = [
         component: NotesCreateCompany
     },
     {
-        path: '/events/create-event',
-        name: 'events_create_event',
-        component: EventsCreateEvent
-    },
-    {
         path: '/notes/edit-note/:id',
         name: 'notes_edit_note',
         component: NotesEditNote,
         props: true
-    },
-    {
-        path: '/contacts/create-contact',
-        name: 'contacts_create_contact',
-        component: ContactsCreateContact
     },
     {
         path: '/companies/create-company',
@@ -232,20 +218,10 @@ const routes = [
         component: AdminNotesCreateCompany
     },
     {
-        path: '/admin/events/create-event',
-        name: 'admin_events_create_event',
-        component: AdminEventsCreateEvent
-    },
-    {
         path: '/admin/notes/edit-note/:id',
         name: 'admin_notes_edit_note',
         component: AdminNotesEditNote,
         props: true
-    },
-    {
-        path: '/admin/contacts/create-contact',
-        name: 'admin_contacts_create_contact',
-        component: AdminContactsCreateContact
     },
     {
         path: '/admin/companies/create-company',
