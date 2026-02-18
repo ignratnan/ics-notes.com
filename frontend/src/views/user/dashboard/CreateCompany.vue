@@ -354,7 +354,8 @@ const router = useRouter()
 const message = ref('');
 const messageClass = ref('hidden');
 
-const BASE_URL = 'http://localhost:8080'
+const apiUrl = import.meta.env.VITE_API_URL
+const BASE_URL = apiUrl
 
 const form = reactive({
     id: 0,

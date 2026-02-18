@@ -328,7 +328,9 @@
     const message = ref('');
     const messageClass = ref('hidden');
 
-    const BASE_URL = "http://localhost:8080"
+    const apiUrl = import.meta.env.VITE_API_URL
+    const BASE_URL = apiUrl
+    
     const downloadNotes = `${BASE_URL}/notes/export/csv`
     const downloadEvents = `${BASE_URL}/events/export/csv`
     const downloadCompanies = `${BASE_URL}/companies/export/csv`

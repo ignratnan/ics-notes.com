@@ -203,7 +203,8 @@ const contacts = ref([])
 const notes = ref([])
 const safeContent = ref('')
 
-const BASE_URL = 'http://localhost:8080'
+const apiUrl = import.meta.env.VITE_API_URL
+const BASE_URL = apiUrl
 
 const fetchCompany = async () => {
     try {

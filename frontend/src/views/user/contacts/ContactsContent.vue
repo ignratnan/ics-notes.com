@@ -312,7 +312,8 @@ const deletedContactId = ref(null)
 const message = ref('');
 const messageClass = ref('hidden');
 
-const BASE_URL = 'http://localhost:8080'
+const apiUrl = import.meta.env.VITE_API_URL
+const BASE_URL = apiUrl
 
 const downloadContacts = `${BASE_URL}/contacts/export/csv`
 

@@ -1,0 +1,40 @@
+backend{
+    models,
+    packages{
+        auth,
+        database,
+        middleware,
+        request
+    }
+},
+forntend{
+    .vscode,
+    node_modules,
+    public,
+    src{
+        assets,
+        router,
+        views{
+            admin{
+                companies,
+                contacts,
+                dashboard,
+                events,
+                layout,
+                notes,
+                settings,
+                temporary
+            },
+            user{
+                companies,
+                contacts,
+                dashboard,
+                events,
+                layout,
+                notes,
+                settings,
+                temporary
+            },
+        }
+    }
+}

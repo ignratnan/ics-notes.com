@@ -235,7 +235,9 @@ const form = reactive({
     event_name: '',
 })
 
-const BASE_URL = 'http://localhost:8080'
+const apiUrl = import.meta.env.VITE_API_URL
+const BASE_URL = apiUrl
+
 const downloadEvents = `${BASE_URL}/events/export/csv`
 
 const fetchEvents = async () => {

@@ -80,7 +80,8 @@
         password: ''
     });
 
-    const API_URL = 'http://localhost:8080/login';
+    const apiUrl = import.meta.env.VITE_API_URL
+    const BASE_URL = apiUrl
 
     const submitLogin = async () => {
         // Reset messages before new submission
@@ -92,7 +93,8 @@
 
 
         try {
-            const response = await axios.post(API_URL, form, {
+            const url = `${BASE_URL}/login`;
+            const response = await axios.post(url, form, {
                 withCredentials: true
             });
 

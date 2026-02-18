@@ -111,7 +111,9 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 
 const router = useRouter();
-const BASE_URL = 'http://localhost:8080'
+
+const apiUrl = import.meta.env.VITE_API_URL
+const BASE_URL = apiUrl
 
 const message = ref('')
 const messageClass = ref('hidden')
